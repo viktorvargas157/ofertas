@@ -1,0 +1,164 @@
+{% extends '::base.html.twig' %}
+
+{% block css %}
+
+    {# PARA EL DATATABLE #}
+    <link href="{{ asset('bundles/ccc/css/jquery.dataTables.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        th, td { white-space: nowrap; }
+        div.dataTables_wrapper {
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+{% endblock %}
+
+
+{% block contenido %}
+    <section id="main-content">
+
+        {% block titulo %}
+            <section class="wrapper">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header" style="text-align: center">{#<i class="fa fa-laptop"></i>#} Trabajo con los Clientes</h3>
+                         <ol class="breadcrumb">
+                             <li><i class="fa fa-home"></i><a href="{{ path('estatica', {'estatica':'inicio'}) }}">Inicio</a></li>
+                             <li><i class="icon_phone"></i>Clientes</li>
+                         </ol>
+                    </div>
+                </div>
+
+            </section>
+        {% endblock %}
+
+        <section class="panel">
+            <header class="panel-heading tab-bg-primary ">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#home">Listado</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#about">Insertar</a>
+                    </li>
+
+                </ul>
+            </header>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="home" class="tab-pane active">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table id="listado" class="display" style="text-align: center">
+                                    <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Empresa o Sector</th>
+                                        <th>Teléfono</th>
+                                        <th>Email</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for cliente in clientes %}
+                                        <tr>
+                                            <td>{{ cliente.nombre }}</td>
+                                            <td>{{ cliente.empresa }}</td>
+                                            <td>{{ cliente.telefono }}</td>
+                                            <td>{{ cliente.email }}</td>
+
+                                            <td>
+                                                <a class="btn btn-primary  btn-sm" title="Listado de Obras del Cliente" href="{{ path('obrasCliente',{ 'id' : cliente.id}) }}">
+                                                    <i class="icon_archive"></i>
+                                                </a>
+                                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                                    <a class="btn btn-danger btn-sm" title="Eliminar Cliente" href="{{ path('eliminarCliente',{ 'id' : cliente.id}) }}">
+                                                        <i class="icon_trash"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="about" class="tab-pane">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <section class="panel">
+                                    <header class="panel-heading">
+                                        Formulario para Insertar Clientes
+                                    </header>
+                                    <div class="panel-body">
+                                        <form class="form-horizontal" method="post" action="{{ path('insertarCliente') }}">
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Nombre del Cliente</label>
+                                                <div class="col-sm-6">
+                                                    <input id="nombre" name="nombre" type="text" class="form-control round-input" required="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Empresa o Sector</label>
+                                                <div class="col-sm-6">
+                                                    <input id="empresa" name="empresa" type="text" class="form-control round-input">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Dirección</label>
+                                                <div class="col-sm-6">
+                                                    <textarea class="form-control ckeditor" id="direccion" name="direccion" rows="4"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Teléfono</label>
+                                                <div class="col-sm-6">
+                                                    <input id="telefono" name="telefono" type="text" class="form-control round-input">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Email</label>
+                                                <div class="col-sm-6">
+                                                    <input id="email" name="email" type="email" class="form-control round-input">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-10">
+                                                    <input type="submit" value="Enviar Datos" class="btn btn-info"/>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock %}
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/jquery.hotkeys.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg-custom.js')}}"></script>
+    <script src="{{asset('bundles/ccc/assets/ckeditor/ckeditor.js')}}"></script>
+
+    {# PARA EL DATATABLE #}
+    <script src="{{asset('bundles/ccc/js/jquery.dataTables.js')}}" type="text/javascript" ></script>
+    <script>
+        $(document).ready(function() {
+            $('#listado').dataTable( {
+                /* "scrollY": 250,*/
+                /* "scrollX": true*/
+            } );
+        } );
+    </script>
+{% endblock %}
+

@@ -1,0 +1,581 @@
+{% extends 'CCCBundle:CCC:obras.html.twig' %}
+
+{% block css %}
+    {# PARA EL DATATABLE #}
+    <link href="{{ asset('bundles/ccc/css/jquery.dataTables.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        .btnNuevo{padding: 0px 0px;}
+    </style>
+{% endblock %}
+
+{% block contenido %}
+
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="page-header toggle-nav" style="text-align: center">{% block encabezado %}Costos. {{ obra.nombre }} {% endblock %}</h3>
+                </div>
+            </div>
+            {% block cuerpo %}
+                <div class="row">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-8">
+                        <section class="panel">
+                            <header class="panel-heading tab-bg-primary ">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#comportamiento">Comportamiento</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#real">Planificación / Real</a>
+                                    </li>
+                                </ul>
+                            </header>
+                            <div class="panel-body">
+                                <div class="tab-content">
+                                    <div id="comportamiento" class="tab-pane active">
+                                        {% if is_granted('ROLE_OPERARIO') %}
+                                            {% if obra.costos[0].total == '' %}
+                                                <div class="row">
+                                                    <div class="col-lg-2"></div>
+                                                    <div class="col-lg-2">
+                                                        <a style="width: 65px" class="btn btn-success tooltips" data-placement="bottom" data-toggle="modal" href="#cargarExcel" title="Cargar Totales Planificados">Cargar</a>
+                                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cargarExcel" class="modal fade">
+                                                            <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                        <h4 class="modal-title">Cargar Excel </h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form class="form-horizontal" role="form">
+                                                                            <div class="form-group">
+                                                                                <div class="row">
+                                                                                    <div class="col-lg-1"></div>
+                                                                                    <div class="col-lg-6">
+                                                                                        <form>
+                                                                                            <div class="row" style="text-align: center">
+                                                                                                <div class="col-lg-6">
+                                                                                                    <label>Archivo Excell</label>
+                                                                                                    <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                                                    <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="row">
+                                                                                                <div class="col-lg-6">
+                                                                                                    <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('insertarTotalCostosObra') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <br>
+                                                                                            <div class="row">
+                                                                                                <div class="col-lg-12">
+                                                                                                    <img class="" src="{{asset('bundles/ccc/img/costosTotal.png')}}" style="width: 100%">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                    <div class="col-lg-3"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                        <div class="row">
+                                            <div class="col-sm-2"></div>
+                                            <div class="col-sm-8">
+                                                <section class="panel">
+                                                    <div id="imprimir">
+                                                        <table class="table table-bordered" id="imagen">
+                                                            <tbody>
+                                                            <tr style="text-align: center">
+                                                                <td rowspan="2" style="padding-top: 3%">Costo</td>
+                                                                <td rowspan="2" style="padding-top: 3%">Total</td>
+                                                                <td colspan="2">Consumido</td>
+                                                                <td colspan="2">Remanente</td>
+                                                            </tr>
+                                                            <tr style="text-align: center">
+                                                                <td>$</td>
+                                                                <td>%</td>
+                                                                <td>$</td>
+                                                                <td>%</td>
+                                                            </tr>
+                                                            {% set montoTotal = 0 %}
+                                                            {% set montoConsumido = 0 %}
+                                                            {% for costo in obra.costos %}
+                                                                {% set porCientoConsumido = 0 %}
+                                                                {% set porCientoRemanente = 0 %}
+                                                                <tr style="text-align: center">
+                                                                    <td>{{ costo.descripcion }}</td>
+                                                                    <td>
+                                                                        {% set consumido = 0 %}
+                                                                        {% for plan in costo.planificacion %}
+                                                                            {% set consumido = consumido + plan.real %}
+                                                                        {% endfor %}
+                                                                        {% set remanente = costo.total - consumido %}
+                                                                        ${{ costo.total | number_format(2, '.', ',') }}
+                                                                        {% set montoTotal = montoTotal + costo.total %}
+                                                                        {% if costo.total != 0 %}
+                                                                            {% set porCientoConsumido = (consumido * 100) / costo.total %}
+                                                                        {% endif %}
+                                                                        {% if consumido < costo.total %}
+                                                                            {% set porCientoRemanente = 100 - porCientoConsumido %}
+                                                                        {% else %}
+                                                                            {% set porCientoRemanente = 0 %}
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        {% set montoConsumido = montoConsumido + consumido %}
+                                                                        {{ consumido | number_format(2, '.', ',') }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ porCientoConsumido | number_format(2, '.', ',') }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ remanente | number_format(2, '.', ',') }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ porCientoRemanente | number_format(2, '.', ',') }}
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                            <tr style="text-align: center">
+                                                                <td>TOTAL</td>
+                                                                <td>${{ montoTotal | number_format(2, '.', ',') }}</td>
+                                                                <td>{{ montoConsumido | number_format(2, '.', ',') }}</td>
+                                                                <td>
+                                                                    {% set porCientoConsumido = 0 %}
+                                                                    {% if montoTotal != 0 %}
+                                                                        {% set porCientoConsumido = (montoConsumido * 100) / montoTotal %}
+                                                                    {% endif %}
+                                                                    {{ porCientoConsumido | number_format(2, '.', ',') }}
+                                                                </td>
+                                                                <td>{{ (montoTotal - montoConsumido) | number_format(2, '.', ',') }}</td>
+                                                                <td>
+                                                                    {% set porCientoRemanente = 0 %}
+                                                                    {% if montoTotal > montoConsumido %}
+                                                                        {% set porCientoRemanente = 100 - porCientoConsumido %}
+                                                                    {% endif %}
+                                                                    {{ porCientoRemanente | number_format(2, '.', ',') }}
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2"></div>
+                                            <div class="col-lg-2">
+                                                <button style="padding: 5px 7px" class="btn btn-success" id="print_btn" type="button" title="Imprimir">Imprimir</button>
+                                            </div>
+                                            {#<div class="col-lg-2">
+                                                <button style="padding: 5px 7px" class="btn btn-success" id="boton-descarga" type="button" title="Exportar a imagen">Conv. PNG</button>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <form action="{{ path('crearIMG') }}" method="post">
+                                                    <input type="text" value="{{ obra.id }}" name="idObra" hidden="hidden">
+                                                    <button style="padding: 5px 7px" class="btn btn-success" type="submit" title="Crear imagen con php">IMAGE</button>
+                                                </form>
+                                            </div>#}
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="real" class="tab-pane">
+                                        {% if is_granted('ROLE_OPERARIO') %}
+                                            {% if obra.costos[0].planificacion | length == 0 %}
+                                                <div class="row">
+                                                    <div class="col-lg-2"></div>
+                                                    <div class="col-lg-2">
+                                                        <a style="width: 65px" class="btn btn-success tooltips" data-placement="bottom" data-toggle="modal" href="#cargarExcel" title="Cargar Planificación">Cargar</a>
+                                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cargarExcel" class="modal fade">
+                                                            <div class="modal-dialog" style="text-align: center;width: 550px; height: auto">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                        <h4 class="modal-title">Cargar Excel </h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form method="post" action="{{ path('insertarPlanCostosObra') }}" enctype="multipart/form-data" class="">
+                                                                            <div class="row" style="text-align: center">
+                                                                                <div class="col-lg-3">
+                                                                                    <label>Repetir</label>
+                                                                                    <select name="repeticion" class="form-control" required="required">
+                                                                                        <option></option>
+                                                                                        <option style="text-align: center" value="1">Diario</option>
+                                                                                        <option style="text-align: center" value="7">Semanal</option>
+                                                                                        <option style="text-align: center" value="14">Quincenal</option>
+                                                                                        <option style="text-align: center" value="30">Mensual</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col-lg-3">
+                                                                                    <label>Archivo Excell</label>
+                                                                                    <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                                    <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-lg-3">
+                                                                                    <input type="submit" value="Enviar" class="btn btn-primary"/>
+                                                                                </div>
+                                                                            </div>
+                                                                            <br>
+                                                                            <div class="row">
+                                                                                <div class="col-lg-12">
+                                                                                    <img class="" src="{{asset('bundles/ccc/img/costosPlanificacion.png')}}" style="width: 80%">
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                        <div class="row">
+                                            <div class="col-sm-2"></div>
+                                            <div class="col-sm-8">
+                                                <section class="panel">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                        <tr style="text-align: center">
+                                                            <td>Costo</td>
+                                                            <td>Opción</td>
+                                                        </tr>
+                                                        {% for costo in obra.costos %}
+                                                            <tr style="text-align: center">
+                                                                <td>
+                                                                    {{ costo.descripcion }}
+                                                                </td>
+                                                                <td>
+                                                                    <a style="width: 54px" class="btn btn-success btnNuevo tooltips" data-toggle="modal" href="#planificacion-{{ costo.id }}" title="Planificación / Real">P / R.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="planificacion-{{ costo.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Planificación / Real </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" role="form">
+                                                                                        <div class="form-group">
+                                                                                            <div class="row">
+                                                                                                <div class="col-lg-2"></div>
+                                                                                                <div class="col-lg-7">
+                                                                                                    <table class="table table-hover table-bordered">
+                                                                                                        <tbody>
+                                                                                                            <tr>
+                                                                                                                <td rowspan="2"></td>
+                                                                                                                <td rowspan="2" style="padding-top: 10%">Planif.</td>
+                                                                                                                <td colspan="2">Consumido</td>
+                                                                                                            </tr>
+                                                                                                            <tr>
+                                                                                                                <td>$</td>
+                                                                                                                <td>%</td>
+                                                                                                            </tr>
+                                                                                                            {% for plan in costo.planificacion %}
+                                                                                                                {% set porCiento = 0 %}
+                                                                                                                <tr>
+                                                                                                                    <td>{{ plan.descripcion }}</td>
+                                                                                                                    <td>${{ plan.planificacion | number_format(2, '.', ',') }}</td>
+                                                                                                                    <td>{{ plan.real | number_format(2, '.', ',') }}</td>
+                                                                                                                    <td>
+                                                                                                                        {% if plan.planificacion != 0 %}
+                                                                                                                            {% set porCiento = (plan.real * 100) / plan.planificacion %}
+                                                                                                                        {% endif %}
+                                                                                                                        {{ porCiento | number_format(2, '.', ',') }}
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            {% endfor %}
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </div>
+                                                                                                <div class="col-lg-3"></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    {% if is_granted('ROLE_OPERARIO') %}
+                                                                        {% if costo.idMedidor != 0 %}
+                                                                            {% if costo.idMedidor == 1 %}
+                                                                                <a style="width: 54px" class="btn btn-success btnNuevo tooltips" data-toggle="modal" href="#ejecutado-{{ costo.id }}" title="Cargar Asistencia">Ejec.</a>
+                                                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="ejecutado-{{ costo.id }}" class="modal fade">
+                                                                                    <div class="modal-dialog" style="text-align: center;width: 550px; height: auto">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header">
+                                                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                                <h4 class="modal-title">Cargar Asistencia a la Obra </h4>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
+                                                                                                <form class="form-horizontal" role="form">
+                                                                                                    <div class="form-group">
+                                                                                                        <div class="row">
+                                                                                                            <div class="col-lg-1"></div>
+                                                                                                            <div class="col-lg-8">
+                                                                                                                <form>
+                                                                                                                    <div class="row" style="text-align: center">
+                                                                                                                        <div id="sandbox-container" class="col-lg-4">
+                                                                                                                            <label>Fecha</label>
+                                                                                                                            <input style="text-align: center" name="fechaReporte" type="text" class="form-control round-input" required="required">
+                                                                                                                        </div>
+                                                                                                                        <div class="col-lg-5">
+                                                                                                                            <label>Archivo Excell</label>
+                                                                                                                            <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                                                                            <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                                                                                            <input type="hidden" value="{{ costo.id }}" name="idCosto">
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <div class="row">
+                                                                                                                        <div class="8">
+                                                                                                                            <img class="" src="{{asset('bundles/ccc/img/asistenciaObra.png')}}" style="width: 80%">
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <br>
+                                                                                                                    <div class="row">
+                                                                                                                        <div class="col-lg-4">
+                                                                                                                            <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('insertarAsistenciaObra') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </form>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            {% elseif costo.idMedidor == 2 %}
+                                                                                <a style="width: 54px" class="btn btn-success btnNuevo tooltips" data-toggle="modal" href="#ejecutado-{{ costo.id }}" title="Cargar Consumido">Ejec.</a>
+                                                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="ejecutado-{{ costo.id }}" class="modal fade">
+                                                                                    <div class="modal-dialog" style="text-align: center;width: 550px; height: auto">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header">
+                                                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                                <h4 class="modal-title">Cargar Consumo de la Obra </h4>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
+                                                                                                <form class="form-horizontal" role="form">
+                                                                                                    <div class="form-group">
+                                                                                                        <div class="row">
+                                                                                                            <div class="col-lg-1"></div>
+                                                                                                            <div class="col-lg-8">
+                                                                                                                <form>
+                                                                                                                    <div class="row" style="text-align: center">
+                                                                                                                        <div id="sandbox-container" class="col-lg-4">
+                                                                                                                            <label>Fecha</label>
+                                                                                                                            <input style="text-align: center" name="fechaReporte" type="text" class="form-control round-input" required="required">
+                                                                                                                        </div>
+                                                                                                                        <div class="col-lg-5">
+                                                                                                                            <label>Archivo Excell</label>
+                                                                                                                            <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                                                                            <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <div class="row">
+                                                                                                                        <div class="8">
+                                                                                                                            <img class="" src="{{asset('bundles/ccc/img/consumidoCostos.png')}}" style="width: 50%">
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <br>
+                                                                                                                    <div class="row">
+                                                                                                                        <div class="col-lg-4">
+                                                                                                                            <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('insertarRealCostosObra') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </form>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            {% endif %}
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </section>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>
+            {% endblock %}
+        </section>
+    </section>
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.js')}}" type="text/javascript" ></script>
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.min.js')}}" type="text/javascript" ></script>
+    <script>
+        $('#sandbox-container input').datepicker({
+            format: "dd.mm.yyyy",
+            language: "es",
+            orientation: "bottom auto",
+            autoclose: true,
+            todayHighlight: true
+        });
+    </script>
+
+    <script src="{{asset('bundles/ccc/js/printThis.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print_btn').click(function () {
+                $('#imprimir').printThis();
+            });
+        });
+    </script>
+
+    <script src="{{asset('bundles/ccc/js/html2canvas.js')}}"></script>
+    <script type="text/javascript">
+        $(function() {
+            function downloadCanvas(canvasId, filename) {
+                // Obteniendo la etiqueta la cual se desea convertir en imagen
+                var domElement = document.getElementById(canvasId);
+
+                // Utilizando la función html2canvas para hacer la conversión
+                html2canvas(domElement, {
+                    onrendered: function(domElementCanvas) {
+                        // Obteniendo el contexto del canvas ya generado
+                        var context = domElementCanvas.getContext('2d');
+
+                        // Creando enlace para descargar la imagen generada
+                        var link = document.createElement('a');
+                        link.href = domElementCanvas.toDataURL("image/png");
+                        link.download = filename;
+
+                        // Chequeando para browsers más viejos
+                        if (document.createEvent) {
+                            var event = document.createEvent('MouseEvents');
+                            // Simulando clic para descargar
+                            event.initMouseEvent("click", true, true, window, 0,
+                                    0, 0, 0, 0,
+                                    false, false, false, false,
+                                    0, null);
+                            link.dispatchEvent(event);
+                        } else {
+                            // Simulando clic para descargar
+                            link.click();
+                        }
+                    }
+                });
+            }
+
+            // Haciendo la conversión y descarga de la imagen al presionar el botón
+            $('#boton-descarga').click(function() {
+                downloadCanvas('imagen', 'Costos.png');
+            });
+        });
+    </script>
+
+    <script src="{{asset('bundles/ccc/js/graficos/canvasjs.min.js')}}"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            var chart1 = new CanvasJS.Chart("chartContainer", {
+                /*title: {
+                    text: "Comportamiento de los Costos",
+                    fontSize: 30
+                },*/
+                /*ESTO ES PARA QUE APAREZCA VARIAS OPCIONES
+                 * exportEnabled: true,
+                 * */
+                exportEnabled: false,
+                animationEnabled: true,
+                axisX: {
+                    title: "Tiempo en Meses",
+                    gridColor: "Silver",
+                    tickColor: "silver"/*,
+                     valueFormatString: ""*/
+                },
+                toolTip: {
+                    shared: true
+                },
+                theme: "theme2",
+                axisY: {
+                    title: "$",
+                    gridColor: "Silver",
+                    tickColor: "silver"
+                },
+                legend: {
+                    verticalAlign: "center",
+                    horizontalAlign: "right"
+                },
+                data: [
+                    {
+                        type: "line",
+                        toolTipContent: "Consumido: $ {y}",
+                        showInLegend: true,
+                        lineThickness: 2,
+                        name: "Consumido",
+                        markerType: "square",
+                        color: "#F08080",
+                        dataPoints: [
+                            {% for fact in realCostos %}
+                                { label: "{{ fact.plan }}", y: {{ fact.cosumido }} },
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        type: "line",
+                        toolTipContent: "Planificado: $ {y}",
+                        showInLegend: true,
+                        name: "Planificado",
+                        color: "#20B2AA",
+                        lineThickness: 2,
+
+                        dataPoints: [
+                            {% for planif in planCostos %}
+                                { label: "{{ planif.plan }}", y: {{ planif.planificado }} },
+                            {% endfor %}
+                        ]
+                    }
+                ],
+                legend: {
+                    cursor: "pointer",
+                    itemclick: function (e) {
+                        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                            e.dataSeries.visible = false;
+                        }
+                        else {
+                            e.dataSeries.visible = true;
+                        }
+                        chart1.render();
+                    }
+                }
+            });
+            chart1.render();
+        }
+    </script>
+
+{% endblock %}
+

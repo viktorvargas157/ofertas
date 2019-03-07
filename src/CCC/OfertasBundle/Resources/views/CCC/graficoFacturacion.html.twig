@@ -1,0 +1,104 @@
+{% extends 'CCCBundle:CCC:obraDesglosadaMaterial.html.twig' %}
+
+{% block titulo %}Producción{% endblock %}
+{% block tiempo %}{% endblock %}
+
+{% block tablas %}
+
+
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/graficos/canvasjs.min.js')}}"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            var chart1 = new CanvasJS.Chart("chartContainer", {
+                /*title: {
+                    text: "Comportamiento de los Costos",
+                    fontSize: 30
+                },*/
+                /*ESTO ES PARA QUE APAREZCA VARIAS OPCIONES
+                 * exportEnabled: true,
+                 * */
+                exportEnabled: false,
+                animationEnabled: true,
+                axisX: {
+                    title: "Tiempo",
+                    gridColor: "Silver",
+                    titleFontColor: "red",
+                    tickColor: "silver"/*,
+                     valueFormatString: ""*/
+                },
+                toolTip: {
+                    shared: true
+                },
+                theme: "theme2",
+                axisY: {
+                    title: "$",
+                    titleFontColor: "red",
+                    gridColor: "Silver",
+                    tickColor: "silver"
+                },
+                legend: {
+                    verticalAlign: "center",
+                    horizontalAlign: "right"
+                },
+                data: [
+                    {
+                        type: "line",
+                        toolTipContent: "Planificado: $ {y}",
+                        showInLegend: true,
+                        name: "Planificado",
+                        color: "#20B2AA",
+                        lineThickness: 2,
+
+                        dataPoints: [
+                            {% for fact in obra.facturas %}
+                            { label: "{{ fact.descripcion }}", y: {{ fact.planificacion }} },
+                            {% endfor %}
+                        ]
+                    },
+                    {
+                        type: "line",
+                        toolTipContent: "Real: $ {y}",
+                        showInLegend: true,
+                        lineThickness: 2,
+                        name: "Real",
+                        markerType: "square",
+                        color: "#F08080",
+                        dataPoints: [
+                            {% for factura in obra.facturas if factura.facturado != 0 %}
+                                { label: "{{ factura.descripcion }}", y: {{ factura.facturado }} },
+                            {% endfor %}
+                        ]
+                    }
+                ],
+                legend: {
+                    fontSize: 15,
+                    cursor: "pointer",
+                    itemclick: function (e) {
+                        if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                            e.dataSeries.visible = false;
+                        }
+                        else {
+                            e.dataSeries.visible = true;
+                        }
+                        chart1.render();
+                    }
+                }
+            });
+            chart1.render();
+        }
+    </script>
+
+{% endblock %}
+

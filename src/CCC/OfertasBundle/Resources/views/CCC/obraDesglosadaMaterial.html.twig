@@ -1,0 +1,699 @@
+{% extends 'CCCBundle:CCC:obraDesglosada.html.twig' %}
+
+{% block css %}
+    <style>
+        .btnNuevo{padding: 0px 0px;}
+    </style>
+{% endblock %}
+
+ {% block cuerpo %}
+
+     <section class="wrapper">
+
+         {% block encabezado %}
+             <div class="row">
+                 <div class="col-lg-12" style="text-align: center   ">
+                     <h3 class="page-header toggle-nav">{{ obra.nombre }}. {% block titulo %}Materiales{% endblock %}</h3>
+                 </div>
+             </div>
+         {% endblock %}
+
+         {% block tiempo %}
+             <div class="row">
+                 <div class="col-lg-3"></div>
+                 <div class="col-lg-6">
+                     <section class="panel">
+                         <header class="panel-heading no-border" style="text-align: center">
+                             TIEMPO
+                         </header>
+                         <table class="table table-bordered">
+                             <tbody>
+                             <tr style="text-align: center; width: auto">
+                                 <td>Laborables</td>
+                                 <td>Consumido Lab</td>
+                                 <td>%</td>
+                                 <td>Remanente Lab</td>
+                                 <td>%</td>
+                             </tr>
+                             <tr style="text-align: center">
+                                 {% set totalDias = obra.duracion * 30 %}
+                                 <td>
+                                     {% set totalDiasLaborables = obra.duracion * 24 %}
+                                     {{ totalDiasLaborables }}
+                                 </td>
+                                 {% set diferencia = date('now',"US/Pacific-New").diff(obra.fechaInicio) %}
+                                 {% set diasConsumidos = diferencia.days %}
+                                 {% set diasRestantes = totalDias - diasConsumidos %}
+                                 {% set diasRestantesLaborables = 0 %}
+                                 {% set diasConsumidosLaborables = 0 %}
+                                 {% if date('now',"US/Pacific-New") < obra.posibleFechaFin %}
+                                     {% if diasConsumidos < 6 %}
+                                         {% set diasConsumidosLaborables = diasConsumidos %}
+                                     {% elseif diasConsumidos in [7,8,9,10,11,12,13] %}
+                                         {% set diasConsumidosLaborables = diasConsumidos - 2 %}
+                                     {% elseif diasConsumidos in [14,15,16,17,18,19,20] %}
+                                         {% set diasConsumidosLaborables = diasConsumidos - 4 %}
+                                     {% elseif diasConsumidos in [21,22,23,24,25,26,27] %}
+                                         {% set diasConsumidosLaborables = diasConsumidos - 6 %}
+                                     {% elseif diasConsumidos > 27 %}
+                                         {% set diasConsumidosLaborables = diasConsumidos - 8 %}
+                                     {% endif %}
+                                     {% set diasRestantesLaborables = totalDiasLaborables - diasConsumidosLaborables %}
+                                     <td>
+                                         {{ diasConsumidosLaborables }}
+                                         {% set porCientoConsumidoLab = (diasConsumidosLaborables * 100) / totalDiasLaborables %}
+                                         {% set porCientoConsumidoLabRem = 100 - porCientoConsumidoLab %}
+                                     </td>
+                                     <td>
+                                         {{ porCientoConsumidoLab | number_format(2, '.', ',') }}
+                                     </td>
+                                     <td>{{ diasRestantesLaborables }}</td>
+                                     <td>
+                                         {% if porCientoConsumidoLab <= 100 %}
+                                             {{ porCientoConsumidoLabRem | number_format(2, '.', ',') }}
+                                         {% else %}
+                                             +{{ porCientoConsumidoLabRem | number_format(2, '.', ',') }}
+                                         {% endif %}
+                                     </td>
+                                 {% else %}
+                                     {% set diferencia = obra.posibleFechaFin.diff(date('now',"US/Pacific-New")) %}
+                                     {% set diasConsum = diferencia.days %}
+                                     {% set diasRestantes = diasConsumidos - totalDias %}
+                                     {% if diasConsum < 6 %}
+                                         {% set diasConsumidosLaborables = diasConsum %}
+                                     {% elseif diasConsum in [7,8,9,10,11,12,13] %}
+                                         {% set diasConsumidosLaborables = diasConsum - 2 %}
+                                     {% elseif diasConsum in [14,15,16,17,18,19,20] %}
+                                         {% set diasConsumidosLaborables = diasConsum - 4 %}
+                                     {% elseif diasConsum in [21,22,23,24,25,26,27] %}
+                                         {% set diasConsumidosLaborables = diasConsum - 6 %}
+                                     {% elseif diasConsum > 27 %}
+                                         {% set diasConsumidosLaborables = diasConsum - 8 %}
+                                     {% endif %}
+                                     {% set diasConsumidosLab = totalDiasLaborables + diasConsumidosLaborables %}
+                                     {% set diasRestantesLaborables = diasConsumidosLaborables %}
+                                     <td>
+                                         {{ diasConsumidosLab }}
+                                         {% set porCientoConsumidoLab = (diasConsumidosLab * 100) / totalDiasLaborables %}
+                                         {% set porCientoConsumidoLabRem = porCientoConsumidoLab - 100 %}
+                                     </td>
+                                     <td>
+                                         {{ porCientoConsumidoLab | number_format(2, '.', ',') }}
+                                     </td>
+                                     <td>
+                                         {% if diasRestantesLaborables!=0 %}
+                                             +{{ diasRestantesLaborables }}
+                                         {% else %}
+                                             {{ diasRestantesLaborables }}
+                                         {% endif %}
+                                     </td>
+                                     <td>
+                                         {% if porCientoConsumidoLab <= 100 %}
+                                             {{ porCientoConsumidoLabRem | number_format(2, '.', ',') }}
+                                         {% else %}
+                                             +{{ porCientoConsumidoLabRem | number_format(2, '.', ',') }}
+                                         {% endif %}
+                                     </td>
+                                 {% endif %}
+                             </tr>
+                             </tbody>
+                         </table>
+                     </section>
+                 </div>
+             </div>
+             {#<div class="row">
+
+                 <div class="col-lg-3"></div>
+                 <div class="col-lg-6">
+                     <section class="panel">
+                         <div id="chartContainer" style="height: 80px; width: 100%;"></div>
+                     </section>
+                 </div>
+             </div>#}
+         {% endblock %}
+
+         {% block tablas %}
+             {# PARA IMPRIMIR LA TABLA  #}
+             <div aria-hidden="true" aria-labelledby="labelTabla" role="dialog" tabindex="-1" class="modal fade">
+                 <div id="docx">
+                     <div id="WordSection1 dvData">
+                         <table id="imprimir" class="table table-striped table-advance table-hover table-bordered">
+                             <tbody>
+                             <tr style="text-align: center;">
+                                 <td rowspan="2">Descripción</td>
+                                 <td rowspan="2">Valor</td>
+                                 <td rowspan="2" style="width: 5px;">UM</td>
+                                 <td colspan="2" style="width: 5px;">Previsto</td>
+                                 <td colspan="3" style="width: 5px;">Consumido</td>
+                                 <td colspan="3" style="width: 5px;">Remanente</td>
+                             </tr>
+                             <tr style="text-align: center;">
+                                 <td style="width: 5px;">Cant.</td>
+                                 <td style="width: 5px;">$</td>
+                                 <td style="width: 5px;">Cant.</td>
+                                 <td style="width: 5px;">$</td>
+                                 <td style="width: 5px;">%</td>
+                                 <td style="width: 5px;">Cant.</td>
+                                 <td style="width: 5px;">$</td>
+                                 <td style="width: 5px;">%</td>
+                             </tr>
+                             {% for grupo in obra.gruposMateriales %}
+                                 {% for material in grupo.materiales %}
+                                     <tr style="text-align: center;">
+                                         <td>{{ material.material | capitalize }}</td>
+                                         <td>{{ material.precio | number_format(2, '.', ',') }}</td>
+                                         <td>{{ material.um | capitalize }}</td>
+                                         <td>{{ material.cantidad }}</td>
+                                         <td>
+                                             {{ (material.cantidad * material.precio) | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {% set consumido = 0 %}
+                                             {% set porCientoConsumido = 0  %}
+                                             {% set porCientoRemanente = 0 %}
+                                             {% for planf in material.planificacion %}
+                                                 {% set consumido = consumido + planf.realP %}
+                                             {% endfor %}
+                                             {% set remanente = material.cantidad - consumido %}
+                                             {% set porCientoConsumido = (consumido * 100) / material.cantidad  %}
+                                             {% if material.cantidad > consumido %}
+                                                 {% set porCientoRemanente = 100 - porCientoConsumido %}
+                                             {% endif %}
+                                             {{ consumido | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ (consumido * material.precio) | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ porCientoConsumido | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ remanente | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ (remanente * material.precio) | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ porCientoRemanente | number_format(2, '.', ',') }}
+                                         </td>
+                                     </tr>
+                                 {% endfor %}
+                             {% endfor %}
+                             </tbody>
+                         </table>
+                     </div>
+                 </div>
+             </div>
+
+             {% if is_granted('ROLE_OPERARIO') %}
+                 <div class="row">
+                     <div class="col-lg-2"></div>
+                     <div class="col-lg-1">
+                         {% if obra.gruposMateriales | length == 0 %}
+                             <a style="width: 65px" class="btn btn-success tooltips" data-placement="top" data-toggle="modal" href="#cargarExcelMateriales" title="Insertar Materiales">Cargar</a>
+                             <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cargarExcelMateriales" class="modal fade">
+                                 <div class="modal-dialog" style="text-align: center;width: 600px; height: auto">
+                                     <div class="modal-content">
+                                         <div class="modal-header">
+                                             <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                             <h4 class="modal-title">Cargar Excel </h4>
+                                         </div>
+                                         <div class="modal-body">
+                                             <form class="form-horizontal" role="form">
+                                                 <div class="form-group">
+                                                     <div class="row">
+                                                         <div class="col-lg-1"></div>
+                                                         <div class="col-lg-10">
+                                                             <form>
+                                                                 <div class="row" style="text-align: center">
+                                                                     <div class="col-lg-3">
+                                                                         <label>Archivo Excell</label>
+                                                                         <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                         <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                                     </div>
+                                                                 </div>
+                                                                 <div class="row">
+                                                                     <div class="col-lg-3">
+                                                                         <button class="btn btn-primary" formaction="{{ path('insertarGrupoMaterialesObra') }}" formmethod="post" formenctype="multipart/form-data">Enviar</button>
+                                                                     </div>
+                                                                 </div>
+                                                             </form>
+                                                         </div>
+                                                     </div>
+                                                     <br>
+                                                     <div class="row">
+                                                         <div class="col-lg-1"></div>
+                                                         <div class="col-lg-10">
+                                                             <img class="" src="{{asset('bundles/ccc/img/materiales.png')}}" style="width: 100%">
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                             </form>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         {% else %}
+                             {% if obra.gruposMateriales[0].materiales[0].planificacion | length == 0 %}
+                                 <a style="width: 65px" class="btn btn-success tooltips" data-placement="top" data-toggle="modal" href="#cargarExcel" title="Insertar Planificación">Cargar</a>
+                                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cargarExcel" class="modal fade">
+                                     <div class="modal-dialog" style="text-align: center;width: 600px; height: auto">
+                                         <div class="modal-content">
+                                             <div class="modal-header">
+                                                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                 <h4 class="modal-title">Cargar Excel </h4>
+                                             </div>
+                                             <div class="modal-body">
+                                                 <form class="form-horizontal" role="form">
+                                                     <div class="form-group">
+                                                         <div class="row">
+                                                             <div class="col-lg-1"></div>
+                                                             <div class="col-lg-8">
+                                                                 <form>
+                                                                     <div class="row" style="text-align: center">
+                                                                         <div class="col-lg-4">
+                                                                             <label>Repetir</label>
+                                                                             <select name="repeticion" class="form-control" required="required">
+                                                                                 <option></option>
+                                                                                 <option style="text-align: center" value="1">Diario</option>
+                                                                                 <option style="text-align: center" value="7">Semanal</option>
+                                                                                 <option style="text-align: center" value="14">Quincenal</option>
+                                                                                 <option style="text-align: center" value="30">Mensual</option>
+                                                                             </select>
+                                                                         </div>
+                                                                         <div class="col-lg-5">
+                                                                             <label>Archivo Excell</label>
+                                                                             <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                             <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                                         </div>
+                                                                     </div>
+                                                                     <div class="row">
+                                                                         <div class="8">
+                                                                             <img class="" src="{{asset('bundles/ccc/img/planificacionMateriales.png')}}" style="width: 120%">
+                                                                         </div>
+                                                                     </div>
+                                                                     <br>
+                                                                     <div class="row">
+                                                                         <div class="col-lg-4">
+                                                                             <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('insertarPlanificacionMateriales') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                             {#<input type="submit" value="Enviar" class="btn btn-primary"/>#}
+                                                                         </div>
+                                                                     </div>
+                                                                 </form>
+                                                             </div>
+                                                             <div class="col-lg-3"></div>
+                                                         </div>
+                                                     </div>
+                                                 </form>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             {% else %}
+                                 <a style="width: 65px" class="btn btn-success tooltips" data-placement="top" data-toggle="modal" href="#cargarExcelConsumido" title="Insertar Consumo">Cargar</a>
+                                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cargarExcelConsumido" class="modal fade">
+                                     <div class="modal-dialog" style="text-align: center;width: 600px; height: auto">
+                                         <div class="modal-content">
+                                             <div class="modal-header">
+                                                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                 <h4 class="modal-title">Cargar Excel </h4>
+                                             </div>
+                                             <div class="modal-body">
+                                                 <form class="form-horizontal" role="form">
+                                                     <div class="form-group">
+                                                         <div class="row">
+                                                             <div class="col-lg-1"></div>
+                                                             <div class="col-lg-8">
+                                                                 <form>
+                                                                     <div class="row" style="text-align: center">
+                                                                         <div id="sandbox-container" class="col-lg-4">
+                                                                             <label>Fecha</label>
+                                                                             <input style="text-align: center" name="fechaReporte" type="text" class="form-control round-input" required="required">
+                                                                         </div>
+                                                                         <div class="col-lg-5">
+                                                                             <label>Archivo Excell</label>
+                                                                             <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                             <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                                         </div>
+                                                                     </div>
+                                                                     <div class="row">
+                                                                         <div class="8">
+                                                                             <img class="" src="{{asset('bundles/ccc/img/consumidoMateriales.png')}}" style="width: 120%">
+                                                                         </div>
+                                                                     </div>
+                                                                     <br>
+                                                                     <div class="row">
+                                                                         <div class="col-lg-4">
+                                                                             <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('insertarConsumidoMateriales') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                             {#<input type="submit" value="Enviar" class="btn btn-primary"/>#}
+                                                                         </div>
+                                                                     </div>
+                                                                 </form>
+                                                             </div>
+                                                             <div class="col-lg-3"></div>
+                                                         </div>
+                                                     </div>
+                                                 </form>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             {% endif %}
+                         {% endif %}
+                     </div>
+                     <div class="col-lg-1">
+                         <button style="padding: 5px 7px" class="btn btn-success tooltips" id="print_btn" type="button" title="Imprimir Tabla">Imprimir</button>
+                     </div>
+                    {# <div class="col-lg-1">
+                         <button onclick="exportexcel()" style="padding: 5px 7px" class="btn btn-success tooltips" id="btnExport" title="Exportar a Excel">Export.</button>
+                     </div>
+                     <div class="col-lg-1">
+                         <form>
+                             <button style="padding: 5px 7px" class="btn btn-success tooltips" id="export" title="Exportar a Word">Export.</button>
+                         </form>
+                         <script>
+                             window.export.onclick = function() {
+
+                                 if (!window.Blob) {
+                                     alert('Your legacy browser does not support this action.');
+                                     return;
+                                 }
+
+                                 var html, link, blob, url, css;
+
+                                 // EU A4 use: size: 841.95pt 595.35pt;
+                                 // US Letter use: size:11.0in 8.5in;
+
+                                 css = (
+                                         '<style>' +
+                                         '@page WordSection1{size: 841.95pt 595.35pt;mso-page-orientation: landscape;}' +
+                                         'div.WordSection1 {page: WordSection1;}' +
+                                         'table{border-collapse:collapse;}td{border:1px gray solid;width:5em;padding:2px;}'+
+                                         '</style>'
+                                 );
+
+                                 html = window.docx.innerHTML;
+                                 blob = new Blob(['\ufeff', css + html], {
+                                     type: 'application/msword'
+                                 });
+                                 url = URL.createObjectURL(blob);
+                                 link = document.createElement('A');
+                                 link.href = url;
+                                 // Set default file name.
+                                 // Word will append file extension - do not add an extension here.
+                                 link.download = 'Document';
+                                 document.body.appendChild(link);
+                                 if (navigator.msSaveOrOpenBlob ) navigator.msSaveOrOpenBlob( blob, 'Document.doc'); // IE10-11
+                                 else link.click();  // other browsers
+                                 document.body.removeChild(link);
+                             };
+                         </script>
+                     </div>#}
+                 </div>
+             {% endif %}
+
+             <div class="row">
+                 <div class="col-lg-2"></div>
+                 <div class="col-lg-8">
+                     <section class="panel">
+                         <table class="table table-striped table-advance table-hover table-bordered">
+                             <tbody>
+                             <tr style="text-align: center;">
+                                 <td rowspan="2">Material</td>
+                                 <td rowspan="2">Valor</td>
+                                 <td rowspan="2" style="width: 5px;">UM</td>
+                                 <td colspan="2" style="width: 5px;">Previsto</td>
+                                 <td colspan="3" style="width: 5px;">Consumido</td>
+                                 <td colspan="3" style="width: 5px;">Remanente</td>
+                                 {% if is_granted('ROLE_OPERARIO') or is_granted('ROLE_TECNICO') %}
+                                     <td rowspan="2" style="width: 5px;">
+                                         <i class="icon_cogs"></i>
+                                     </td>
+                                 {% endif %}
+                             </tr>
+                             <tr style="text-align: center;">
+                                 <td style="width: 5px;">Cant.</td>
+                                 <td style="width: 5px;">$</td>
+                                 <td style="width: 5px;">Cant.</td>
+                                 <td style="width: 5px;">$</td>
+                                 <td style="width: 5px;">%</td>
+                                 <td style="width: 5px;">Cant.</td>
+                                 <td style="width: 5px;">$</td>
+                                 <td style="width: 5px;">%</td>
+                             </tr>
+                             {% for grupo in obra.gruposMateriales %}
+                                 {% for material in grupo.materiales %}
+                                     <tr style="text-align: center;">
+                                         <td>{{ material.material | capitalize }}</td>
+                                         <td>{{ material.precio | number_format(2, '.', ',') }}</td>
+                                         <td>{{ material.um | capitalize }}</td>
+                                         <td>{{ material.cantidad }}</td>
+                                         <td>
+                                             {{ (material.cantidad * material.precio) | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {% set consumido = 0 %}
+                                             {% set porCientoConsumido = 0  %}
+                                             {% set porCientoRemanente = 0 %}
+                                             {% for planf in material.planificacion %}
+                                                 {% set consumido = consumido + planf.realP %}
+                                             {% endfor %}
+                                             {% set remanente = material.cantidad - consumido %}
+                                             {% set porCientoConsumido = (consumido * 100) / material.cantidad  %}
+                                             {% if material.cantidad > consumido %}
+                                                 {% set porCientoRemanente = 100 - porCientoConsumido %}
+                                             {% endif %}
+                                             {{ consumido | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ (consumido * material.precio) | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ porCientoConsumido | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ remanente | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ (remanente * material.precio) | number_format(2, '.', ',') }}
+                                         </td>
+                                         <td>
+                                             {{ porCientoRemanente | number_format(2, '.', ',') }}
+                                         </td>
+                                         {% if is_granted('ROLE_OPERARIO') or is_granted('ROLE_TECNICO') %}
+                                             <td>
+                                                 <a style="width: 30px" class="btn btn-success btnNuevo tooltips" data-toggle="modal" href="#planificacion-{{ material.id }}" title="Planificación / Real">Plan</a>
+                                                 <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="planificacion-{{ material.id }}" class="modal fade">
+                                                     <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                         <div class="modal-content">
+                                                             <div class="modal-header">
+                                                                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                 <h4 class="modal-title">Planificación / Real </h4>
+                                                             </div>
+                                                             <div class="modal-body">
+                                                                 <form class="form-horizontal" role="form">
+                                                                     <div class="form-group">
+                                                                         <div class="row">
+                                                                             <div class="col-lg-2"></div>
+                                                                             <div class="col-lg-8">
+                                                                                 <table class="table table-hover table-bordered">
+                                                                                     <tbody>
+                                                                                     <tr>
+                                                                                         <td rowspan="2"></td>
+                                                                                         <td colspan="2">Planif.</td>
+                                                                                         <td colspan="3">Real</td>
+                                                                                     </tr>
+                                                                                     <tr>
+                                                                                         <td>Cant.</td>
+                                                                                         <td>$</td>
+                                                                                         <td>Cant.</td>
+                                                                                         <td>$</td>
+                                                                                         <td>%</td>
+                                                                                     </tr>
+                                                                                     {% set totalP = 0 %}
+                                                                                     {% set valorP = 0 %}
+                                                                                     {% set totalR = 0 %}
+                                                                                     {% set valorR = 0 %}
+                                                                                     {% for plan in material.planificacion %}
+                                                                                         {% set porCiento = 0 %}
+                                                                                         <tr>
+                                                                                             <td>{{ plan.descripcion }}</td>
+                                                                                             <td>
+                                                                                                 {% set totalP = totalP + plan.planificacion %}
+                                                                                                 {{ plan.planificacion | number_format(2, '.', ',') }}
+                                                                                             </td>
+                                                                                             <td>
+                                                                                                 {% set valor = (plan.planificacion * material.precio) %}
+                                                                                                 {% set valorP = valorP + valor %}
+                                                                                                 {{ valor | number_format(2, '.', ',') }}
+                                                                                             </td>
+                                                                                             <td>
+                                                                                                 {% set totalR = totalR + plan.realP %}
+                                                                                                 {{ plan.realP | number_format(2, '.', ',') }}
+                                                                                             </td>
+                                                                                             <td>
+                                                                                                 {% if plan.planificacion != 0 %}
+                                                                                                     {% set porCiento = (plan.realP * 100) / plan.planificacion %}
+                                                                                                 {% else %}
+                                                                                                     {% set porCiento = 0 %}
+                                                                                                 {% endif %}
+                                                                                                 {% set valorA = (plan.realP * material.precio) %}
+                                                                                                 {% set valorR = valorR + valorA %}
+                                                                                                 {{ valorA | number_format(2, '.', ',') }}
+                                                                                             </td>
+                                                                                             <td>
+                                                                                                 {{ porCiento | number_format(2, '.', ',') }}
+                                                                                             </td>
+                                                                                         </tr>
+                                                                                     {% endfor %}
+                                                                                     {% set porCientoA = 0 %}
+                                                                                     {% if totalP != 0 %}
+                                                                                        {% set porCientoA = (totalR * 100) / totalP %}
+                                                                                     {% endif %}
+                                                                                     <tr>
+                                                                                         <td>Total</td>
+                                                                                         <td>{{ totalP | number_format(2, '.', ',') }}</td>
+                                                                                         <td>{{ valorP | number_format(2, '.', ',') }}</td>
+                                                                                         <td>{{ totalR | number_format(2, '.', ',') }}</td>
+                                                                                         <td>{{ valorR | number_format(2, '.', ',') }}</td>
+                                                                                         <td>{{ porCientoA | number_format(2, '.', ',') }}</td>
+                                                                                     </tr>
+                                                                                     </tbody>
+                                                                                 </table>
+                                                                             </div>
+                                                                             <div class="col-lg-3"></div>
+                                                                         </div>
+                                                                     </div>
+                                                                 </form>
+                                                             </div>
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                             </td>
+                                         {% endif %}
+                                     </tr>
+                                 {% endfor %}
+                             {% endfor %}
+                             </tbody>
+                         </table>
+                     </section>
+                 </div>
+             </div>
+         {% endblock %}
+     </section>
+
+ {% endblock %}
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.js')}}" type="text/javascript" ></script>
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.min.js')}}" type="text/javascript" ></script>
+    <script>
+        $('#sandbox-container input').datepicker({
+            format: "dd.mm.yyyy",
+            language: "es",
+            orientation: "bottom auto",
+            autoclose: true,
+            todayHighlight: true
+        });
+    </script>
+
+    {#  PARA EXPORTAR A EXCEL   #}
+    {#<script src="{{asset('bundles/ccc/js/jquery.table2excel.min.js')}}" type="text/javascript" ></script>
+    <script type="text/javascript">
+        function exportexcel() {
+            $("#imprimir").table2excel({
+                name: "Table2Excel",
+                filename: "Tabla",
+                fileext: ".xls"
+            });
+        }
+    </script>#}
+
+    {#  PARA IMPRIMIR#}
+    <script src="{{asset('bundles/ccc/js/printThis.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print_btn').click(function () {
+                $('#imprimir').printThis();
+            });
+        });
+    </script>
+
+    <script src="{{asset('bundles/ccc/js/respond.min.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/html5shiv.js')}}"></script>
+
+    <script src="{{asset('bundles/ccc/js/graficos/canvasjs.min.js')}}"></script>
+    <script type="text/javascript">
+        {% set totalDiasLaborables = obra.duracion * 24 %}
+        {% set diferencia = date('now',"US/Pacific-New").diff(obra.fechaInicio) %}
+        {% set diasConsumidos = diferencia.days %}
+        {% if date('now',"US/Pacific-New") < obra.posibleFechaFin %}
+        {% if diasConsumidos < 6 %}
+        {% set diasConsumidosLaborables = diasConsumidos %}
+        {% elseif diasConsumidos in [7,8,9,10,11,12,13] %}
+        {% set diasConsumidosLaborables = diasConsumidos - 2 %}
+        {% elseif diasConsumidos in [14,15,16,17,18,19,20] %}
+        {% set diasConsumidosLaborables = diasConsumidos - 4 %}
+        {% elseif diasConsumidos in [21,22,23,24,25,26,27] %}
+        {% set diasConsumidosLaborables = diasConsumidos - 6 %}
+        {% elseif diasConsumidos > 27 %}
+        {% set diasConsumidosLaborables = diasConsumidos - 8 %}
+        {% endif %}
+        {% set diasRestantesLaborables = totalDiasLaborables - diasConsumidosLaborables %}
+        {% set porCientoConsumidoLab = (diasConsumidosLaborables * 100) / totalDiasLaborables %}
+        {% set porCientoConsumidoLabRem = 100 - porCientoConsumidoLab %}
+        {% else %}
+        {% set diferencia = obra.posibleFechaFin.diff(date('now',"US/Pacific-New")) %}
+        {% set diasConsum = diferencia.days %}
+        {% set diasRestantes = diasConsumidos - totalDias %}
+        {% if diasConsum < 6 %}
+        {% set diasConsumidosLaborables = diasConsum %}
+        {% elseif diasConsum in [7,8,9,10,11,12,13] %}
+        {% set diasConsumidosLaborables = diasConsum - 2 %}
+        {% elseif diasConsum in [14,15,16,17,18,19,20] %}
+        {% set diasConsumidosLaborables = diasConsum - 4 %}
+        {% elseif diasConsum in [21,22,23,24,25,26,27] %}
+        {% set diasConsumidosLaborables = diasConsum - 6 %}
+        {% elseif diasConsum > 27 %}
+        {% set diasConsumidosLaborables = diasConsum - 8 %}
+        {% endif %}
+        {% set diasConsumidosLab = totalDiasLaborables + diasConsumidosLaborables %}
+        {% set diasRestantesLaborables = diasConsumidosLaborables %}
+        {% set porCientoConsumidoLab = (diasConsumidosLab * 100) / totalDiasLaborables %}
+        {% set porCientoConsumidoLabRem = porCientoConsumidoLab - 100 %}
+        {% endif %}
+
+        window.onload = function ()
+        {
+            var chart = new CanvasJS.Chart("chartContainer",
+                    {
+                        axisX: {
+                            interval: 0
+                        },
+                        axisY: {
+                            title: "Días Consumidos: {{ diasConsumidosLaborables }}, %: {{ porCientoConsumidoLab | number_format(2, '.', ',') }}",
+                            titleFontSize: 15,
+                            titleFontColor: "red",
+                            maximum: {{ totalDiasLaborables }}
+                        },
+                        data: [
+                            {
+                                {% if porCientoConsumidoLab < 80 %}
+                                color:"#51A351",
+                                {% else %}
+                                color:"red",
+                                {% endif %}
+                                type: "bar",
+                                toolTipContent: "<b>{label}</b><br>dias: {y}<br>%: {gdp}",
+
+                                dataPoints: [
+                                    { label:"Consumido", y: {{ diasConsumidosLaborables }},gdp:{{ porCientoConsumidoLab | number_format(2, '.', ',') }} },
+                                ]
+                            }
+                        ]
+                    });
+            chart.render();
+        }
+    </script>
+{% endblock %}

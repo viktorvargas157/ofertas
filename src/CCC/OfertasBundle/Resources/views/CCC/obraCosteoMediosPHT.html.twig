@@ -1,0 +1,230 @@
+{% extends '::base.html.twig' %}
+
+{% block css %}
+    {# PARA EL DATATABLE #}
+    <link href="{{ asset('bundles/ccc/css/jquery.dataTables.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        th, td { white-space: nowrap; }
+        div.dataTables_wrapper {
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+{% endblock %}
+
+{% block contenido %}
+    <section id="main-content">
+
+        {% block titulo %}
+            <section class="wrapper">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header" style="text-align: center">{#<i class="fa fa-laptop"></i>#} Costeo de la Obra <a>{{ costeo.idObra.objeto }}</a></h3>
+                         <ol class="breadcrumb">
+                             <li><i class="fa fa-home"></i><a href="{{ path('estatica', {'estatica':'inicio'}) }}">Inicio</a></li>
+                             <li><i class="icon_archive"></i><a href="{{ path('obras') }}">Obras</a></li>
+                             <li><i class="icon_pencil-edit_alt"></i><a href="{{ path('costeoObra',{'id':costeo.idObra.id}) }}">Costeo</a></li>
+                             <li><i class="icon_pushpin_alt"></i>Medios de PHT</li>
+                         </ol>
+                    </div>
+                </div>
+
+            </section>
+        {% endblock %}
+
+        <section class="panel">
+            <header class="panel-heading tab-bg-primary ">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#home">Medios de PHT</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#about">Adicionar</a>
+                    </li>
+                </ul>
+            </header>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="home" class="tab-pane active">
+                        {% if costeo.mediosPHT | length > 0 %}
+                            {% set totalCUP = 0 %}
+                            {% set totalCUC = 0 %}
+                            {% set aplicable50CUP = 0 %}
+                            {% set aplicable50CUC = 0 %}
+                            {% for medioPHT in costeo.mediosPHT %}
+                                {% set totalCUP = totalCUP + (medioPHT.cantidad * medioPHT.precioCUP ) %}
+                                {% set totalCUC = totalCUC + (medioPHT.cantidad * medioPHT.precioCUC ) %}
+                                {% set aplicable50CUP = aplicable50CUP + (medioPHT.cantidad * medioPHT.precioCUP ) %}
+                                {% set aplicable50CUC = aplicable50CUC + (medioPHT.cantidad * medioPHT.precioCUC ) %}
+                            {% endfor %}
+                            <div class="row">
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-6">
+                                    <section class="panel">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr style="text-align: center">
+                                                <th style="text-align: center"><i class="icon_cogs" style="text-align: center"></i></th>
+                                                <th style="text-align: center">Total</th>
+                                                <th style="text-align: center"><b>% aplicable a la obra (50%)</b></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td style="text-align: center"><strong>CUP</strong></td>
+                                                <td style="text-align: center">$ {{ totalCUP|number_format(2, '.', ',') }}</td>
+                                                <td style="text-align: center">$ {{ (aplicable50CUP * 0.5)|number_format(2, '.', ',') }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align: center"><strong>CUC</strong></td>
+                                                <td style="text-align: center">$ {{ totalCUC|number_format(2, '.', ',') }}</td>
+                                                <td style="text-align: center">$ {{ ((aplicable50CUC * 0.5) + ((aplicable50CUP * 0.5) / 24))|number_format(2, '.', ',') }}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </section>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table id="listado" class="display" style="text-align: center">
+                                    <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th>Unidad de Medida</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio CUP</th>
+                                        <th>Precio CUC</th>
+                                        <th>Importe CUP</th>
+                                        <th>Importe CUC</th>
+
+                                        <th>Opciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% set totalCUC = 0 %}
+                                    {% for medioPHT in costeo.mediosPHT %}
+                                        <tr>
+                                            <td>
+                                                {% for medio in mediosPHT if medio.id == medioPHT.descripcion %}
+                                                    {{ medio.nombre }}
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                {% for unidadMedida in unidadesMedida if unidadMedida.id == medioPHT.um %}
+                                                    {{ unidadMedida.nombre }}
+                                                {% endfor %}
+                                            </td>
+                                            <td>{{ medioPHT.cantidad }}</td>
+                                            <td>$ {{ medioPHT.precioCUP }}</td>
+                                            <td>$ {{ medioPHT.precioCUC }}</td>
+                                            <td>$ {{ medioPHT.precioCUP * medioPHT.cantidad }}</td>
+                                            <td>$ {{ medioPHT.precioCUC * medioPHT.cantidad }}</td>
+
+                                            <td>
+                                              {#  <a class="btn btn-primary btn-sm" title="Desglozar Actividad" href="{{ path('desglozarCuantificacionObra',{ 'id' : cuantificacion.id}) }}">
+                                                    <i class="icon_plus_alt"></i>
+                                                </a>#}
+                                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                                    <a class="btn btn-danger btn-sm" title="Eliminar Medio PHT" href="{{ path('eliminarMediosPHTCosteoObra',{ 'id' : medioPHT.id}) }}">
+                                                        <i class="icon_trash"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="about" class="tab-pane">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <section class="panel">
+                                    <header class="panel-heading">
+                                        Formulario para el trabajo con los Medios de PHT
+                                    </header>
+                                    <div class="panel-body">
+                                        <form class="form-horizontal" method="post" action="{{ path('insertarMediosPHTCosteoObra', {'id' : costeo.id}) }}#}">
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Descripción</label>
+                                                <div class="col-sm-6">
+                                                    <select id="descripcion" name="descripcion" class="form-control round-input" required="required">
+                                                        <option></option>
+                                                        {% for medioPHT in mediosPHT %}
+                                                            <option value="{{ medioPHT.id }}">{{ medioPHT.nombre }}</option>
+                                                        {% endfor%}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Unidad de Medida</label>
+                                                <div class="col-sm-6">
+                                                    <select id="um" name="um" class="form-control round-input" required="required">
+                                                        <option></option>
+                                                        {% for unidadMedida in unidadesMedida %}
+                                                            <option value="{{ unidadMedida.id }}">{{ unidadMedida.nombre }}</option>
+                                                        {% endfor%}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Cantidad</label>
+                                                <div class="col-sm-6">
+                                                    <input id="cantidad" name="cantidad" type="text" class="form-control round-input" required="required">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Precio CUP</label>
+                                                <div class="col-sm-6">
+                                                    <input id="precioCUP" name="precioCUP" type="text" class="form-control round-input">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Precio CUC</label>
+                                                <div class="col-sm-6">
+                                                    <input id="precioCUC" name="precioCUC" type="text" class="form-control round-input">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-10">
+                                                    <input type="submit" value="Enviar Datos" class="btn btn-info"/>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock %}
+{% block js %}
+    <script src="{{asset('bundles/ccc/js/jquery.hotkeys.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg-custom.js')}}"></script>
+    <script src="{{asset('bundles/ccc/assets/ckeditor/ckeditor.js')}}"></script>
+
+
+    {# PARA EL DATATABLE #}
+    <script src="{{asset('bundles/ccc/js/jquery.dataTables.js')}}" type="text/javascript" ></script>
+    <script>
+        $(document).ready(function() {
+            $('#listado').dataTable( {
+                 "scrollY": 250,
+                 "scrollX": true
+            } );
+        } );
+    </script>
+
+{% endblock %}
+
+

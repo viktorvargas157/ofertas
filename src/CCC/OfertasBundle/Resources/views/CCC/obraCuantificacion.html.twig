@@ -1,0 +1,224 @@
+{% extends '::base.html.twig' %}
+
+{% block css %}
+    {# PARA EL DATATABLE #}
+    <link href="{{ asset('bundles/ccc/css/jquery.dataTables.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        th, td { white-space: nowrap; }
+        div.dataTables_wrapper {
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+{% endblock %}
+
+
+{% block contenido %}
+    <section id="main-content">
+
+        {% block titulo %}
+            <section class="wrapper">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header" style="text-align: center">{#<i class="fa fa-laptop"></i>#} Cuantificación de la Obra <a>{{ obra.objeto }}</a></h3>
+                         <ol class="breadcrumb">
+                             <li><i class="fa fa-home"></i><a href="{{ path('estatica', {'estatica':'inicio'}) }}">Inicio</a></li>
+                             <li><i class="icon_archive"></i><a href="{{ path('obras') }}">Obras</a></li>
+                             <li><i class="icon_check_alt"></i>Cuantificación</li>
+                         </ol>
+                    </div>
+                </div>
+
+            </section>
+        {% endblock %}
+
+        <section class="panel">
+            <header class="panel-heading tab-bg-primary ">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#home">Listado de Actividades</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#about">Insertar</a>
+                    </li>
+
+                </ul>
+            </header>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="home" class="tab-pane active">
+
+                        {% if obra.cuantificacion | length > 0 %}
+                            {% set totalCUPG = 0 %}
+                            {% set totalCUCG = 0 %}
+                            {% set MTotalG = 0 %}
+                            {% set cantCUPCuantG = 0 %}
+                            {% set cantCUCCuantG = 0 %}
+                            {% set cantMTCuantG = 0 %}
+                            {% for cuantificacion in obra.cuantificacion %}
+                                {% for activ in cuantificacion.actividades %}
+                                    {% set cantCUPCuantG =  activ.cantidad * activ.precioCUP %}
+                                    {% set cantCUCCuantG = activ.cantidad * activ.precioCUC %}
+                                    {% set cantMTCuantG = cantCUPCuantG + cantCUCCuantG %}
+                                    {% set totalCUPG = totalCUPG+cantCUPCuantG %}
+                                    {% set totalCUCG = totalCUCG+cantCUCCuantG %}
+                                {% endfor %}
+                                {% set MTotalG = totalCUPG + totalCUCG %}
+                            {% endfor %}
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <section class="panel">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr style="text-align: center">
+                                                <th style="text-align: center">Total CUP</th>
+                                                <th style="text-align: center">Total CUC</th>
+                                                <th style="text-align: center">Moneda Total</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td style="text-align: center">$ {{ totalCUPG|number_format(2, '.', ',') }}</td>
+                                                <td style="text-align: center">$ {{ totalCUCG|number_format(2, '.', ',') }}</td>
+                                                <td style="text-align: center">$ {{ MTotalG|number_format(2, '.', ',') }}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </section>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table id="listado" class="display" style="text-align: center">
+                                    <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Grupo de Actividades</th>
+                                        <th>Total CUP</th>
+                                        <th>Total CUC</th>
+                                        <th>Moneda Total</th>
+
+                                        <th>Opciones</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% set totalCUP = 0 %}
+                                    {% set totalCUC = 0 %}
+                                    {% set totalMN = 0 %}
+                                    {% for cuantificacion in obra.cuantificacion %}
+                                        <tr>
+                                            <td>{{ cuantificacion.codigo }}</td>
+                                            <td>
+                                                {% for actividad in actividades if actividad.id == cuantificacion.actividad %}
+                                                    {{ actividad.nombre }}
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                $
+                                                {% set cantCUPCuant = 0 %}
+                                                {% set cantCUCCuant = 0 %}
+                                                {% set cantMTCuant = 0 %}
+                                                {% for activ in cuantificacion.actividades %}
+                                                    {% set cantCUPCuant = cantCUPCuant + activ.cantidad * activ.precioCUP %}
+                                                    {% set cantCUCCuant = cantCUCCuant + activ.cantidad * activ.precioCUC %}
+                                                    {% set cantMTCuant = cantCUPCuant + cantCUCCuant %}
+                                                    {% set totalCUP = totalCUP+cantCUPCuant %}
+                                                    {% set totalCUC = totalCUC+cantCUCCuant %}
+                                                {% endfor %}
+                                                {{ cantCUPCuant|number_format(2, '.', ',') }}
+                                                {% set totalMN = totalMN + totalCUP + totalCUC %}
+                                            </td>
+                                            <td>
+                                                $  {{ cantCUCCuant|number_format(2, '.', ',') }}
+                                            </td>
+                                            <td>
+                                                $  {{ cantMTCuant|number_format(2, '.', ',') }}
+                                            </td>
+
+
+                                            <td>
+                                                <a class="btn btn-primary btn-sm" title="Desglozar Actividad" href="{{ path('desglozarCuantificacionObra',{ 'id' : cuantificacion.id}) }}">
+                                                    <i class="icon_plus_alt"></i>
+                                                </a>
+                                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                                    <a class="btn btn-danger btn-sm" title="Eliminar Cuantificación" href="{{ path('eliminarCuantificacionObra',{ 'id' : cuantificacion.id}) }}">
+                                                        <i class="icon_trash"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="about" class="tab-pane">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <section class="panel">
+                                    <header class="panel-heading">
+                                        Formulario para el trabajo de Cuantificación
+                                    </header>
+                                    <div class="panel-body">
+                                        <form class="form-horizontal" method="post" action="{{ path('insertarCuantificacionObra', {'id' : obra.id}) }}">
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Código</label>
+                                                <div class="col-sm-6">
+                                                    <input id="codigo" name="codigo" type="text" class="form-control round-input" required="">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Actividad</label>
+                                                <div class="col-sm-6">
+                                                    <select id="actividad" name="actividad" class="form-control round-input" required="required">
+                                                        <option></option>
+                                                        {% for actividad in actividades %}
+                                                            <option value="{{ actividad.id }}">{{ actividad.nombre }}</option>
+                                                        {% endfor%}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-10">
+                                                    <input type="submit" value="Enviar Datos" class="btn btn-info"/>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock %}
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/jquery.hotkeys.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg-custom.js')}}"></script>
+    <script src="{{asset('bundles/ccc/assets/ckeditor/ckeditor.js')}}"></script>
+
+
+    {# PARA EL DATATABLE #}
+    <script src="{{asset('bundles/ccc/js/jquery.dataTables.js')}}" type="text/javascript" ></script>
+    <script>
+        $(document).ready(function() {
+            $('#listado').dataTable( {
+                 "scrollY": 250,
+                 "scrollX": true
+            } );
+        } );
+    </script>
+{% endblock %}
+

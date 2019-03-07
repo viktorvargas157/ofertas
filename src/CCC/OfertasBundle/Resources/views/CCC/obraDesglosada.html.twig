@@ -1,0 +1,211 @@
+{% extends 'CCCBundle:CCC:inicio.html.twig' %}
+
+ {% block menuLateral %}
+
+     <li>
+         <a href="{{ path('estatica', {'estatica':'inicio'}) }}" style="padding: 5px 0 5px 10px;">
+             <span>Inicio</span>
+         </a>
+     </li>
+     {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_TECNICO') %}
+         <li>
+             <a class="" href="{{ path('obraDesglosadaMaterial', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                 <span>Materiales</span>
+             </a>
+         </li>
+         <li>
+             <a class="" href="{{ path('obraDesglosadaPlanificacion', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                 <span>Actividades</span>
+             </a>
+         </li>
+         <li>
+             <a class="" href="{{ path('obraDesglosadaCostos', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                 <span>Valores</span>
+             </a>
+         </li>
+         <li>
+             <a class="" href="{{ path('obraDesglosadaFacturacion', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                 <span>Producción</span>
+             </a>
+         </li>
+
+         {#<li class="sub-menu">
+             <a href="javascript:;" class="">
+                 <span>Ejecución</span>
+                 <span class="menu-arrow arrow_carrot-right"></span>
+             </a>
+             <ul class="sub">
+                 <li class="sub-menu">
+                     <a class="" href="{{ path('obraDesglosadaMaterial', {'id' : obra.id}) }}">
+                         <span>Materiales</span>
+                     </a>
+                 </li>
+                 <li class="sub-menu">
+                     <a class="" href="{{ path('obraDesglosadaEjecucion', {'id' : obra.id}) }}">
+                         <span>Ejecución</span>
+                     </a>
+                 </li>
+                 <li class="sub-menu">
+                     <a class="" href="#">
+                         <span>Mano Obra</span>
+                         <span class="menu-arrow arrow_carrot-right"></span>
+                     </a>
+                     <ul class="sub-menu">
+                         <li><a href="{{ path('obraDesglosadaCostos', {'id':obra.id}) }}">Costos</a></li>
+                         <li><a href="{{ path('obraDesglosadaPlanificacion', {'id':obra.id}) }}">Planificación</a></li>
+                     </ul>
+                 </li>
+             </ul>
+         </li>#}
+         <li>
+             <a class="" href="{{ path('graficos', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                 <span>Gráficos</span>
+             </a>
+         </li>
+
+         {#<li style="padding: 0 0 0 0; text-align: center"><a style="padding: 2px 0 0 0; background-color: rgb(30,100,0)">Gráficos</a></li>
+         <li>
+             <a class="" href="{{ path('graficoTiempos', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                 <span>Tiempos</span>
+             </a>
+         </li>
+         <li>
+             <a class="" href="{{ path('graficoCostos', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                 <span>Costos</span>
+             </a>
+         </li>
+         <li class="sub-menu">
+             <a class="" href="{{ path('graficoFacturacion', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                 <span>Producción</span>
+             </a>
+         </li>#}
+
+         {% if is_granted('ROLE_OPERARIO') %}
+             <li style="padding: 0 0 0 0; text-align: center"><a style="padding: 2px 0 0 0; background-color: rgb(30,100,0)">Documentos</a></li>
+             <li class="sub-menu">
+                 <a class="" href="{{ path('actaInicio', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                     <span>Acta Inicio</span>
+                 </a>
+             </li>
+             <li class="sub-menu">
+                 <a class="" href="{{ path('contratoObra', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                     <span>Contrato</span>
+                 </a>
+             </li>
+        {% elseif is_granted('ROLE_ADMIN') or is_granted('ROLE_TECNICO') %}
+             {% if obra.rutaActaInicio != '' or obra.rutaContrato != '' %}
+                 <li style="padding: 0 0 0 0; text-align: center"><a style="padding: 2px 0 0 0; background-color: rgb(30,100,0)">Documentos</a></li>
+                 {% if obra.rutaActaInicio != '' %}
+                     <li class="sub-menu">
+                         <a class="" href="{{ path('actaInicio', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                             <span>Acta Inicio</span>
+                         </a>
+                     </li>
+                 {% endif %}
+                 {% if obra.rutaContrato != '' %}
+                     <li class="sub-menu">
+                         <a class="" href="{{ path('contratoObra', {'id' : obra.id}) }}" style="padding: 5px 0 5px 10px;">
+                             <span>Contrato</span>
+                         </a>
+                     </li>
+                 {% endif %}
+             {% endif %}
+        {% endif %}
+     {% endif %}
+
+ {% endblock %}
+
+ {% block titulo %} {% endblock %}
+
+ {% block cuerpo %}
+     <section class="wrapper">
+
+         {% block encabezado %}
+             <div class="row">
+                 <div class="col-lg-4"></div>
+                 <div class="col-lg-6">
+                     <h3 class="page-header toggle-nav">{{ obra.nombre }}</h3>
+                 </div>
+             </div>
+         {% endblock %}
+         {% if is_granted('ROLE_OPERARIO') %}
+             <div class="row">
+                 <div class="col-lg-2"></div>
+                 <div class="col-lg-1">
+                     <a style="width: 50px" class="btn btn-success tooltips" data-toggle="modal" href="#cargarFoto" title="Cargar Foto">Foto</a>
+                     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cargarFoto" class="modal fade">
+                         <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                             <div class="modal-content">
+                                 <div class="modal-header">
+                                     <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                     <h4 class="modal-title">Guardar Foto </h4>
+                                 </div>
+                                 <div class="modal-body">
+                                     <form class="form-horizontal" role="form">
+                                         <div class="form-group">
+                                             <div class="row">
+                                                 <div class="col-lg-1"></div>
+                                                 <div class="col-lg-10">
+                                                     <form>
+                                                         <div class="row" style="text-align: center">
+                                                             <div id="sandbox-container" class="col-lg-4">
+                                                                 <label>Fecha</label>
+                                                                 <input style="text-align: center" name="fechaFoto" type="text" class="form-control round-input" required="required">
+                                                             </div>
+                                                         </div>
+                                                         <div class="row">
+                                                             <div class="col-lg-4">
+                                                                 <label>Buscar Foto</label>
+                                                                 <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                 <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                             </div>
+                                                         </div>
+                                                         <div class="row">
+                                                             <div class="col-lg-1"></div>
+                                                             <div class="col-lg-6">
+                                                                 <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('guardarFotoObra') }}" formenctype="multipart/form-data">Enviar</button>
+                                                             </div>
+                                                         </div>
+                                                     </form>
+                                                 </div>
+                                                 <div class="col-lg-3"></div>
+                                             </div>
+                                         </div>
+                                     </form>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         {% endif %}
+
+         <div class="row">
+             <div class="col-lg-2"></div>
+             {% for imagen in obra.imagenes %}
+                 <div class="col-lg-4" style="text-align: center">
+                         <span>
+                            <img src="{{asset('bundles/ccc/imagenesObra/'~obra.nombre~'-'~imagen.fecha | date('d.m.Y')~'.jpg') }}" width="100%" height="250px">
+                         </span>
+                     <span>{{ imagen.fecha | date('d.m.Y') }}</span>
+                 </div>
+             {% endfor %}
+         </div>
+     </section>
+
+ {% endblock %}
+
+{% block js %}
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.js')}}" type="text/javascript" ></script>
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.min.js')}}" type="text/javascript" ></script>
+    <script>
+        $('#sandbox-container input').datepicker({
+            format: "dd.mm.yyyy",
+            language: "es",
+            orientation: "bottom auto",
+            autoclose: true,
+            todayHighlight: true
+        });
+    </script>
+
+{% endblock %}

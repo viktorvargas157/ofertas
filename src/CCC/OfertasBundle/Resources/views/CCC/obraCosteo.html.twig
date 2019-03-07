@@ -1,0 +1,494 @@
+{% extends '::base.html.twig' %}
+
+{% block contenido %}
+    <section id="main-content">
+
+        {% block titulo %}
+            <section class="wrapper">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header" style="text-align: center">{#<i class="fa fa-laptop"></i>#} Costeo de la Obra <a>{{ obra.objeto }}</a></h3>
+                         <ol class="breadcrumb">
+                             <li><i class="fa fa-home"></i><a href="{{ path('estatica', {'estatica':'inicio'}) }}">Inicio</a></li>
+                             <li><i class="icon_archive"></i><a href="{{ path('obras') }}">Obras</a></li>
+                             <li><i class="icon_pencil-edit_alt"></i>Costeo</li>
+                         </ol>
+                    </div>
+                </div>
+
+            </section>
+        {% endblock %}
+
+        <section class="panel">
+            <header class="panel-heading tab-bg-primary ">
+                <ul class="nav nav-tabs">
+                    {% if obra.costeos | length > 0 %}
+                        <li class="active">
+                            <a data-toggle="tab" href="#home">Costeo</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#about">Modificar</a>
+                        </li>
+                    {% else %}
+                        <li class="active">
+                            <a data-toggle="tab" href="#about">Crear</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </header>
+            <div class="panel-body">
+                <div class="tab-content">
+                    {% if obra.costeos | length > 0 %}
+                        <div id="home" class="tab-pane active">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <section class="panel">
+                                        {#<header class="panel-heading">
+                                            Costeo de la Obra {{ obra.objeto }}
+                                        </header>#}
+                                        <div class="panel-body" style="text-align: center">
+                                            <form role="form">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <section class="panel">
+                                                            <header class="panel-heading">
+                                                                Análisis de Costeo
+                                                            </header>
+                                                            <table class="table table-hover table-bordered">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td rowspan="2" style="text-align: center; padding-top: 2%"><strong>Datos Generales Obra</strong></td>
+                                                                        <td><strong>Tiempo (Meses)</strong></td>
+                                                                        <td><strong>Cant Quincenas</strong></td>
+                                                                        <td><strong>No. Trabajadores</strong></td>
+                                                                        <td><strong>% de Utilidad</strong></td>
+                                                                        <td><strong>% de Imprevisto</strong></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>{{ obra.costeos[0].tiempo }}</td>
+                                                                        <td>{{ obra.costeos[0].tiempo * 2 }}</td>
+                                                                        <td>
+                                                                            {% set cantTrabajadores = (obra.costeos[0].sociosDO | length) + (obra.costeos[0].contratadosDO | length) + (obra.costeos[0].personalTO | length) %}
+                                                                            {{ cantTrabajadores }}
+                                                                        </td>
+                                                                        <td>{{ obra.costeos[0].porcientoUtilidad }}</td>
+                                                                        <td>{{ obra.costeos[0].porcientoImprevisto }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><strong>Valor Obra en CUC M. Obra</strong></td>
+                                                                        <td>
+                                                                            {% set totalCUPCuant = 0 %}
+                                                                            {% set totalCUCCuant = 0 %}
+                                                                            {% set MTotalCuant = 0 %}
+                                                                            {% set cantCUPCuant = 0 %}
+                                                                            {% set cantCUCCuant = 0 %}
+                                                                            {% set cantMTCuant = 0 %}
+                                                                            {% for cuantificacion in obra.cuantificacion %}
+                                                                                {% for activ in cuantificacion.actividades %}
+                                                                                    {% set cantCUPCuant =  activ.cantidad * activ.precioCUP %}
+                                                                                    {% set cantCUCCuant = activ.cantidad * activ.precioCUC %}
+                                                                                    {% set cantMTCuant = cantCUPCuant + cantCUCCuant %}
+                                                                                    {% set totalCUPCuant = totalCUPCuant + cantCUPCuant %}
+                                                                                    {% set totalCUCCuant = totalCUCCuant + cantCUCCuant %}
+                                                                                {% endfor %}
+                                                                                {% set MTotalCuant = totalCUPCuant + totalCUCCuant %}
+                                                                            {% endfor %}
+                                                                            <strong>$ {{ MTotalCuant|number_format(2, '.', ',') }}</strong>
+                                                                        </td>
+                                                                        <td ROWSPAN="2" COLSPAN="2" style="text-align: center; padding-top: 2%"><strong>MODIFIQUE OFERTA</strong></td>
+                                                                        <td ROWSPAN="2" style="text-align: center; padding-top: 2%"><strong>$ {{ (MTotalCuant * obra.costeos[0].porcientoUtilidad / 100)|number_format(2, '.', ',') }}</strong></td>
+                                                                        <td ROWSPAN="2" style="text-align: center; padding-top: 2%"><strong>$ {{ (MTotalCuant * obra.costeos[0].porcientoImprevisto / 100)|number_format(2, '.', ',') }}</strong></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><strong>Valor Obra en CUC Materiales</strong></td>
+                                                                        <td><strong>$ 250.00</strong></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td rowspan="2" style="text-align: center; padding-top: 2%"><strong>Gastos/Ventas</strong></td>
+                                                                        <td colspan="2"><strong>Mes</strong></td>
+                                                                        <td rowspan="2" style="text-align: center; padding-top: 2%"><strong>Total Mensual</strong></td>
+                                                                        <td rowspan="2" style="text-align: center; padding-top: 2%"><strong>Total Obra</strong></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><strong>1ra Quincena</strong></td>
+                                                                        <td><strong>2da Quincena</strong></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        {% set anticipoMes = 0 %}
+                                                                        {% set anticipoMesAlimentacion = 0 %}
+                                                                        {% set anticipoMesTransp = 0 %}
+                                                                        {% if obra.costeos[0].sociosDO | length > 0 %}
+                                                                            {% for sociosDO in obra.costeos[0].sociosDO %}
+                                                                                {% set anticipoMes = anticipoMes + sociosDO.anticipo %}
+                                                                                {% set anticipoMesAlimentacion = anticipoMesAlimentacion + sociosDO.alimentacion %}
+                                                                                {% set anticipoMesTransp = anticipoMesTransp + sociosDO.transporte %}
+                                                                            {% endfor %}
+                                                                        {% endif %}
+
+                                                                        {% set salarioMes = 0 %}
+                                                                        {% set alimentacionMes = 0 %}
+                                                                        {% set transporteMes = 0 %}
+                                                                        {% if obra.costeos[0].contratadosDO | length > 0 %}
+                                                                            {% for contratadoDO in obra.costeos[0].contratadosDO %}
+                                                                                {% set salarioMes = salarioMes + contratadoDO.salario %}
+                                                                                {% set alimentacionMes = alimentacionMes + contratadoDO.alimentacion %}
+                                                                                {% set transporteMes = transporteMes + contratadoDO.transporte %}
+                                                                            {% endfor %}
+                                                                        {% endif %}
+
+                                                                        {% set salarioMesPT = 0 %}
+                                                                        {% set alimentacionMesPT = 0 %}
+                                                                        {% set transporteMesPT = 0 %}
+                                                                        {% if obra.costeos[0].personalTO | length > 0 %}
+                                                                            {% for personalT in obra.costeos[0].personalTO %}
+                                                                                {% set salarioMesPT = salarioMesPT + personalT.salario %}
+                                                                                {% set alimentacionMesPT = alimentacionMesPT + personalT.alimentacion %}
+                                                                                {% set transporteMesPT = transporteMesPT + personalT.transporte %}
+                                                                            {% endfor %}
+                                                                        {% endif %}
+                                                                        {% set subTotalAnticipoMes = (anticipoMes + salarioMes + salarioMesPT) %}
+                                                                        <td><a href="{{ path('costeoObraAnticipo',{ 'id' : obra.costeos[0].id}) }}">Anticipo Utilidades Directos a la Obra</a></td>
+                                                                        <td>$ {{ (subTotalAnticipoMes / 2)|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMes / 2)|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMes )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMes *  obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="3">COSTO DIRECTO MANO DE OBRA</td>
+                                                                        <td>$ {{ (subTotalAnticipoMes )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMes *  obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Alimentación</td>
+                                                                        {% set subTotalAnticipoMesAlimentacion = (anticipoMesAlimentacion + alimentacionMes + alimentacionMesPT) %}
+                                                                        <td>$ {{ (subTotalAnticipoMesAlimentacion / 2)|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesAlimentacion / 2)|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesAlimentacion )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesAlimentacion * obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Transporte</td>
+                                                                        {% set subTotalAnticipoMesTransporte = (anticipoMesTransp + transporteMes + transporteMesPT) %}
+                                                                        <td>$ {{ (subTotalAnticipoMesTransporte / 2)|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesTransporte / 2)|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesTransporte )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesTransporte *  obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        {% set totalCUC = 0 %}
+                                                                        {% if obra.costeos[0].comunicacion | length > 0 %}
+                                                                            {% for comunicacion in obra.costeos[0].comunicacion %}
+                                                                                {% set totalCUC = totalCUC + comunicacion.precio %}
+                                                                            {% endfor %}
+                                                                        {% endif %}
+                                                                        {% set subTotalAnticipoMesComunicacion = totalCUC %}
+                                                                        <td><a href="{{ path('comunicacionCosteoObra',{ 'id' : obra.costeos[0].id}) }}">Comunicación</a></td>
+                                                                        <td>$ {{ (subTotalAnticipoMesComunicacion / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesComunicacion / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesComunicacion )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesComunicacion *  obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        {% set totalCUC = 0 %}
+                                                                        {% if obra.costeos[0].alquilerEquipos | length > 0 %}
+                                                                            {% for alquiler in obra.costeos[0].alquilerEquipos %}
+                                                                                {% set totalCUC = totalCUC + (alquiler.cantidad * alquiler.cantidadDiasUso * alquiler.tarifaDiaria) %}
+                                                                            {% endfor %}
+                                                                        {% endif %}
+                                                                        {% set subTotalAnticipoMesAlquilerEquipos = totalCUC %}
+                                                                        <td><a href="{{ path('alquilerEquiposCosteoObra',{ 'id' : obra.costeos[0].id}) }}">Alquiler de Equipos</a></td>
+                                                                        <td>$ {{ (subTotalAnticipoMesAlquilerEquipos / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesAlquilerEquipos / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesAlquilerEquipos )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesAlquilerEquipos * obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        {% set totalSalarioVig = 0 %}
+                                                                        {% set totalAlimentacionVig = 0 %}
+                                                                        {% set totalTransporteVig = 0 %}
+                                                                           {# {% set alimenJefe = (2*24) %}
+                                                                            {% set cantPostas = ( obra.costeos[0].vigilanciaSeguridad | length ) -1 %}
+                                                                            {% set alimenPosta = (2*16) * cantPostas %}
+                                                                            {% if obra.costeos[0].vigilanciaSeguridad | length > 0 %}
+                                                                                {% set totalAlimentacion = totalAlimentacion + alimenJefe + alimenPosta %}
+                                                                            {% endif %}#}
+                                                                        {% set totalGastosMesVig = 0 %}
+                                                                        {% set gastos01 = 0 %}
+                                                                        {% if obra.costeos[0].vigilanciaSeguridad | length > 0 %}
+                                                                            {% for vigilancia in obra.costeos[0].vigilanciaSeguridad %}
+                                                                                {% set totalSalarioVig = totalSalarioVig + vigilancia.salario %}
+                                                                                {% set totalAlimentacionVig = totalAlimentacionVig + vigilancia.alimentacion %}
+                                                                                {% set totalTransporteVig = totalTransporteVig + vigilancia.transporte %}
+                                                                            {% endfor %}
+                                                                        {% endif %}
+                                                                        {% set totalGastosMesVig = totalGastosMesVig + totalSalarioVig + totalAlimentacionVig + totalTransporteVig %}
+                                                                        {% set gastos01 = gastos01 + (totalGastosMesVig * 0.1) %}
+                                                                        {% set totalGastosMesVig = totalGastosMesVig + gastos01 %}
+                                                                        {% set subTotalAnticipoMesVigilanciaSeguridad = totalGastosMesVig %}
+                                                                        <td><a href="{{ path('vigilanciaCosteoObra',{ 'id' : obra.costeos[0].id}) }}">Vigilancia y Seguridad</a></td>
+                                                                        <td>$ {{ (totalGastosMesVig / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (totalGastosMesVig / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (totalGastosMesVig )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (totalGastosMesVig * obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        {% set totalCUPUH = 0 %}
+                                                                        {% set totalCUCUH = 0 %}
+                                                                        {% set aplicable30CUPUH = 0 %}
+                                                                        {% set aplicable30CUCUH = 0 %}
+                                                                        {% if obra.costeos[0].utilesHerramientas | length > 0 %}
+                                                                            {% for utileHerramient in obra.costeos[0].utilesHerramientas %}
+                                                                                {% set totalCUPUH = totalCUPUH + (utileHerramient.cantidad * utileHerramient.precioCUP ) %}
+                                                                                {% set totalCUCUH = totalCUCUH + (utileHerramient.cantidad * utileHerramient.precioCUC ) %}
+                                                                                {% set aplicable30CUPUH = aplicable30CUPUH + (utileHerramient.cantidad * utileHerramient.precioCUP ) %}
+                                                                                {% set aplicable30CUCUH = aplicable30CUCUH + (utileHerramient.cantidad * utileHerramient.precioCUC ) %}
+                                                                            {% endfor %}
+                                                                        {% endif %}
+                                                                        {% set subTotalAnticipoMesUtilesHerramientas = ((aplicable30CUCUH * 0.3) + ((aplicable30CUPUH * 0.3) / 24) )  %}
+                                                                        <td><a href="{{ path('utilesHerramientasCosteoObra',{ 'id' : obra.costeos[0].id}) }}">Útiles y Herramientas</a></td>
+                                                                        <td>$ {{ (subTotalAnticipoMesUtilesHerramientas / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesUtilesHerramientas / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesUtilesHerramientas )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesUtilesHerramientas * obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        {% set totalCUPCONS = 0 %}
+                                                                        {% set totalCUCCONS = 0 %}
+                                                                        {% if obra.costeos[0].consumibles | length > 0 %}
+                                                                            {% for consumibl in obra.costeos[0].consumibles %}
+                                                                                {% set totalCUPCONS = totalCUPCONS + (consumibl.cantidad * consumibl.precioCUP ) %}
+                                                                                {% set totalCUCCONS = totalCUCCONS + (consumibl.cantidad * consumibl.precioCUC ) %}
+                                                                            {% endfor %}
+                                                                        {% endif %}
+                                                                        {% set subTotalAnticipoMesConsumibles = (totalCUCCONS + (totalCUPCONS / 24) )  %}
+                                                                        <td><a href="{{ path('consumiblesCosteoObra',{ 'id' : obra.costeos[0].id}) }}">Consumibles</a></td>
+                                                                        <td>$ {{ (subTotalAnticipoMesConsumibles / (obra.costeos[0].tiempo * 2) )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesConsumibles / (obra.costeos[0].tiempo * 2) )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ ((subTotalAnticipoMesConsumibles / (obra.costeos[0].tiempo * 2) * 2) )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (((subTotalAnticipoMesConsumibles / (obra.costeos[0].tiempo * 2) * 2) ) * obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        {% set totalCUPPHT = 0 %}
+                                                                        {% set totalCUCPHT = 0 %}
+                                                                        {% set aplicable50CUPPHT = 0 %}
+                                                                        {% set aplicable50CUCPHT = 0 %}
+                                                                        {% if obra.costeos[0].mediosPHT | length > 0 %}
+                                                                            {% for medioPHT in obra.costeos[0].mediosPHT %}
+                                                                                {% set totalCUPPHT = totalCUPPHT + (medioPHT.cantidad * medioPHT.precioCUP ) %}
+                                                                                {% set totalCUCPHT = totalCUCPHT + (medioPHT.cantidad * medioPHT.precioCUC ) %}
+                                                                                {% set aplicable50CUPPHT = aplicable50CUPPHT + (medioPHT.cantidad * medioPHT.precioCUP ) %}
+                                                                                {% set aplicable50CUCPHT = aplicable50CUCPHT + (medioPHT.cantidad * medioPHT.precioCUC ) %}
+                                                                            {% endfor %}
+                                                                        {% endif %}
+                                                                        {% set subTotalAnticipoMesMediosPHT = ((aplicable50CUCPHT * 0.5) + ((aplicable50CUPPHT * 0.5) / 24) )  %}
+                                                                        <td><a href="{{ path('mediosPHTCosteoObra',{ 'id' : obra.costeos[0].id}) }}">Medios de PHT</a></td>
+                                                                        <td>$ {{ (subTotalAnticipoMesMediosPHT / (obra.costeos[0].tiempo * 2) )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesMediosPHT / (obra.costeos[0].tiempo * 2) )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalAnticipoMesMediosPHT / (obra.costeos[0].tiempo * 2) * 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ ((subTotalAnticipoMesMediosPHT / (obra.costeos[0].tiempo * 2) * 2 ) * obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    {#  PARA LA SUMA DE LOS GASTOS  #}
+                                                                    {% set subTotalGastos = (subTotalAnticipoMes + subTotalAnticipoMesAlimentacion + subTotalAnticipoMesTransporte + subTotalAnticipoMesComunicacion + subTotalAnticipoMesAlquilerEquipos + subTotalAnticipoMesVigilanciaSeguridad + subTotalAnticipoMesMediosPHT + subTotalAnticipoMesUtilesHerramientas + subTotalAnticipoMesConsumibles) %}
+                                                                    <tr>
+                                                                        {% set subTotalImprevistos = (subTotalGastos * obra.costeos[0].porcientoImprevisto)/100 %}
+                                                                        <td>Imprevisto</td>
+                                                                        <td>$ {{ (subTotalImprevistos / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalImprevistos / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalImprevistos )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalImprevistos * obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        {% set subTotalGastos = subTotalGastos + subTotalImprevistos %}
+                                                                        <td><strong>SubTotal Gastos</strong></td>
+                                                                        <td>$ {{ (subTotalGastos / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalGastos / 2 )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalGastos )|number_format(2, '.', ',') }}</td>
+                                                                        <td>$ {{ (subTotalGastos * obra.costeos[0].tiempo )|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Impuesto servicio 10%</td>
+                                                                        <td colspan="3"></td>
+                                                                        <td>$ {{ ((MTotalCuant + 250) * 0.1 ) |number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Impuesto Anual</td>
+                                                                        <td colspan="3"></td>
+                                                                        <td>$ {{ ((MTotalCuant + 250) * 0.03 ) |number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><strong>Total Gastos</strong></td>
+                                                                        <td colspan="3"></td>
+                                                                        <td>$ {{ ((((subTotalGastos * obra.costeos[0].tiempo )+((MTotalCuant + 250) * 0.1 )))+((MTotalCuant + 250) * 0.03 )) |number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><strong>Gastos Indirectos</strong></td>
+                                                                        <td colspan="3"></td>
+                                                                        <td>$ {{ (((((((subTotalGastos * obra.costeos[0].tiempo )+((MTotalCuant + 250) * 0.1 )))+((MTotalCuant + 250) * 0.03 )) + ((subTotalGastos * obra.costeos[0].tiempo )*(obra.costeos[0].porcientoUtilidad/100))) / 0.8) * 0.2 ) |number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><strong>Utilidad Neta</strong></td>
+                                                                        <td colspan="3"></td>
+                                                                        <td>$ {{ ((subTotalGastos * obra.costeos[0].tiempo )*(obra.costeos[0].porcientoUtilidad/100))|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Utilidad Disponible</td>
+                                                                        <td colspan="3"></td>
+                                                                        <td>$ {{ (((subTotalGastos * obra.costeos[0].tiempo )*(obra.costeos[0].porcientoUtilidad/100)) - (((subTotalGastos * obra.costeos[0].tiempo )*(obra.costeos[0].porcientoUtilidad/100)) * 0.1))|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Inversión 10%</td>
+                                                                        <td colspan="3"></td>
+                                                                        <td>$ {{ (((subTotalGastos * obra.costeos[0].tiempo )*(obra.costeos[0].porcientoUtilidad/100)) * 0.1)|number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td><strong>VALOR DE VENTA</strong></td>
+                                                                        <td colspan="3"></td>
+                                                                        <td>$ {{ ((((((subTotalGastos * obra.costeos[0].tiempo )+((MTotalCuant + 250) * 0.1 )))+((MTotalCuant + 250) * 0.03 )) + ((subTotalGastos * obra.costeos[0].tiempo )*(obra.costeos[0].porcientoUtilidad/100))) / 0.8) |number_format(2, '.', ',') }}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </section>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <div class="panel-body">
+                                                            <div class="panel panel-primary">
+                                                                <div class="panel-heading"><strong>Diferencia COSTEO VS OFERTA</strong></div>
+                                                                {% set difCosteovsOferta = MTotalCuant - ((((((subTotalGastos * obra.costeos[0].tiempo )+((MTotalCuant + 250) * 0.1 )))+((MTotalCuant + 250) * 0.03 )) + ((subTotalGastos * obra.costeos[0].tiempo )*(obra.costeos[0].porcientoUtilidad/100))) / 0.8) %}
+                                                            </div>
+                                                            {% if difCosteovsOferta > 0 %}
+                                                                <div class="panel panel-success">
+                                                            {% else %}
+                                                                <div class="panel panel-danger">
+                                                            {% endif %}
+                                                                <div class="panel-heading">$ {{ (difCosteovsOferta) |number_format(2, '.', ',') }}</div>
+                                                            </div>
+                                                           {# <div class="panel panel-danger">
+                                                                <div class="panel-heading">$</div>
+                                                            </div>#}
+                                                        </div>
+                                                    </div>
+
+                                                        <div class="col-lg-4">
+                                                            <div class="panel-body">
+                                                                <div class="panel panel-primary">
+                                                                    <div class="panel-heading"><strong>Productividad Mensual</strong></div>
+                                                                    {% set productividad = MTotalCuant  %}
+                                                                </div>
+                                                                {% if difCosteovsOferta > 0 %}
+                                                                <div class="panel panel-success">
+                                                                    {% else %}
+                                                                    <div class="panel panel-danger">
+                                                                        {% endif %}
+                                                                        <div class="panel-heading">$ {{ (productividad) |number_format(2, '.', ',') }}</div>
+                                                                    </div>
+                                                                    {# <div class="panel panel-danger">
+                                                                         <div class="panel-heading">$</div>
+                                                                     </div>#}
+                                                                </div>
+                                                            </div>
+                                                </div>
+
+
+
+                                            </form>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="about" class="tab-pane">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <section class="panel">
+                                        <header class="panel-heading">
+                                            Formulario para el trabajo del Costeo
+                                        </header>
+                                        <div class="panel-body">
+                                            <form class="form-horizontal" method="post" action="{{ path('modificarCosteoObra', {'id' : obra.costeos[0].id}) }}">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label">Tiempo (Meses)</label>
+                                                    <div class="col-sm-6">
+                                                        <input id="tiempo" name="tiempo" type="text" class="form-control round-input" value="{{ obra.costeos[0].tiempo }}" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label">% de Utilidad</label>
+                                                    <div class="col-sm-6">
+                                                        <input id="utilidad" name="utilidad" type="text" class="form-control round-input" value="{{ obra.costeos[0].porcientoUtilidad }}" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label">% de Imprevisto</label>
+                                                    <div class="col-sm-6">
+                                                        <input id="imprevisto" name="imprevisto" type="text" class="form-control round-input" value="{{ obra.costeos[0].porcientoImprevisto }}" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-10">
+                                                        <input type="submit" value="Enviar Datos" class="btn btn-info"/>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div id="about" class="tab-pane active">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <section class="panel">
+                                        <header class="panel-heading">
+                                            Formulario para el trabajo del Costeo
+                                        </header>
+                                        <div class="panel-body">
+                                            <form class="form-horizontal" method="post" action="{{ path('insertarCosteoObra', {'id' : obra.id}) }}">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label">Tiempo (Meses)</label>
+                                                    <div class="col-sm-6">
+                                                        <input id="tiempo" name="tiempo" type="text" class="form-control round-input" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label">% de Utilidad</label>
+                                                    <div class="col-sm-6">
+                                                        <input id="utilidad" name="utilidad" type="text" class="form-control round-input" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label">% de Imprevisto</label>
+                                                    <div class="col-sm-6">
+                                                        <input id="imprevisto" name="imprevisto" type="text" class="form-control round-input" required="">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-10">
+                                                        <input type="submit" value="Enviar Datos" class="btn btn-info"/>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock %}
+
+{% block js %}
+    <script src="{{asset('bundles/ccc/js/jquery.hotkeys.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg-custom.js')}}"></script>
+    <script src="{{asset('bundles/ccc/assets/ckeditor/ckeditor.js')}}"></script>
+
+{% endblock %}
+
+

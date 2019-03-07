@@ -1,0 +1,381 @@
+{% extends 'CCCBundle:CCC:obras.html.twig' %}
+
+{% block css %}
+    <style>
+        .btnNuevo{padding: 0px 0px;}
+    </style>
+{% endblock %}
+
+{% block contenido %}
+
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="page-header toggle-nav" style="text-align: center">{% block encabezado %}Materiales {% endblock %}</h3>
+                </div>
+            </div>
+            {% block cuerpo %}
+               <div class="row">
+                   <div class="col-lg-2"></div>
+                   <div class="col-lg-8">
+                        <section class="panel">
+                            <header class="panel-heading tab-bg-primary ">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#comportamiento">Comportamiento</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#real">Planificación / Real</a>
+                                    </li>
+                                </ul>
+                            </header>
+                            <div class="panel-body">
+                                <div class="tab-content">
+                                    <div id="comportamiento" class="tab-pane active">
+                                        <div class="row">
+                                            <div class="col-sm-1"></div>
+                                            <div class="col-sm-10">
+                                                <section class="panel">
+                                                    <table class="table table-bordered" id="imprimir">
+                                                        <tbody>
+                                                            <tr style="text-align: center">
+                                                                <td rowspan="2">Material</td>
+                                                                <td rowspan="2">UM</td>
+                                                                <td colspan="2">Total</td>
+                                                                <td colspan="3">Consumido</td>
+                                                                <td colspan="3">Remanente</td>
+                                                            </tr>
+                                                            <tr style="text-align: center">
+                                                                <td>Cant.</td>
+                                                                <td>$</td>
+                                                                <td>Cant.</td>
+                                                                <td>$</td>
+                                                                <td>%</td>
+                                                                <td>Cant.</td>
+                                                                <td>$</td>
+                                                                <td>%</td>
+                                                            </tr>
+                                                            {% for gruposMaterial in obra.gruposMateriales %}
+                                                                {% for material in gruposMaterial.materiales %}
+                                                                    {% set porCientoConsumido = 0 %}
+                                                                    {% set porCientoRemanente = 0 %}
+                                                                    <tr style="text-align: center">
+                                                                        <td>{{ material.material | capitalize }}</td>
+                                                                        <td>{{ material.um | capitalize }}</td>
+                                                                        <td>{{ material.cantidad | number_format(2, '.', ',') }}</td>
+                                                                        <td>{{ (material.cantidad * material.precio) | number_format(2, '.', ',') }}</td>
+                                                                        <td>
+                                                                            {% set consumido = 0 %}
+                                                                            {% for planf in material.planificacion %}
+                                                                                {% set consumido = consumido + planf.realP %}
+                                                                            {% endfor %}
+                                                                            {% set remanente = material.cantidad - consumido %}
+                                                                            {% set porCientoConsumido = (consumido * 100) / material.cantidad %}
+                                                                            {% if consumido < material.cantidad %}
+                                                                                {% set porCientoRemanente = 100 - porCientoConsumido %}
+                                                                            {% endif %}
+                                                                            {{ consumido | number_format(2, '.', ',') }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ (consumido * material.precio) | number_format(2, '.', ',') }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ porCientoConsumido | number_format(2, '.', ',') }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ remanente | number_format(2, '.', ',') }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ (remanente * material.precio) | number_format(2, '.', ',') }}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ porCientoRemanente | number_format(2, '.', ',') }}
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </section>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-1"></div>
+                                            <div class="col-lg-2">
+                                                <button style="padding: 5px 7px" class="btn btn-success" id="print_btn" type="button" title="Imprimir">Imprimir</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="real" class="tab-pane">
+                                        {% if obra.gruposMateriales | length == 0 %}
+                                            <div class="row">
+                                                <div class="col-lg-2">
+                                                    <img class="" src="{{asset('bundles/ccc/img/xls1.png')}}" style="width: 50%">
+                                                </div>
+                                                <div class="col-lg-10">
+                                                    <form method="post" action="{{ path('insertarGrupoMaterialesObra') }}" enctype="multipart/form-data" class="">
+                                                        <div class="row" style="text-align: center">
+                                                            <div class="col-lg-3">
+                                                                <label>Archivo Excell</label>
+                                                                <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">
+                                                                <input type="submit" value="Enviar" class="btn btn-primary"/>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                            <hr>
+                                            <p class=" col-lg-12" style="text-align: justify">Para cargar correctamente el archivo <b>*.xls</b> o <b>*.xlsx</b> se deben cumplir lo siguiente:</p>
+                                            <ul class="col-lg-12">
+                                                <li>1ra Columna será el <code>"Grupo de Materiales"</code> </li>
+                                                <li>2da Columna será el<code>"Material"</code> </li>
+                                                <li>3da Columna será el<code>"Unidad de Medida"</code> </li>
+                                                <li>4ta Columna será el<code>"Cantidad"</code> </li>
+                                                <li>5ta Columna será el<code>"Precio"</code> </li>
+                                                <li>6ta Columna será el<code>"Importe"</code> </li>
+                                                <hr>
+                                                <li style="text-align: center"><img class="" src="{{asset('bundles/ccc/img/materiales.png')}}" style="width: 90%"></li>
+                                            </ul>
+                                        {% else %}
+                                            <div class="row">
+                                                <div class="col-lg-1"></div>
+                                                <div class="col-lg-2">
+                                                    {% if obra.gruposMateriales[0].materiales | length != 0 %}
+                                                        {% if is_granted('ROLE_OPERARIO') %}
+                                                            {% if obra.gruposMateriales[0].materiales[0].planificacion | length == 0 %}
+                                                                <a style="width: 65px" class="btn btn-success tooltips" data-placement="right" data-toggle="modal" href="#cargarExcel" title="Planificación">Cargar</a>
+                                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cargarExcel" class="modal fade">
+                                                                    <div class="modal-dialog" style="text-align: center;width: 600px; height: auto">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                <h4 class="modal-title">Cargar Excel </h4>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <form class="form-horizontal" role="form">
+                                                                                    <div class="form-group">
+                                                                                        <div class="row">
+                                                                                            <div class="col-lg-1"></div>
+                                                                                            <div class="col-lg-8">
+                                                                                                <form>
+                                                                                                    <div class="row" style="text-align: center">
+                                                                                                        <div class="col-lg-4">
+                                                                                                            <label>Repetir</label>
+                                                                                                            <select name="repeticion" class="form-control" required="required">
+                                                                                                                <option></option>
+                                                                                                                <option style="text-align: center" value="1">Diario</option>
+                                                                                                                <option style="text-align: center" value="7">Semanal</option>
+                                                                                                                <option style="text-align: center" value="14">Quincenal</option>
+                                                                                                                <option style="text-align: center" value="30">Mensual</option>
+                                                                                                            </select>
+                                                                                                        </div>
+                                                                                                        <div class="col-lg-5">
+                                                                                                            <label>Archivo Excell</label>
+                                                                                                            <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                                                            <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="row">
+                                                                                                        <div class="8">
+                                                                                                            <img class="" src="{{asset('bundles/ccc/img/planificacionMateriales.png')}}" style="width: 120%">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <br>
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-lg-4">
+                                                                                                            <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('insertarPlanificacionMateriales') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                                                            {#<input type="submit" value="Enviar" class="btn btn-primary"/>#}
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                            <div class="col-lg-3"></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% else %}
+                                                                <a style="width: 65px" class="btn btn-success tooltips" data-placement="right" data-toggle="modal" href="#cargarExcelConsumido" title="Consumido">Cargar</a>
+                                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cargarExcelConsumido" class="modal fade">
+                                                                    <div class="modal-dialog" style="text-align: center;width: 600px; height: auto">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                <h4 class="modal-title">Cargar Excel </h4>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <form class="form-horizontal" role="form">
+                                                                                    <div class="form-group">
+                                                                                        <div class="row">
+                                                                                            <div class="col-lg-1"></div>
+                                                                                            <div class="col-lg-8">
+                                                                                                <form>
+                                                                                                    <div class="row" style="text-align: center">
+                                                                                                        <div id="sandbox-container" class="col-lg-4">
+                                                                                                            <label>Fecha</label>
+                                                                                                            <input style="text-align: center" name="fechaReporte" type="text" class="form-control round-input" required="required">
+                                                                                                        </div>
+                                                                                                        <div class="col-lg-5">
+                                                                                                            <label>Archivo Excell</label>
+                                                                                                            <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                                                            <input type="hidden" value="{{ obra.id }}" name="idObra">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="row">
+                                                                                                        <div class="8">
+                                                                                                            <img class="" src="{{asset('bundles/ccc/img/consumidoMateriales.png')}}" style="width: 120%">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <br>
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-lg-4">
+                                                                                                            <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('insertarConsumidoMateriales') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                                                            {#<input type="submit" value="Enviar" class="btn btn-primary"/>#}
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                            <div class="col-lg-3"></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <div class="col-sm-10">
+                                                    <section class="panel">
+                                                        <table class="table table-bordered">
+                                                            <tbody>
+                                                                <tr style="text-align: center">
+                                                                    <td>Material</td>
+                                                                    <td>UM</td>
+                                                                    <td>Total</td>
+                                                                    <td>P/R</td>
+                                                                </tr>
+                                                                {% for gruposMaterial in obra.gruposMateriales %}
+                                                                    {% for material in gruposMaterial.materiales %}
+                                                                        <tr style="text-align: center">
+                                                                            <td>{{ material.material | capitalize }}</td>
+                                                                            <td>{{ material.um | capitalize }}</td>
+                                                                            <td>{{ material.cantidad | number_format(2, '.', ',') }}</td>
+                                                                            <td>
+                                                                                <a style="width: 54px" class="btn btn-success btnNuevo tooltips" data-toggle="modal" href="#planificacion-{{ material.id }}" title="Planificación / Real">P/R</a>
+                                                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="planificacion-{{ material.id }}" class="modal fade">
+                                                                                    <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header">
+                                                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                                <h4 class="modal-title">Planificación / Real </h4>
+                                                                                            </div>
+                                                                                            <div class="modal-body">
+                                                                                                <form class="form-horizontal" role="form">
+                                                                                                    <div class="form-group">
+                                                                                                        <div class="row">
+                                                                                                            <div class="col-lg-2"></div>
+                                                                                                            <div class="col-lg-8">
+                                                                                                                <table class="table table-hover table-bordered">
+                                                                                                                    <tbody>
+                                                                                                                    <tr>
+                                                                                                                        <td rowspan="2"></td>
+                                                                                                                        <td colspan="2">Planif.</td>
+                                                                                                                        <td colspan="3">Real</td>
+                                                                                                                    </tr>
+                                                                                                                    <tr>
+                                                                                                                        <td>Cant.</td>
+                                                                                                                        <td>$</td>
+                                                                                                                        <td>Cant.</td>
+                                                                                                                        <td>$</td>
+                                                                                                                        <td>%</td>
+                                                                                                                    </tr>
+                                                                                                                    {% for plan in material.planificacion %}
+                                                                                                                        {% set porCiento = 0 %}
+                                                                                                                        <tr>
+                                                                                                                            <td>{{ plan.descripcion }}</td>
+                                                                                                                            <td>{{ plan.planificacion | number_format(2, '.', ',') }}</td>
+                                                                                                                            <td>{{ (plan.planificacion * material.precio) | number_format(2, '.', ',') }}</td>
+                                                                                                                            <td>{{ plan.realP | number_format(2, '.', ',') }}</td>
+                                                                                                                            <td>
+                                                                                                                                {% if plan.planificacion != 0 %}
+                                                                                                                                    {% set porCiento = (plan.realP * 100) / plan.planificacion %}
+                                                                                                                                {% endif %}
+                                                                                                                                {{ (plan.realP * material.precio) | number_format(2, '.', ',') }}
+                                                                                                                            </td>
+                                                                                                                            <td>
+                                                                                                                                {{ porCiento | number_format(2, '.', ',') }}
+                                                                                                                            </td>
+                                                                                                                        </tr>
+                                                                                                                    {% endfor %}
+                                                                                                                    </tbody>
+                                                                                                                </table>
+                                                                                                            </div>
+                                                                                                            <div class="col-lg-3"></div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </form>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </section>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    </div>
+                                </div>
+                            </section>
+                   </div>
+               </div>
+            {% endblock %}
+        </section>
+    </section>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.js')}}" type="text/javascript" ></script>
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.min.js')}}" type="text/javascript" ></script>
+    <script>
+        $('#sandbox-container input').datepicker({
+            format: "dd.mm.yyyy",
+            language: "es",
+            orientation: "bottom auto",
+            autoclose: true,
+            todayHighlight: true
+        });
+    </script>
+
+    <script src="{{asset('bundles/ccc/js/printThis.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print_btn').click(function () {
+                $('#imprimir').printThis();
+            });
+        });
+    </script>
+{% endblock %}

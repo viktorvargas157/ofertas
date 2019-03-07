@@ -1,0 +1,22 @@
+ofertas:
+    resource: "@OfertasBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+login:
+  pattern: /login
+  defaults: {_controller: OfertasBundle:Ofertas:login }
+login_check:
+  pattern: /login_check
+logout:
+  pattern: /logout
+  #target: /ccc/inicio
+
+inicio:
+  pattern: /
+  defaults: {_controller: OfertasBundle:Ofertas:inicio }
+
+_ofertas:
+    resource: "@OfertasBundle/Resources/config/ofertas_routing.yml"
+
+

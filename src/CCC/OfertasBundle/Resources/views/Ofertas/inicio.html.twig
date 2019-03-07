@@ -1,0 +1,46 @@
+{% extends '::base.html.twig' %}
+
+{% block cuerpo %}
+    <section id="container" class="">
+        <section>
+            <section class="wrapper">
+                {% if app.user %}
+                    <div class="row" >
+                        <div class="col-lg-12" style="text-align: center;">
+                            {#<img src="{{ asset('bundles/ccc/img/logo.png') }}" style="text-align: center;height: 320px;width: 570px">#}
+                            <img src="{{ asset('bundles/ccc/img/Ofertas.png') }}" style="text-align: center;width: 85%">
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row" style="margin-top: 70px">
+                        <div class="col-lg-12" style="text-align: center">
+                            <img src="{{ asset('bundles/ccc/img/logo.png') }}" style="text-align: center;width: 360px">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: -180px;">
+                        <div class="col-lg-12">
+                            <div class="container">
+                                <form class="login-form" action="{{ path('login_check') }}" method="post">
+                                    <div class="login-wrap">
+                                        {% block error %}{% endblock %}
+                                        <p class="login-img"><i class="icon_lock_alt"></i></p>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="icon_profile"></i></span>
+                                            <input style="color: #0f222b;" id="usuario" name="_username" type="text" class="form-control" placeholder="Username" required="">
+                                            <input type="hidden" name="_target_path" value="/ofertas/inicio" />
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="icon_key_alt"></i></span>
+                                            <input id="contrasenna" name="_password" type="password" class="form-control" placeholder="Password" required="">
+                                        </div>
+                                        <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </section>
+        </section>
+    </section>
+{% endblock %}

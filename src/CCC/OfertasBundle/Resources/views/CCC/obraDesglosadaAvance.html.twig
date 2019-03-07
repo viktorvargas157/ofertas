@@ -1,0 +1,87 @@
+{% extends 'CCCBundle:CCC:obraDesglosada.html.twig' %}
+
+ {% block cuerpo %}
+
+         <section class="wrapper">
+             <div class="row">
+                 <div class="col-lg-12">
+                     <h3 class="page-header"><i class="fa fa-folder"></i> Desgloce de la Obra {{ obra.nombre }}</h3>
+                     <ol class="breadcrumb">
+                         <li><i class="fa fa-home"></i><a href="{{ path('estatica', {'estatica':'inicio'}) }}">Inicio</a></li>
+                         <li><i class="icon_folder"></i>Ejecución</li>
+                         <li><i class="fa fa-book"></i>Mano de Obra</li>
+                         <li><i class="fa fa-building-o"></i>Avance Físico</li>
+                     </ol>
+                 </div>
+             </div>
+             <div class="row">
+                 <div class="col-lg-12">
+                     <section class="panel">
+                         <header class="panel-heading">
+                             Control del Avance Físico
+                         </header>
+                         <div class="panel-body">
+                             <form role="form">
+                                 <section class="panel">
+                                     <header class="panel-heading">
+                                         Cimentación
+                                     </header>
+                                     <div class="panel-body">
+                                         <form class="form-horizontal " method="get">
+                                             <div class="form-group">
+                                                 <div class="col-lg-8">
+                                                     <div class="col-lg-4" STYLE="text-align: center">
+                                                         <label>Realizado</label>
+                                                         <input class="form-control" value="54" disabled>
+                                                     </div>
+                                                     <div class="col-lg-4" STYLE="text-align: center">
+                                                         <label>Por Realizar</label>
+                                                         <input class="form-control" value="42" disabled>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </form>
+                                     </div>
+                                 </section>
+
+                                 <section class="panel">
+                                     <header class="panel-heading">
+                                         Actividades para la reparación o construcción de superficie de paredes interiores
+                                     </header>
+                                     <div class="panel-body">
+                                         <form class="form-horizontal " method="get">
+                                             <div class="form-group">
+                                                 <div class="col-lg-8">
+                                                     <div class="col-lg-4" STYLE="text-align: center">
+                                                         <label>Realizado</label>
+                                                         <input class="form-control" value="124" disabled>
+                                                     </div>
+                                                     <div class="col-lg-4" STYLE="text-align: center">
+                                                         <label>Por Realizar</label>
+                                                         <input class="form-control" value="102" disabled>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </form>
+                                     </div>
+                                 </section>
+
+                             </form>
+                         </div>
+                     </section>
+
+                 </div>
+
+             </div>
+         </section>
+
+
+ {% endblock %}
+
+{% block js %}
+    <script src="{{asset('bundles/ccc/js/jquery.hotkeys.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg-custom.js')}}"></script>
+    <script src="{{asset('bundles/ccc/assets/ckeditor/ckeditor.js')}}"></script>
+
+{% endblock %}

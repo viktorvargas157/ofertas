@@ -1,0 +1,124 @@
+{% extends 'CCCBundle:CCC:obras.html.twig' %}
+
+        {% block encabezado %}
+            Trabajo con los Usuarios
+        {% endblock %}
+
+         {% block cuerpo %}
+            <div class="row">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <section class="panel">
+                        <header class="panel-heading tab-bg-primary ">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#home">Listado</a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#about">Insertar</a>
+                                </li>
+                            </ul>
+                        </header>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div id="home" class="tab-pane active">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                                <thead>
+                                                <tr>
+                                                    <th>Usuario</th>
+                                                    <th>Email</th>
+                                                    <th>Rol</th>
+                                                    <th>Opciones</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                {% for usuario in usuarios %}
+                                                    <tr>
+                                                        <td>{{ usuario.nombreApellidos }}</td>
+                                                        <td>{{ usuario.email }}</td>
+                                                        <td>{{ usuario.rol }}</td>
+
+                                                        <td>
+                                                            <a class="btn btn-danger btn-sm" title="Eliminar Usuario" href="{{ path('eliminarUsuario',{ 'id' : usuario.id}) }}">
+                                                                <i class="icon_trash"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="about" class="tab-pane">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <section class="panel">
+                                                <header class="panel-heading">
+                                                    Formulario
+                                                </header>
+                                                <div class="panel-body">
+                                                    <form class="form-horizontal" method="post" action="{{ path('insertarUsuario') }}">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label">Usuario</label>
+                                                            <div class="col-sm-6">
+                                                                <input style="text-align: center" id="nombreApellidos" name="nombreApellidos" type="text" class="form-control round-input" required="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label">Email</label>
+                                                            <div class="col-sm-6">
+                                                                <input style="text-align: center" name="usuario" type="email" class="form-control round-input" required="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label">Contraseña</label>
+                                                            <div class="col-sm-6">
+                                                                <input style="text-align: center" name="contrasenna" type="password" class="form-control round-input" required="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-sm-4 control-label">Rol</label>
+                                                            <div class="col-sm-6">
+                                                                <select style="text-align: center" id="rol" name="rol" class="form-control round-input" required="required">
+                                                                    <option></option>
+                                                                    <option value="Presidencia">Administrador</option>
+                                                                    <option value="Tecnico">Técnico</option>
+                                                                    <option value="Operario">Operario</option>
+                                                                    <option value="Economía">Economía</option>
+                                                                    <option value="Comercial">Comercial</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-sm-10">
+                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+         {% endblock %}
+
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/jquery.hotkeys.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg-custom.js')}}"></script>
+    <script src="{{asset('bundles/ccc/assets/ckeditor/ckeditor.js')}}"></script>
+
+{% endblock %}
+

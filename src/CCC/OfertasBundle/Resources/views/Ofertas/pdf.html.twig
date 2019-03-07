@@ -1,0 +1,15 @@
+{% extends 'OfertasBundle:Ofertas:usuarios.html.twig' %}
+
+
+
+    <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8">
+            <embed src="{{ asset('bundles/ccc/actasInicioObra/'~obra.nombre~'.pdf') }}" width="100%" height="650"></embed>
+            {#<img style="width: 80%" src="{{ asset('bundles/ccc/actasInicioObra/'~obra.id~'.png') }}" />#}
+        </div>
+    </div>
+
+ {% endblock %}
+
+{% block js %}{% endblock %}

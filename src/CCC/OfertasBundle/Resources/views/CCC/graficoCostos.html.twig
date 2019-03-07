@@ -1,0 +1,70 @@
+{% extends 'CCCBundle:CCC:obraDesglosadaMaterial.html.twig' %}
+
+{% block titulo %}Costos{% endblock %}
+{% block tiempo %}{% endblock %}
+
+{% block tablas %}
+
+
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/graficos/canvasjs.min.js')}}"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+                toolTip:{
+                    enabled: true,
+                    content: "{name}: ${y}"
+
+                },
+                axisX:{
+                    interval: 1,
+                    intervalType: 1,
+                    title: "Costos",
+                    titleFontSize: 20,
+                    titleFontColor: "red",
+                },
+                axisY:{
+                    title: "$",
+                    titleFontSize: 20,
+                    titleFontColor: "red",
+                },
+                data: [{
+                    type: "column",
+                    name: "Planificado",
+                    dataPoints: [
+                        {% for costo in obra.costos if costo.total != 0 %}
+                            { label:"{{ costo.descripcion }}", y: {{ costo.total }}},
+                        {% endfor %}
+                    ]
+                }, {
+                    type: "column",
+                    name: "Consumido",
+                    dataPoints: [
+                        {% for costo in obra.costos if costo.total != 0 %}
+                            {% set consumidoCosto = 0 %}
+                            {% for plan in costo.planificacion %}
+                                {% set consumidoCosto = consumidoCosto + plan.real %}
+                            {% endfor %}
+                            { label:"{{ costo.descripcion }}", y: {{ consumidoCosto }}},
+                        {% endfor %}
+                    ]
+
+                }]
+            });
+            chart.render();
+        }
+    </script>
+
+{% endblock %}
+

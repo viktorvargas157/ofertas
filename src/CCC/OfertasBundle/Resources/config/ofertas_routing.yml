@@ -1,0 +1,490 @@
+estatica:
+  pattern: /ofertas/{estatica}
+  defaults: {_controller: OfertasBundle:Ofertas:estatica }
+
+alertas:
+  pattern: /admin/alertas
+  defaults: {_controller: OfertasBundle:Ofertas:alertas }
+
+usuarios:
+  pattern: /admin/usuarios
+  defaults: {_controller: OfertasBundle:Ofertas:usuarios }
+insertarUsuario:
+  pattern: /admin/usuario/nuevo
+  defaults: {_controller: OfertasBundle:Ofertas:insertarUsuario }
+eliminarUsuario:
+  pattern: /admin/usuario/eliminar/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:eliminarUsuario }
+editarUsuario:
+  pattern: /admin/usuario/editar/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:editarUsuario }
+
+insertarFechaEntregaCliente:
+  pattern: /comer/insertar/fecha/entrega/cliente/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaEntregaCliente }
+editarFechaEntregaCliente:
+  pattern: /comer/ed/fecha/entrega/cliente/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaEntregaCliente }
+editarFechaEntregaClienteA:
+  pattern: /comer/ed/fecha/entrega/cliente/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaEntregaClienteA }
+aceptarSolicitud:
+  pattern: /comer/aceptar/solicitud/{id}/cliente
+  defaults: {_controller: OfertasBundle:Ofertas:aceptarSolicitud }
+rechazarSolicitud:
+  pattern: /comer/rechazar/solicitud/{id}/cliente
+  defaults: {_controller: OfertasBundle:Ofertas:rechazarSolicitud }
+
+#POSIBLES CLIENTES
+posiblesClientes:
+  pattern: /usuarios/posibles/clientes
+  defaults: {_controller: OfertasBundle:Ofertas:posiblesClientes }
+insertarPosibleCliente:
+  pattern: /usuarios/posible/nuevo
+  defaults: {_controller: OfertasBundle:Ofertas:insertarPosibleCliente }
+insertarContactosPosibleCliente:
+  pattern: /usuarios/posible/contacto/nuevo
+  defaults: {_controller: OfertasBundle:Ofertas:insertarContactosPosibleCliente }
+insertarTelefonoContactoPosibleCliente:
+  pattern: /usuarios/posible/telefono/contacto/nuevo
+  defaults: {_controller: OfertasBundle:Ofertas:insertarTelefonoContactoPosibleCliente }
+pasarCliente:
+  pattern: /usuarios/pasar/clientes/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:pasarCliente }
+
+insertarFechaCuantificacion:
+  pattern: /usuarios/insertar/fecha/cuantificacion/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaCuantificacion }
+editarFechaCuantificacion:
+  pattern: /usuarios/editar/fecha/cuantificacion/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaCuantificacion }
+insertarFechaCuantificacionA:
+  pattern: /usuarios/insertar/fecha/cuantificacion/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaCuantificacionA }
+editarFechaCuantificacionA:
+  pattern: /usuarios/editar/fecha/cuantificacion/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaCuantificacionA }
+clientes:
+  pattern: /usuarios/clientes
+  defaults: {_controller: OfertasBundle:Ofertas:clientes }
+insertarCliente:
+  pattern: /usuarios/cliente/nuevo
+  defaults: {_controller: OfertasBundle:Ofertas:insertarCliente }
+editarCliente:
+  pattern: /usuarios/cliente/editar
+  defaults: {_controller: OfertasBundle:Ofertas:editarCliente }
+insertarContactosCliente:
+  pattern: /usuarios/cliente/contacto/nuevo
+  defaults: {_controller: OfertasBundle:Ofertas:insertarContactosCliente }
+insertarTelefonoContacto:
+  pattern: /usuarios/cliente/telefono/contacto/nuevo
+  defaults: {_controller: OfertasBundle:Ofertas:insertarTelefonoContacto }
+eliminarContactoCliente:
+  pattern: /usuarios/cliente/contacto/eliminar
+  defaults: {_controller: OfertasBundle:Ofertas:eliminarContactoCliente }
+editarContactoCliente:
+  pattern: /usuarios/cliente/contacto/editar
+  defaults: {_controller: OfertasBundle:Ofertas:editarContactoCliente }
+editarContactoCliente:
+  pattern: /usuarios/cliente/editar/contacto/editar
+  defaults: {_controller: OfertasBundle:Ofertas:editarContactoCliente }
+
+#SOLICITUDES
+solicitudesR:
+  pattern: /usuarios/listado/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:solicitudesR }
+generarCaratulaOfertaR:
+  pattern: /pres/solicitud/generar/caratula
+  defaults: {_controller: OfertasBundle:Ofertas:generarCaratulaOfertaR }
+
+solicitudes:
+  pattern: /usuarios/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:solicitudes }
+
+#OFERTAS
+ofertasR:
+  pattern: /usuarios/listado/ofertas
+  defaults: {_controller: OfertasBundle:Ofertas:ofertasR }
+insertarReofertaR:
+  pattern: /usuarios/reofertar/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:insertarReofertaR }
+editarPrioridadOferta:
+  pattern: /usuarios/editar/prioridad/oferta
+  defaults: {_controller: OfertasBundle:Ofertas:editarPrioridadOferta }
+
+ofertas:
+  pattern: /usuarios/ofertas
+  defaults: {_controller: OfertasBundle:Ofertas:ofertas }
+generarResumenOfertas:
+  pattern: /usuarios/resumen/ofertas
+  defaults: {_controller: OfertasBundle:Ofertas:generarResumenOfertas }
+ofertasRechazadas:
+  pattern: /usuarios/rechazadas/ofertas
+  defaults: {_controller: OfertasBundle:Ofertas:ofertasRechazadas }
+solicitudesOferta:
+  pattern: /usuarios/cliente/{id}/solicitudes/ofertas
+  defaults: {_controller: OfertasBundle:Ofertas:solicitudesOferta }
+insertarSolicitud:
+  pattern: /usuarios/nueva/solicitudes/ofertas
+  defaults: {_controller: OfertasBundle:Ofertas:insertarSolicitud }
+editarSolicitud:
+  pattern: /usuarios/editar/solicitud/ofertas
+  defaults: {_controller: OfertasBundle:Ofertas:editarSolicitud }
+editarSolicitudC:
+  pattern: /usuarios/editar/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:editarSolicitudC }
+insertarSolicitudC:
+  pattern: /usuarios/new/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:insertarSolicitudC }
+contratoOferta:
+  pattern: /usuarios/solicitud/{id}/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:contratoOferta }
+insertarCosteo:
+  pattern: /pres/insertar/fecha/costeo/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:insertarCosteo }
+insertarCosteoA:
+  pattern: /usuarios/insertar/fecha/costeo/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:insertarCosteoA }
+editarCosteo:
+  pattern: /pres/editar/costeo/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:editarCosteo }
+editarCosteoA:
+  pattern: /usuarios/editar/costeo/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:editarCosteoA }
+
+editarDatosOferta:
+  pattern: /pres/editar/oferta/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:editarDatosOferta }
+editarDatosOfertaA:
+  pattern: /usuarios/editar/oferta/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:editarDatosOfertaA }
+insertarReoferta:
+  pattern: /pres/reofertar/solicitudes
+  defaults: {_controller: OfertasBundle:Ofertas:insertarReoferta }
+insertarReofertaA:
+  pattern: /pres/re/ofertar/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:insertarReofertaA }
+insertarReofertaO:
+  pattern: /pres/re/ofertar/oferta
+  defaults: {_controller: OfertasBundle:Ofertas:insertarReofertaO }
+generarCaratulaOferta:
+  pattern: /pres/re/ofertar/generar/caratula/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:generarCaratulaOferta }
+
+# CONTRATOS
+preContratos:
+  pattern: /usuarios/pre/contratos
+  defaults: {_controller: OfertasBundle:Ofertas:preContratos }
+contratos:
+  pattern: /usuarios/contratos/en/ejecucion
+  defaults: {_controller: OfertasBundle:Ofertas:contratos }
+contratosTerminados:
+  pattern: /usuarios/contratos/terminados
+  defaults: {_controller: OfertasBundle:Ofertas:contratosTerminados }
+terminadosContratos:
+  pattern: /usuarios/terminados/contratos
+  defaults: {_controller: OfertasBundle:Ofertas:terminadosContratos }
+darTerminadoContrato:
+  pattern: /usuarios/dar/terminados/contratos/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:darTerminadoContrato }
+
+contratosAEjecutar:
+  pattern: /abogado/contratos/a/ejecutar
+  defaults: {_controller: OfertasBundle:Ofertas:contratosAEjecutar }
+eliminarContrato:
+  pattern: /abogado/contratos/eliminar/este
+  defaults: {_controller: OfertasBundle:Ofertas:eliminarContrato }
+suplementarContrato:
+  pattern: /abogado/contrato/suplementar
+  defaults: {_controller: OfertasBundle:Ofertas:suplementarContrato }
+insertarFechaEntrada:
+  pattern: /abogado/insertar/fecha/entrada/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaEntrada }
+insertarDatosContrato:
+  pattern: /abogado/insertar/datos/entrada/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarDatosContrato }
+editarDatosContratoA:
+  pattern: /abogado/editar/datos/entrada/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:editarDatosContratoA }
+insertarDatosContratoA:
+  pattern: /abogado/contrato/insertar/datos/entrada
+  defaults: {_controller: OfertasBundle:Ofertas:insertarDatosContratoA }
+insertarFechaSecretaria:
+  pattern: /abogado/insertar/fecha/secretaria/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaSecretaria }
+insertarFechaSecretariaA:
+  pattern: /abogado/contrato/insertar/fecha/secretaria
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaSecretariaA }
+editarFechaSecretariaA:
+  pattern: /abogado/editar/fecha/secretaria/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaSecretariaA }
+insertarFechaEconomia:
+  pattern: /abogado/insertar/fecha/economia/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaEconomia }
+insertarFechaEconomiaA:
+  pattern: /abogado/contrato/insertar/fecha/economia
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaEconomiaA }
+editarFechaEconomiaA:
+  pattern: /abogado/contrato/editar/fecha/economia
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaEconomiaA }
+insertarFechaNegocios:
+  pattern: /abogado/insertar/fecha/negocios/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaNegocios }
+insertarFechaNegociosA:
+  pattern: /abogado/contrato/insertar/fecha/negocios
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaNegociosA }
+editarFechaNegociosA:
+  pattern: /abogado/contrato/editar/fecha/negocios
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaNegociosA }
+insertarFechaEjecucion:
+  pattern: /abogado/insertar/fecha/ejecucion/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaEjecucion }
+insertarFechaEjecucionA:
+  pattern: /abogado/contrato/insertar/fecha/ejecucion
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaEjecucionA }
+editarFechaEjecucionA:
+  pattern: /abogado/contrato/editar/fecha/ejecucion
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaEjecucionA }
+insertarFechaEntrega:
+  pattern: /abogado/insertar/fecha/entrega/cliente/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaEntrega }
+insertarFechaEntregaA:
+  pattern: /abogado/contrato/insertar/fecha/entrega/cliente
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaEntregaA }
+editarFechaEntregaA:
+  pattern: /abogado/contrato/editar/fecha/entrega/cliente
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaEntregaA }
+insertarEstadoContrato:
+  pattern: /abogado/insertar/estado/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarEstadoContrato }
+insertarEstadoContratoA:
+  pattern: /abogado/contrato/insertar/estado
+  defaults: {_controller: OfertasBundle:Ofertas:insertarEstadoContratoA }
+editarEstadoContrato:
+  pattern: /abogado/editar/estado/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:editarEstadoContrato }
+editarEstadoContratoA:
+  pattern: /abogado/contrato/editar/estado
+  defaults: {_controller: OfertasBundle:Ofertas:editarEstadoContratoA }
+insertarFechaFirmaCliente:
+  pattern: /abogado/insertar/fecha/firma/cliente/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaFirmaCliente }
+insertarFechaFirmaClienteA:
+  pattern: /abogado/contrato/insertar/fecha/firma/cliente
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaFirmaClienteA }
+editarFechaFirmaClienteA:
+  pattern: /abogado/contrato/editar/fecha/firma/cliente
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaFirmaClienteA }
+insertarFechaFinalContrato:
+  pattern: /abogado/insertar/fecha/firma/final/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaFinalContrato }
+insertarFechaFinalContratoA:
+  pattern: /abogado/contrato/insertar/fecha/firma/final
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFechaFinalContratoA }
+editarFechaFinalContratoA:
+  pattern: /abogado/contrato/editar/fecha/firma/final
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaFinalContratoA }
+insertarVigenciaContrato:
+  pattern: /abogado/insertar/vigencia/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarVigenciaContrato }
+insertarVigenciaContratoA:
+  pattern: /abogado/contrato/insertar/vigencia
+  defaults: {_controller: OfertasBundle:Ofertas:insertarVigenciaContratoA }
+editarVigenciaContratoA:
+  pattern: /abogado/contrato/editar/vigencia
+  defaults: {_controller: OfertasBundle:Ofertas:editarVigenciaContratoA }
+insertarActaInicio:
+  pattern: /abogado/insertar/fecha/acta/inicio/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarActaInicio }
+insertarActaInicioA:
+  pattern: /abogado/contrato/insertar/fecha/acta/inicio
+  defaults: {_controller: OfertasBundle:Ofertas:insertarActaInicioA }
+editarActaInicioA:
+  pattern: /abogado/contrato/editar/fecha/acta/inicio
+  defaults: {_controller: OfertasBundle:Ofertas:editarActaInicioA }
+insertarActaEntrega:
+  pattern: /abogado/insertar/fecha/acta/entrega/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarActaEntrega }
+insertarActaEntregaA:
+  pattern: /abogado/contrato/insertar/fecha/acta/entrega
+  defaults: {_controller: OfertasBundle:Ofertas:insertarActaEntregaA }
+editarActaEntregaA:
+  pattern: /abogado/contrato/editar/fecha/acta/entrega
+  defaults: {_controller: OfertasBundle:Ofertas:editarActaEntregaA }
+
+# ADMINISTRACION RENE
+usuariosR:
+  pattern: /admin/usuarios
+  defaults: {_controller: OfertasBundle:Ofertas:usuariosR }
+insertarUsuarioR:
+  pattern: /admin/usuario/nuevo
+  defaults: {_controller: OfertasBundle:Ofertas:insertarUsuarioR }
+editarUsuarioR:
+  pattern: /admin/usuario/editar/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:editarUsuarioR }
+eliminarUsuarioR:
+  pattern: /admin/usuario/eliminar/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:eliminarUsuarioR }
+exportarPDF:
+  pattern: /admin/exportar/pdf
+  defaults: {_controller: OfertasBundle:Ofertas:exportarPDF }
+
+obras:
+  pattern: /tecnico/obras
+  defaults: {_controller: OfertasBundle:Ofertas:obras }
+guardarFotoObra:
+  pattern: /operario/obra/foto
+  defaults: {_controller: OfertasBundle:Ofertas:guardarFotoObra }
+crearIMG:
+  pattern: /crear/png
+  defaults: {_controller: OfertasBundle:Ofertas:crearIMG }
+actaInicio:
+  pattern: /tecnico/acta/inicio/obra/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:actaInicio }
+guardarActaInicioObra:
+  pattern: /operario/acta/inicio/obra
+  defaults: {_controller: OfertasBundle:Ofertas:guardarActaInicioObra }
+verActaInicioObra:
+  pattern: /tecnico/acta/ver/inicio/obra/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:verActaInicioObra }
+contratoObra:
+  pattern: /tecnico/contrato/obra/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:contratoObra }
+guardarContratoObra:
+  pattern: /operario/contrato/obra
+  defaults: {_controller: OfertasBundle:Ofertas:guardarContratoObra }
+tiemposObra:
+  pattern: /tecnico/obra/tiempos/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:tiemposObra }
+costosObra:
+  pattern: /tecnico/obra/costos/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:costosObra }
+nuevaObra:
+  pattern: /tecnico/nueva/obra
+  defaults: {_controller: OfertasBundle:Ofertas:nuevaObra }
+insertarObra:
+  pattern: /operario/obra/nueva
+  defaults: {_controller: OfertasBundle:Ofertas:insertarObra }
+eliminarObra:
+  pattern: /operario/obra/eliminar/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:eliminarObra }
+editarObra:
+  pattern: /operario/obra/editar/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:editarObra }
+insertarTotalCostosObra:
+  pattern: /operario/obra/cargar/totales
+  defaults: {_controller: OfertasBundle:Ofertas:insertarTotalCostosObra }
+insertarPlanCostosObra:
+  pattern: /operario/obra/insertar/costos
+  defaults: {_controller: OfertasBundle:Ofertas:insertarPlanCostosObra }
+insertarAsistenciaObra:
+  pattern: /operario/obra/insertar/asistencia
+  defaults: {_controller: OfertasBundle:Ofertas:insertarAsistenciaObra }
+insertarRealCostosObra:
+  pattern: /operario/obra/cargar/real
+  defaults: {_controller: OfertasBundle:Ofertas:insertarRealCostosObra }
+facturacionObra:
+  pattern: /tecnico/obra/facturacion/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:facturacionObra }
+insertarPlanificacionFacturacionObra:
+  pattern: /operario/obra/insertar/facturacion/planificacion
+  defaults: {_controller: OfertasBundle:Ofertas:insertarPlanificacionFacturacionObra }
+insertarFacturacionReal:
+  pattern: /operario/obra/insertar/facturacion/real/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:insertarFacturacionReal }
+objetivosObra:
+  pattern: /tecnico/obra/objetivos/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:objetivosObra }
+insertarObjetivosObra:
+  pattern: /operario/obra/insertar/objetivos
+  defaults: {_controller: OfertasBundle:Ofertas:insertarObjetivosObra }
+insertarPlanificacionActividades:
+  pattern: /operario/obra/cargar/planificacion/actividades
+  defaults: {_controller: OfertasBundle:Ofertas:insertarPlanificacionActividades }
+insertarRealActividades:
+  pattern: /operario/obra/cargar/real/actividades
+  defaults: {_controller: OfertasBundle:Ofertas:insertarRealActividades }
+materialesObra:
+  pattern: /tecnico/obra/materiales/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:materialesObra }
+insertarGrupoMaterialesObra:
+  pattern: /operario/grupos/materiales/insertar
+  defaults: {_controller: OfertasBundle:Ofertas:insertarGrupoMaterialesObra }
+insertarPlanificacionMateriales:
+  pattern: /operario/planificacion/materiales/cargar
+  defaults: {_controller: OfertasBundle:Ofertas:insertarPlanificacionMateriales }
+insertarConsumidoMateriales:
+  pattern: /operario/consumido/materiales/cargar
+  defaults: {_controller: OfertasBundle:Ofertas:insertarConsumidoMateriales }
+
+preformasContratos:
+  pattern: /usuarios/preformas/contratos
+  defaults: {_controller: OfertasBundle:Ofertas:preformasContratos }
+insertarNuevoContrato:
+  pattern: /usuarios/nuevo/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:insertarNuevoContrato }
+editarFechaFirmaPorClienteContratoN:
+  pattern: /editar/firma/cliente/contrato/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:editarFechaFirmaPorClienteContratoN }
+insertarNuevoSuplemento:
+  pattern: /usuarios/nuevo/suplemento/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:insertarNuevoSuplemento }
+generarProformaContrato:
+  pattern: /usuarios/generar/proforma/contrato/caratula/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:generarProformaContrato }
+generarProformaContratoMarco:
+  pattern: /usuarios/generar/proforma/contrato/marco
+  defaults: {_controller: OfertasBundle:Ofertas:generarProformaContratoMarco }
+verProformaCreada:
+  pattern: /usuarios/ver/proforma/{proforma}
+  defaults: {_controller: OfertasBundle:Ofertas:verProformaCreada }
+generarCaratulaContrato:
+  pattern: /usuarios/generar/caratula/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:generarCaratulaContrato }
+
+cambiarVigenciaContrato:
+  pattern: /usuarios/vigencia/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:cambiarVigenciaContrato }
+archivarContrato:
+  pattern: /usuarios/archivar/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:archivarContrato }
+generarProformaCEOSup:
+  pattern: /usuarios/generar/proforma/ceo/suplemento
+  defaults: {_controller: OfertasBundle:Ofertas:generarProformaCEOSup }
+fechaFirmaContrato:
+  pattern: /usuarios/editar/fecha/firma
+  defaults: {_controller: OfertasBundle:Ofertas:fechaFirmaContrato }
+editarVigenciaContrato:
+  pattern: /usuarios/editar/vigencias/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:editarVigenciaContrato }
+vigenciaContrato:
+  pattern: /usuarios/editar/vigencia/contrato
+  defaults: {_controller: OfertasBundle:Ofertas:vigenciaContrato }
+buscarContratos:
+  pattern: /usuarios/buscar/contratos
+  defaults: {_controller: OfertasBundle:Ofertas:buscarContratos }
+cargarContratoEscaneado:
+  pattern: /usuarios/cargar/contrato/escaneado
+  defaults: {_controller: OfertasBundle:Ofertas:cargarContratoEscaneado }
+cargarNuevaProforma:
+  pattern: /usuarios/cargar/proforma/nueva
+  defaults: {_controller: OfertasBundle:Ofertas:cargarNuevaProforma }
+
+#PRESUPUESTOS
+cargarPresupuesto:
+  pattern: /pres/cargar/presupuesto/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:cargarPresupuesto }
+cargarActPresupuesto:
+  pattern: /pres/cargar/actividades/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:cargarActPresupuesto }
+cargarMatPresupuesto:
+  pattern: /pres/cargar/materiales/solicitud
+  defaults: {_controller: OfertasBundle:Ofertas:cargarMatPresupuesto }
+crearDirectorio:
+  pattern: /usuarios/crear/directorio/presupuesto
+  defaults: {_controller: OfertasBundle:Ofertas:crearDirectorio }
+
+#CUANTIFICACION
+generarCuantificacion:
+  pattern: /ingeniero/generar/cuantificacion/{id}
+  defaults: {_controller: OfertasBundle:Ofertas:generarCuantificacion }

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Creative - Bootstrap 3 Responsive Admin Template">
+    <meta name="author" content="GeeksLabs">
+    <meta name="keyword" content="Creative, Dashboard, Admin, Template, Theme, Bootstrap, Responsive, Retina, Minimal">
+    <link rel="shortcut icon" href="{{asset('bundles/ccc/img/icono.png') }}">
+
+    <title>Ofertas | CCC</title>
+
+    <link href="{{ asset('bundles/ccc/css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/ccc/css/bootstrap-theme.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/ccc/css/elegant-icons-style.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/ccc/css/font-awesome.min.css') }}" rel="stylesheet" />
+   {# <link href="{{ asset('bundles/ccc/assets/fullcalendar/fullcalendar/bootstrap-fullcalendar.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/ccc/assets/fullcalendar/fullcalendar/fullcalendar.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/ccc/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css') }}" rel="stylesheet" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="{{ asset('bundles/ccc/css/owl.carousel.css') }}" type="text/css" />
+    <link href="{{ asset('bundles/ccc/css/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('bundles/ccc/css/fullcalendar.css') }}" />
+    <link href="{{ asset('bundles/ccc/css/widgets.css') }}" rel="stylesheet" />#}
+    <link href="{{ asset('bundles/ccc/css/style.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/ccc/css/style-responsive.css') }}" rel="stylesheet" />
+   {# <link href="{{ asset('bundles/ccc/css/xcharts.min.css') }}" rel=" stylesheet" />
+    <link href="{{ asset('bundles/ccc/css/jquery-ui-1.10.4.min.css') }}" rel="stylesheet" />#}
+    {% block css %}{% endblock %}
+</head>
+
+<body>
+
+    <section id="container">
+       {# {% block barraSuperior %}{% endblock %}#}
+
+        {% if app.user %}
+            {% block sinMenuLateral %}
+                <aside style="margin-top: -60px;">
+                    <div id="sidebar"  class="nav-collapse " style="width: 120px">
+                        <ul class="sidebar-menu">
+                            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SECRETARIA') or is_granted('ROLE_INGENIERO') or is_granted('ROLE_PRESUPUESTISTA') or is_granted('ROLE_COMERCIAL') %}
+                                <li>
+                                    <a href="{{ path('clientes') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Clientes</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('posiblesClientes') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Posib. Cliente</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{{ path('solicitudes') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Solicitudes</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('ofertas') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Ofertas</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('ofertasRechazadas') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Rechazadas</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('preContratos') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Aprobadas</span>
+                                    </a>
+                                </li>
+                                {#{% if is_granted('ROLE_SUPER_ADMIN') %}#}
+                                    <li>
+                                        <a href="{{ path('contratos') }}" style="padding: 5px 0 5px 10px;">
+                                            <span>Contratos</span>
+                                        </a>
+                                    </li>
+                                <li>
+                                    <a href="{{ path('contratosTerminados') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Terminados</span>
+                                    </a>
+                                </li>
+                                {#{% endif %}#}
+                                {#{% if is_granted('ROLE_SUPER_ADMIN') %}
+                                    <li>
+                                        <a href="{{ path('terminadosContratos') }}" style="padding: 5px 0 5px 10px;">
+                                            <span>Terminados</span>
+                                        </a>
+                                    </li>
+                                {% endif %}#}
+
+                            {% endif %}
+
+                           {# {% if app.user.username == 'carlos' %}
+                                <li>
+                                    <a href="{{ path('clientes') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Clientes</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('ofertas') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Ofertas</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('contratosAEjecutar') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Contratos</span>
+                                    </a>
+                                </li>
+                            {% endif %}#}
+
+                            {% block menuLateral %}{% endblock %}
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                               {# <li>
+                                    <a href="{{ path('solicitudesR') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Solicitudes</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('ofertasR') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Ofertas</span>
+                                    </a>
+                                </li>#}
+
+
+                                <li>
+                                    <a href="{{ path('usuariosR') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Usuarios</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                <li>
+                                    <a href="{{ path('alertas') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Alertas</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{{ path('exportarPDF') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>PDF</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% if app.user %}
+                                <li>
+                                    <a href="{{ path('logout') }}" style="padding: 5px 0 5px 10px;">
+                                        <span>Salir</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                {# <li>
+                                     <a href="{{ path('estatica',{'estatica':'inicio'}) }}">
+                                         <i class="icon_profile"></i>
+                                         <span>Cuenta</span>
+                                     </a>
+                                 </li>#}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </aside>
+            {% endblock %}
+        {% endif %}
+
+        {% block contenido %}
+            <section id="main-content">
+                {% block cuerpo %}
+
+                {% endblock %}
+            </section>
+        {% endblock %}
+    </section>
+
+<script src="{{asset('bundles/ccc/js/jquery.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery-ui-1.10.4.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery-1.8.3.min.js')}}"></script>
+<script type="text/javascript" src="{{asset('bundles/ccc/js/jquery-ui-1.9.2.custom.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/bootstrap.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery.scrollTo.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery.nicescroll.js')}}" type="text/javascript"></script>
+<script src="{{asset('bundles/ccc/assets/jquery-knob/js/jquery.knob.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery.sparkline.js')}}" type="text/javascript"></script>
+<script src="{{asset('bundles/ccc/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/owl.carousel.js')}}" ></script>
+<script src="{{asset('bundles/ccc/js/fullcalendar.min.js')}}"></script> <!-- Full Google Calendar - Calendar -->
+<script src="{{asset('bundles/ccc/js/assets/fullcalendar/fullcalendar/fullcalendar.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/calendar-custom.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery.rateit.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery.customSelect.min.js')}}" ></script>
+<script src="{{asset('bundles/ccc/assets/chart-master/Chart.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/scripts.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/sparkline-chart.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/easy-pie-chart.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery-jvectormap-1.2.2.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery-jvectormap-world-mill-en.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/xcharts.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery.autosize.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery.placeholder.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/gdp-data.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/morris.min.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/sparklines.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/charts.js')}}"></script>
+<script src="{{asset('bundles/ccc/js/jquery.slimscroll.min.js')}}"></script>
+<script>
+
+    //knob
+    $(function() {
+        $(".knob").knob({
+            'draw' : function () {
+                $(this.i).val(this.cv + '%')
+            }
+        })
+    });
+
+    //carousel
+    $(document).ready(function() {
+        $("#owl-slider").owlCarousel({
+            navigation : true,
+            slideSpeed : 300,
+            paginationSpeed : 400,
+            singleItem : true
+
+        });
+    });
+
+    //custom select box
+
+    $(function(){
+        $('select.styled').customSelect();
+    });
+
+    /* ---------- Map ---------- */
+    $(function(){
+        $('#map').vectorMap({
+            map: 'world_mill_en',
+            series: {
+                regions: [{
+                    values: gdpData,
+                    scale: ['#000', '#000'],
+                    normalizeFunction: 'polynomial'
+                }]
+            },
+            backgroundColor: '#eef3f7',
+            onLabelShow: function(e, el, code){
+                el.html(el.html()+' (GDP - '+gdpData[code]+')');
+            }
+        });
+    });
+
+</script>
+{#<script src="{{asset('bundles/ccc/js/login/superplaceholder.js')}}"></script>
+<script>
+    superplaceholder({
+        el: usuario,
+        sentences: [ 'usuario', 'usuario', 'usuario' ],
+        options: {
+            loop: true,
+            startOnFocus: false
+        }
+    })
+    superplaceholder({
+        el: contrasenna,
+        sentences: [ '************', '*******', '********' ],
+        options: {
+            loop: true,
+            startOnFocus: false
+        }
+    })
+</script>#}
+{% block js %}{% endblock %}
+
+</body>
+</html>

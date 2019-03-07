@@ -1,0 +1,68 @@
+security:
+    encoders:
+        #Symfony\Component\Security\Core\User\User: plaintext
+        Symfony\Component\Security\Core\User\User:
+            algorithm: sha1
+            iterations: 1
+            encode-as-base64: false
+        #CCC\CCCBundle\Entity\Usuario: plaintext
+        CCC\OfertasBundle\Entity\Usuario:
+            algorithm: sha512
+            encode-as-base64: true
+            iterations: 10
+
+    role_hierarchy:
+        ROLE_ADMIN:       [ROLE_COMERCIAL, ROLE_SECRETARIA, ROLE_INGENIERO, ROLE_PRESUPUESTISTA, ROLE_ABOGADO]
+        ROLE_COMERCIAL:   [ROLE_VISOR]
+        ROLE_SECRETARIA:  [ROLE_VISOR]
+        ROLE_INGENIERO:   [ROLE_VISOR]
+        ROLE_PRESUPUESTISTA:  [ROLE_VISOR]
+        ROLE_ABOGADO:  [ROLE_VISOR]
+        ROLE_SUPER_ADMIN: [ROLE_COMERCIAL, ROLE_ECONOMIA, ROLE_ADMIN, ROLE_INGENIERO, ROLE_PRESUPUESTISTA, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        chain_provider:
+            chain:
+                providers: [in_memory, user_db]
+        in_memory:
+            memory:
+                users:
+                    viktor: { password: cab64bc3aa59d00c6323dac58e1492176b389841, roles: [ 'ROLE_SUPER_ADMIN' ] }
+
+        user_db:
+            entity: { class: CCC\OfertasBundle\Entity\Usuario, property: usuario }
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login:
+            pattern:  ^/demo/secured/login$
+            security: false
+
+        secured_area:
+            pattern:    ^/
+            anonymous: ~
+            form_login:
+                check_path: /login_check
+                login_path: /login
+            logout:
+                path:   /logout
+                target: /ofertas/login
+                invalidate_session: false
+            #anonymous: ~
+            #http_basic:
+            #    realm: "Secured Demo Area"
+
+    access_control:
+        - { path: ^/super/, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/admin/, roles: ROLE_ADMIN }
+        - { path: ^/secretaria/, roles: ROLE_SECRETARIA }
+        - { path: ^/ingeniero/, roles: ROLE_INGENIERO }
+        - { path: ^/pres/, roles: ROLE_PRESUPUESTISTA }
+        - { path: ^/abodago/, roles: ROLE_ABOGADO }
+        - { path: ^/comer/, roles: ROLE_COMERCIAL }
+        - { path: ^/usuarios/, roles: ROLE_VISOR }
+        #- { path: ^/ccc/inicio, roles: [ROLE_SUPER_ADMIN, ROLE_OFICINA, ROLE_ADMIN, ROLE_ECONOMIA, ROLE_COMERCIAL ] }
+        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

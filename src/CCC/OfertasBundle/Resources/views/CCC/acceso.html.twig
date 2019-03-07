@@ -1,0 +1,11 @@
+{% extends 'CCCBundle:CCC:login.html.twig' %}
+
+{% block error %}
+    <div class="alert alert-block alert-danger fade in" style="text-align: center">
+        <button data-dismiss="alert" class="close close-sm" type="button">
+            <i class="icon-remove"></i>
+        </button>
+        <strong>Acceso denegado!</strong> Su usuario o contraseña son incorrectos. Inténtelo nuevamente.
+    </div>
+{% endblock %}
+

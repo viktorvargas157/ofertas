@@ -1,0 +1,589 @@
+{% extends '::base.html.twig' %}
+
+{% block css %}
+    {# PARA EL DATATABLE #}
+    <link href="{{ asset('bundles/ccc/css/jquery.dataTables.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        th, td { white-space: nowrap; }
+        div.dataTables_wrapper {
+            width: 100%;
+            margin: 0 auto;
+        }
+    </style>
+{% endblock %}
+
+{% block contenido %}
+    <section id="main-content">
+
+        {% block titulo %}
+            <section class="wrapper">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header" style="text-align: center">{#<i class="fa fa-laptop"></i>#} Costeo de la Obra <a>{{ costeo.idObra.objeto }}</a></h3>
+                         <ol class="breadcrumb">
+                             <li><i class="fa fa-home"></i><a href="{{ path('estatica', {'estatica':'inicio'}) }}">Inicio</a></li>
+                             <li><i class="icon_archive"></i><a href="{{ path('obras') }}">Obras</a></li>
+                             <li><i class="icon_pencil-edit_alt"></i><a href="{{ path('costeoObra',{'id':costeo.idObra.id}) }}">Costeo</a></li>
+                             <li><i class="icon_ol"></i>Anticipo Utilidades Directo</li>
+                         </ol>
+                    </div>
+                </div>
+
+            </section>
+        {% endblock %}
+
+        <section class="panel">
+            <header class="panel-heading tab-bg-primary ">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#home">Socios Directos</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#about">Contratados Directos</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#contratados">Personal Técnico</a>
+                    </li>
+
+                </ul>
+            </header>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="home" class="tab-pane active">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <section class="panel">
+                                            <div class="panel-body">
+                                                <form class="form-horizontal " method="get">
+                                                    <section class="panel">
+                                                        <header class="panel-heading tab-bg-primary ">
+                                                            <ul class="nav nav-tabs">
+                                                                <li class="active">
+                                                                    <a data-toggle="tab" href="#listado">Listado</a>
+                                                                </li>
+                                                                <li class="">
+                                                                    <a data-toggle="tab" href="#adicionar">Adicionar</a>
+                                                                </li>
+                                                            </ul>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="tab-content">
+                                                                <div id="listado" class="tab-pane active">
+                                                                    {% if costeo.sociosDO | length > 0 %}
+                                                                        {% set anticipoMes = 0 %}
+                                                                        {% set anticipoMesAlimentacion = 0 %}
+                                                                        {% set anticipoMesTransp = 0 %}
+                                                                        {% for sociosDO in costeo.sociosDO %}
+                                                                            {% set anticipoMes = anticipoMes + sociosDO.anticipo %}
+                                                                            {% set anticipoMesAlimentacion = anticipoMesAlimentacion + sociosDO.alimentacion %}
+                                                                            {% set anticipoMesTransp = anticipoMesTransp + sociosDO.transporte %}
+                                                                        {% endfor %}
+                                                                        <div class="row">
+                                                                            <div class="col-lg-12">
+                                                                                <section class="panel">
+                                                                                    <table class="table table-bordered">
+                                                                                        <thead>
+                                                                                        <tr style="text-align: center">
+                                                                                            <th style="text-align: center"><i class="icon_cogs" style="text-align: center"></i></th>
+                                                                                            <th style="text-align: center">Total Anticipo Salario</th>
+                                                                                            <th style="text-align: center">Total Anticipo Alimentación</th>
+                                                                                            <th style="text-align: center">Total Anticipo Transporte</th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr>
+                                                                                            <td style="text-align: center"><strong>Quincenal</strong></td>
+                                                                                            <td style="text-align: center">$ {{ (anticipoMes / 2)|number_format(2, '.', ',') }}</td>
+                                                                                            <td style="text-align: center">$ {{ (anticipoMesAlimentacion / 2)|number_format(2, '.', ',') }}</td>
+                                                                                            <td style="text-align: center">$ {{ (anticipoMesTransp / 2  )|number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="text-align: center"><strong>Mensual</strong></td>
+                                                                                            <td style="text-align: center">$ {{ anticipoMes|number_format(2, '.', ',') }}</td>
+                                                                                            <td style="text-align: center">$ {{ anticipoMesAlimentacion |number_format(2, '.', ',') }}</td>
+                                                                                            <td style="text-align: center">$ {{ anticipoMesTransp |number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </section>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    {% endif %}
+
+                                                                    <div class="row">
+                                                                        <div class="col-lg-12">
+                                                                            <table id="tabla" class="display">
+                                                                                <thead>
+                                                                                <tr>
+                                                                                    <th>Nombre y Apellidos</th>
+                                                                                    <th>Especialidad</th>
+                                                                                    <th>Anticipo Mes</th>
+                                                                                    <th>Alimentación</th>
+                                                                                    <th>Transporte</th>
+                                                                                    <th>Opciones</th>
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+
+                                                                                {% for sociosDO in costeo.sociosDO %}
+                                                                                    <tr style="text-align: center">
+                                                                                        <td>{{ sociosDO.nombreApellidos }}</td>
+                                                                                        <td>
+                                                                                            {% for especialidad in especialidades if especialidad.id == sociosDO.especialidad %}
+                                                                                                {{ especialidad.nombre }}
+                                                                                            {% endfor %}
+                                                                                        </td>
+                                                                                        <td>$ {{ sociosDO.anticipo|number_format(2, '.', ',') }}</td>
+                                                                                        <td>$ {{ sociosDO.alimentacion|number_format(2, '.', ',') }}</td>
+                                                                                        <td>$ {{ sociosDO.transporte|number_format(2, '.', ',') }}</td>
+
+                                                                                        <td>
+                                                                                            <a class="btn btn-primary  btn-sm" title="Editar Socio" href="{#{{ path('obrasCliente',{ 'id' : cliente.id}) }}#}">
+                                                                                                <i class="icon_pencil-edit"></i>
+                                                                                            </a>
+                                                                                            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                                                                                <a class="btn btn-danger btn-sm" title="Eliminar Socio Directo a Obra" href="{{ path('eliminarSocioDO',{ 'id' : sociosDO.id}) }}">
+                                                                                                    <i class="icon_trash"></i>
+                                                                                                </a>
+                                                                                            {% endif %}
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                {% endfor %}
+
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div id="adicionar" class="tab-pane">
+                                                                    <div class="row">
+                                                                        <div class="col-lg-12">
+                                                                            <section class="panel">
+                                                                                <header class="panel-heading">
+                                                                                    Formulario para el trabajo con los Socios Directos a Obra
+                                                                                </header>
+                                                                                <div class="panel-body">
+                                                                                    <form class="form-horizontal"  >
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Nombre y Apellidos</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="nombre" name="nombre" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Especialidad</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <select id="especialidad" name="especialidad" class="form-control round-input" required="required">
+                                                                                                    <option></option>
+                                                                                                    {% for especialidad in especialidades %}
+                                                                                                        <option value="{{ especialidad.id }}">{{ especialidad.nombre }}</option>
+                                                                                                    {% endfor%}
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Anticipo Mes</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="anticipo" name="anticipo" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Alimentación Mes</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="alimentacion" name="alimentacion" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Transporte Mes</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="transporte" name="transporte" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <button formmethod="post" formaction="{{ path('insertarSocioDO', {'id' : costeo.id}) }}" type="submit" value="Enviar Datos" class="btn btn-info">Enviar Datos</button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </section>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </form>
+                                            </div>
+                                        </section>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="about" class="tab-pane">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <section class="panel">
+                                            <div class="panel-body">
+                                                <form class="form-horizontal " method="get">
+                                                    <section class="panel">
+                                                        <header class="panel-heading tab-bg-primary ">
+                                                            <ul class="nav nav-tabs">
+                                                                <li class="active">
+                                                                    <a data-toggle="tab" href="#listadoCon">Listado</a>
+                                                                </li>
+                                                                <li class="">
+                                                                    <a data-toggle="tab" href="#adicionarCon">Adicionar</a>
+                                                                </li>
+                                                            </ul>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="tab-content">
+                                                                <div id="listadoCon" class="tab-pane active">
+                                                                    {% if costeo.contratadosDO | length > 0 %}
+                                                                        {% set salarioMesCont = 0 %}
+                                                                        {% set alimentacionMesCont = 0 %}
+                                                                        {% set transporteMesCont = 0 %}
+                                                                        {% for contratadoDO in costeo.contratadosDO %}
+                                                                            {% set salarioMesCont = salarioMesCont + contratadoDO.salario %}
+                                                                            {% set alimentacionMesCont = alimentacionMesCont + contratadoDO.alimentacion %}
+                                                                            {% set transporteMesCont = transporteMesCont + contratadoDO.transporte %}
+                                                                        {% endfor %}
+                                                                        <div class="row">
+                                                                            <div class="col-lg-12">
+                                                                                <section class="panel">
+                                                                                    <table class="table table-bordered">
+                                                                                        <thead>
+                                                                                        <tr style="text-align: center">
+                                                                                            <th style="text-align: center">Total Salario</th>
+                                                                                            <th style="text-align: center">Total Alimentación</th>
+                                                                                            <th style="text-align: center">Total Transporte</th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr>
+                                                                                            <td style="text-align: center">$ {{ salarioMesCont|number_format(2, '.', ',') }}</td>
+                                                                                            <td style="text-align: center">$ {{ alimentacionMesCont|number_format(2, '.', ',') }}</td>
+                                                                                            <td style="text-align: center">$ {{ transporteMesCont|number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </section>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endif %}
+
+                                                                    <div class="row">
+                                                                        <div class="col-lg-12">
+                                                                            <table id="tablaCon" class="display">
+                                                                                <thead>
+                                                                                <tr>
+                                                                                    <th>Especialidad</th>
+                                                                                    <th>Anticipo Mes</th>
+                                                                                    <th>Alimentación</th>
+                                                                                    <th>Transporte</th>
+                                                                                    <th>Opciones</th>
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+
+                                                                                {% for contratadoDO in costeo.contratadosDO %}
+                                                                                    <tr style="text-align: center">
+                                                                                        <td>
+                                                                                            {% for especialidad in especialidades if especialidad.id == contratadoDO.especialidad %}
+                                                                                                {{ especialidad.nombre }}
+                                                                                            {% endfor %}
+                                                                                        </td>
+                                                                                        <td>$ {{ contratadoDO.salario|number_format(2, '.', ',') }}</td>
+                                                                                        <td>$ {{ contratadoDO.alimentacion|number_format(2, '.', ',') }}</td>
+                                                                                        <td>$ {{ contratadoDO.transporte|number_format(2, '.', ',') }}</td>
+
+                                                                                        <td>
+                                                                                            <a class="btn btn-primary  btn-sm" title="Editar Contratado" href="{#{{ path('obrasCliente',{ 'id' : cliente.id}) }}#}">
+                                                                                                <i class="icon_pencil-edit"></i>
+                                                                                            </a>
+                                                                                            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                                                                                <a class="btn btn-danger btn-sm" title="Eliminar Contratado Directo a Obra" href="{{ path('eliminarContratadoDO',{ 'id' : contratadoDO.id}) }}">
+                                                                                                    <i class="icon_trash"></i>
+                                                                                                </a>
+                                                                                            {% endif %}
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                {% endfor %}
+
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div id="adicionarCon" class="tab-pane">
+                                                                    <div class="row">
+                                                                        <div class="col-lg-12">
+                                                                            <section class="panel">
+                                                                                <header class="panel-heading">
+                                                                                    Formulario para el trabajo con los Contratados Directos a Obra
+                                                                                </header>
+                                                                                <div class="panel-body">
+                                                                                    <form {#method="post" action="{{ path('insertarSocioDO', {'id' : costeo.id}) }}"#} class="form-horizontal"  >
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Especialidad</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <select id="especialidad" name="especialidad" class="form-control round-input" required="required">
+                                                                                                    <option></option>
+                                                                                                    {% for especialidad in especialidades %}
+                                                                                                        <option value="{{ especialidad.id }}">{{ especialidad.nombre }}</option>
+                                                                                                    {% endfor%}
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Salario Mes</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="salario" name="salario" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Alimentación Mes</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="alimentacion" name="alimentacion" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Transporte Mes</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="transporte" name="transporte" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <button formmethod="post" formaction="{{ path('insertarContratadoDO', {'id' : costeo.id}) }}" type="submit" value="Enviar Datos" class="btn btn-info">Enviar Datos</button>
+                                                                                                {# <input type="submit" value="Enviar Datos" class="btn btn-info"/>#}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </section>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </form>
+                                            </div>
+                                        </section>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="contratados" class="tab-pane">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <section class="panel">
+                                            <div class="panel-body">
+                                                <form class="form-horizontal " method="get">
+                                                    <section class="panel">
+                                                        <header class="panel-heading tab-bg-primary ">
+                                                            <ul class="nav nav-tabs">
+                                                                <li class="active">
+                                                                    <a data-toggle="tab" href="#listadoPT">Listado</a>
+                                                                </li>
+                                                                <li class="">
+                                                                    <a data-toggle="tab" href="#adicionarPT">Adicionar</a>
+                                                                </li>
+                                                            </ul>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="tab-content">
+                                                                <div id="listadoPT" class="tab-pane active">
+                                                                    {% if costeo.personalTO | length > 0 %}
+                                                                        {% set salarioMesPT = 0 %}
+                                                                        {% set alimentacionMesPT = 0 %}
+                                                                        {% set transporteMesPT = 0 %}
+                                                                        {% for personalT in costeo.personalTO %}
+                                                                            {% set salarioMesPT = salarioMesPT + personalT.salario %}
+                                                                            {% set alimentacionMesPT = alimentacionMesPT + personalT.alimentacion %}
+                                                                            {% set transporteMesPT = transporteMesPT + personalT.transporte %}
+                                                                        {% endfor %}
+                                                                        <div class="row">
+                                                                            <div class="col-lg-12">
+                                                                                <section class="panel">
+                                                                                    <table class="table table-bordered">
+                                                                                        <thead>
+                                                                                        <tr style="text-align: center">
+                                                                                            <th style="text-align: center">Total Salario</th>
+                                                                                            <th style="text-align: center">Total Alimentación</th>
+                                                                                            <th style="text-align: center">Total Transporte</th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <tr>
+                                                                                            <td style="text-align: center">$ {{ salarioMesPT|number_format(2, '.', ',') }}</td>
+                                                                                            <td style="text-align: center">$ {{ alimentacionMesPT|number_format(2, '.', ',') }}</td>
+                                                                                            <td style="text-align: center">$ {{ transporteMesPT|number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </section>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endif %}
+
+                                                                    <div class="row">
+                                                                        <div class="col-lg-12">
+                                                                            <table id="tablaPT" class="display">
+                                                                                <thead>
+                                                                                <tr>
+                                                                                    <th>Especialidad</th>
+                                                                                    <th>Anticipo Mes</th>
+                                                                                    <th>Alimentación</th>
+                                                                                    <th>Transporte</th>
+                                                                                    <th>Opciones</th>
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+
+                                                                                {% for personalT in costeo.personalTO %}
+                                                                                    <tr style="text-align: center">
+                                                                                        <td>
+                                                                                            {% for especialidad in especialidades if especialidad.id == personalT.especialidad %}
+                                                                                                {{ especialidad.nombre }}
+                                                                                            {% endfor %}
+                                                                                        </td>
+                                                                                        <td>{{ personalT.salario }}</td>
+                                                                                        <td>{{ personalT.alimentacion }}</td>
+                                                                                        <td>{{ personalT.transporte }}</td>
+
+                                                                                        <td>
+                                                                                            <a class="btn btn-primary  btn-sm" title="Editar Contratado" href="{#{{ path('obrasCliente',{ 'id' : cliente.id}) }}#}">
+                                                                                                <i class="icon_pencil-edit"></i>
+                                                                                            </a>
+                                                                                            {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                                                                                <a class="btn btn-danger btn-sm" title="Eliminar Personal Técnico en Obra" href="{{ path('eliminarPersonalTO',{ 'id' : personalT.id}) }}">
+                                                                                                    <i class="icon_trash"></i>
+                                                                                                </a>
+                                                                                            {% endif %}
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                {% endfor %}
+
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div id="adicionarPT" class="tab-pane">
+                                                                    <div class="row">
+                                                                        <div class="col-lg-12">
+                                                                            <section class="panel">
+                                                                                <header class="panel-heading">
+                                                                                    Formulario para el trabajo con el Personal Técnico en Obra
+                                                                                </header>
+                                                                                <div class="panel-body">
+                                                                                    <form {#method="post" action="{{ path('insertarSocioDO', {'id' : costeo.id}) }}"#} class="form-horizontal"  >
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Especialidad</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <select id="especialidad" name="especialidad" class="form-control round-input" required="required">
+                                                                                                    <option></option>
+                                                                                                    {% for especialidad in especialidades %}
+                                                                                                        <option value="{{ especialidad.id }}">{{ especialidad.nombre }}</option>
+                                                                                                    {% endfor%}
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Salario Mes</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="salario" name="salario" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Alimentación Mes</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="alimentacion" name="alimentacion" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Transporte Mes</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input id="transporte" name="transporte" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <button formmethod="post" formaction="{{ path('insertarPersonalTO', {'id' : costeo.id}) }}" type="submit" value="Enviar Datos" class="btn btn-info">Enviar Datos</button>
+                                                                                                {# <input type="submit" value="Enviar Datos" class="btn btn-info"/>#}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </section>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </form>
+                                            </div>
+                                        </section>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock %}
+{% block js %}
+    <script src="{{asset('bundles/ccc/js/jquery.hotkeys.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg-custom.js')}}"></script>
+    <script src="{{asset('bundles/ccc/assets/ckeditor/ckeditor.js')}}"></script>
+
+
+    {# PARA EL DATATABLE #}
+    <script src="{{asset('bundles/ccc/js/jquery.dataTables.js')}}" type="text/javascript" ></script>
+    <script>
+        $(document).ready(function() {
+            $('#tabla').dataTable( {
+                 "scrollY": 250,
+                 "scrollX": true
+            } );
+        } );
+        $(document).ready(function() {
+            $('#tablaCon').dataTable( {
+                /*"scrollY": 250,
+                "scrollX": true*/
+            } );
+        } );
+        $(document).ready(function() {
+            $('#tablaPT').dataTable( {
+               /* "scrollY": 250,
+                "scrollX": true*/
+            } );
+        } );
+    </script>
+
+{% endblock %}
+
+

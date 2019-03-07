@@ -1,0 +1,1680 @@
+{% extends 'OfertasBundle:Ofertas:usuarios.html.twig' %}
+{% block css %}
+    <style>
+        .btnNuevo{padding: 0px 0px;}
+    </style>
+{% endblock %}
+
+        {% block encabezado %}
+            Contratos
+        {% endblock %}
+
+         {% block cuerpo %}
+             {# PARA IMPRIMIR LA TABLA  #}
+             <div aria-hidden="true" aria-labelledby="labelTabla" role="dialog" tabindex="-1" class="modal fade">
+                 <table id="imprimir" class="table table-striped table-advance table-hover table-bordered">
+                     <thead>
+                     <tr style="text-align: center;">
+                         <td rowspan="2"><strong>Cliente</strong></td>
+                         <td rowspan="2"><strong>Entrada</strong></td>
+                         <td rowspan="2"><strong>Oferta</strong></td>
+                         <td rowspan="2"><strong>Descripción</strong></td>
+                         <td rowspan="2"><strong>No Contrato</strong></td>
+                         <td rowspan="2"><strong>Datos</strong></td>
+                         <td rowspan="2"><strong>Estado</strong></td>
+                         <td rowspan="2" ><strong>Fecha Firma</strong></td>
+                         <td rowspan="2" ><strong>Vigencia</strong></td>
+                         <td rowspan="2" ><strong>Acta Inicio</strong></td>
+                         <td rowspan="2" ><strong>Ejecución</strong></td>
+                         <td rowspan="2" ><strong>Terminación</strong></td>
+                         <td rowspan="2" ><strong>Acta Entrega</strong></td>
+                     </tr>
+                     </thead>
+                     <tbody>
+
+                     {% for contrato in contratos %}
+                         <tr style="text-align: center;">
+                             <td>
+                                 {% if contrato.idSolicitudOferta != '' %}
+                                     {{ contrato.idSolicitudOferta.idCliente.codigo }}-{{ contrato.idSolicitudOferta.idCliente.cliente }}
+                                 {% endif %}
+                             </td>
+                             <td>
+                                 {% if contrato.fechaEntrada != '' %}
+                                     {{ contrato.fechaEntrada | date('d.m.Y') }}
+                                 {% endif %}
+                             </td>
+                             <td>
+                                 {% if contrato.idSolicitudOferta != '' %}
+                                     {{ contrato.idSolicitudOferta.codigo }}
+                                 {% endif %}
+                             </td>
+                             <td>
+                                 {% if contrato.idSolicitudOferta != '' %}
+                                     {{ contrato.idSolicitudOferta.descripcion }}
+                                 {% endif %}
+                             </td>
+                             <td>{{ contrato.noContrato }}</td>
+
+                             <td>
+                                 <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                     <tbody>
+                                     <tr>
+                                         <td colspan="2">Anticipo</td>
+                                         <td colspan="2">Valor</td>
+                                     </tr>
+                                     <tr>
+                                         <td>CUP</td>
+                                         <td>CUC</td>
+                                         <td>CUP</td>
+                                         <td>CUC</td>
+                                     </tr>
+                                     <tr>
+                                         <td>${{ contrato.valorAnticipoCUP | number_format(2, '.', ',') }}</td>
+                                         <td>${{ contrato.valorAnticipoCUC | number_format(2, '.', ',') }}</td>
+                                         <td>${{ contrato.valorContratoCUP | number_format(2, '.', ',') }}</td>
+                                         <td>${{ contrato.valorContratoCUC | number_format(2, '.', ',') }}</td>
+                                     </tr>
+                                     </tbody>
+                                 </table>
+                                 <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                     <tbody>
+                                     <tr>
+                                         <td>Objeto</td>
+                                     </tr>
+                                     <tr>
+                                         <td>
+                                             {{ contrato.objeto }}
+                                         </td>
+                                     </tr>
+                                     </tbody>
+                                 </table>
+                             </td>
+                             <td>
+                                 {{ contrato.estado }}
+                             </td>
+                             <td>
+                                 {% if contrato.fechaFirmaCliente != '' %}
+                                     {{ contrato.fechaFirmaCliente | date('d.m.Y') }}
+                                 {% endif %}
+                             </td>
+                             <td>
+                                 {{ contrato.vigencia }}
+                                 {% if contrato.tipoTiempo == 'dia' %}
+                                     días
+                                 {% elseif contrato.tipoTiempo == 'mes' %}
+                                     meses
+                                 {% elseif contrato.tipoTiempo == 'anno' %}
+                                     años
+                                 {% endif %}
+                             </td>
+                             <td>
+                                 {% if contrato.fechaActaInicio != '' %}
+                                     {{ contrato.fechaActaInicio | date('d.m.Y') }}
+                                 {% endif %}
+                             </td>
+
+                             <td>
+                                 {% if contrato.idSolicitudOferta != '' %}
+                                     {% if contrato.idSolicitudOferta.tiempoEjecucion != '' %}
+                                         {{ contrato.idSolicitudOferta.tiempoEjecucion }}
+                                     {% endif %}
+                                 {% endif %}
+                             </td>
+                             <td>
+
+                             </td>
+
+                             <td>
+                                 {% if contrato.fechaActaEntrega != '' %}
+                                     {{ contrato.fechaActaEntrega | date('d.m.Y') }}
+                                 {% endif %}
+                             </td>
+                         </tr>
+                     {% endfor %}
+
+                     </tbody>
+                 </table>
+             </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading tab-bg-primary ">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#home">Datos</a>
+                                </li>
+                            </ul>
+                        </header>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div id="home" class="tab-pane active">
+                                    <div class="row">
+                                        <div class="col-lg-1">
+                                            <button style="padding: 5px 7px" class="btn btn-success tooltips" id="print_btn" type="button" title="Imprimir Tabla">Imprimir</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                                <thead>
+                                                <tr style="text-align: center; background-color: #EEEEEE">
+                                                    <td rowspan="2"><strong>Cliente</strong></td>
+                                                    <td rowspan="2" style="width: 5px;"><strong>Entrada</strong></td>
+                                                    <td rowspan="2" style="width: 5px;"><strong>Oferta</strong></td>
+                                                    <td rowspan="2" style="width: 5px;"><strong>D.</strong></td>
+                                                    <td rowspan="2"><strong>No Contrato</strong></td>
+                                                    <td rowspan="2"><strong>S.</strong></td>
+                                                    <td rowspan="2" style="width: 5px;"><strong>Datos</strong></td>
+                                                    {#<td colspan="4"><strong>Dictámen</strong></td>#}
+                                                    {#<td rowspan="2" style="width: 5px;"><strong>Entrega Cliente</strong></td>#}
+                                                    <td rowspan="2"><strong>Estado</strong></td>
+                                                    <td rowspan="2" ><strong>Fecha Firma</strong></td>
+                                                    {#<td rowspan="2" ><strong>Firma CCC</strong></td>#}
+                                                    <td rowspan="2" ><strong>Vigencia</strong></td>
+                                                    <td rowspan="2" ><strong>Acta Inicio</strong></td>
+                                                    <td rowspan="2" ><strong>Ejecución</strong></td>
+                                                    <td rowspan="2" ><strong>Fecha Fin</strong></td>
+                                                    <td rowspan="2" ><strong>Acta Entrega</strong></td>
+                                                </tr>
+                                                   {# <tr>
+                                                        <td style="width: 5px;">Secretaría</td>
+                                                        <td style="width: 5px;">Economía</td>
+                                                        <td style="width: 5px;">Negocios</td>
+                                                        <td style="width: 5px;">Ejecución</td>
+                                                    </tr>#}
+                                                </thead>
+                                                <tbody>
+
+                                                {% for contrato in contratos %}
+                                                    <tr>
+                                                        <td>
+                                                            {% if contrato.idSolicitudOferta != '' %}
+                                                                {{ contrato.idSolicitudOferta.idCliente.codigo }}-{{ contrato.idSolicitudOferta.idCliente.cliente }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if contrato.fechaEntrada != '' %}
+                                                                {{ contrato.fechaEntrada | date('d.m.Y') }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if contrato.idSolicitudOferta != '' %}
+                                                                {{ contrato.idSolicitudOferta.codigo }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if contrato.idSolicitudOferta != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#verDescripcion-{{ contrato.id }}" title="Ver la descripción de la Oferta">D.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="verDescripcion-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Descripción </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <textarea style="text-align: center " class="form-control" disabled="disabled">{{ contrato.idSolicitudOferta.descripcion }}</textarea>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ contrato.noContrato }}</td>
+                                                        <td style="text-align: center">
+                                                            {% if is_granted('ROLE_ABOGADO') %}
+                                                                <div class="row">
+                                                                    <div class="col-lg-1">
+                                                                        <a style="width: 20px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#suplementarContrato-{{ contrato.id }}" title="Añadir nuevo contrato">+</a>
+                                                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="suplementarContrato-{{ contrato.id }}" class="modal fade">
+                                                                            <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                        <h4 class="modal-title">Añadir nuevo contrato </h4>
+                                                                                    </div>
+                                                                                    <div class="modal-body">
+                                                                                        <form class="form-horizontal" method="post" action="{{ path('suplementarContrato') }}">
+                                                                                            {% if contrato.idSolicitudOferta != '' %}
+                                                                                                <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                            {% endif %}
+                                                                                            <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+
+                                                                                            <div class="form-group">
+                                                                                                <label class="col-sm-4 control-label">No</label>
+                                                                                                <div class="col-sm-6">
+                                                                                                    <input style="text-align: center" name="noContrato" type="text" class="form-control round-input" required="required">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group">
+                                                                                                <label class="col-sm-4 control-label">Año</label>
+                                                                                                <div class="col-sm-6">
+                                                                                                    <input style="text-align: center" name="annoContrato" type="number" class="form-control round-input" required="required">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group">
+                                                                                                <label class="col-sm-4 control-label">Objeto</label>
+                                                                                                <div class="col-sm-6">
+                                                                                                    <textarea style="text-align: center" name="objeto" class="form-control" required="required"></textarea>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group">
+                                                                                                <div class="col-sm-1"></div>
+                                                                                                <div class="col-sm-5">
+                                                                                                    <label class="control-label">Anticipo CUP</label>
+                                                                                                    <div class="">
+                                                                                                        <input style="text-align: center" name="valorCUP" type="text" class="form-control round-input">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="col-sm-5">
+                                                                                                    <label class="control-label">Anticipo CUC</label>
+                                                                                                    <div class="">
+                                                                                                        <input style="text-align: center" name="valorCUC" type="text" class="form-control round-input">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group">
+                                                                                                <div class="col-sm-1"></div>
+                                                                                                <div class="col-sm-5">
+                                                                                                    <label class="control-label">Valor Contrato CUP</label>
+                                                                                                    <div class="">
+                                                                                                        <input style="text-align: center" name="valorCUPContrato" type="text" class="form-control round-input">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="col-sm-5">
+                                                                                                    <label class="control-label">Valor Contrato CUC</label>
+                                                                                                    <div class="">
+                                                                                                        <input style="text-align: center" name="valorCUCContrato" type="text" class="form-control round-input">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group">
+                                                                                                <div class="col-sm-10">
+                                                                                                    <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-1">
+                                                                        <a style="width: 20px;" class="btn btn-danger btnNuevo tooltips" data-toggle="modal" href="#eliminarContrato-{{ contrato.id }}" title="Eliminar el contrato">-</a>
+                                                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="eliminarContrato-{{ contrato.id }}" class="modal fade">
+                                                                            <div class="modal-dialog" style="text-align: center">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                        <h4 class="modal-title">Eliminar</h4>
+                                                                                    </div>
+                                                                                    <div class="alert alert-block alert-danger fade in" style="text-align: center">
+                                                                                        <button data-dismiss="alert" class="close close-sm" type="button">
+                                                                                            <i class="icon-remove"></i>
+                                                                                        </button>
+                                                                                        <strong>¿ Está seguro que desea eliminar este contrato?</strong><br><br>
+                                                                                        <form role="form" style="text-align: center">
+                                                                                            <div class="form-group">
+                                                                                                <div class="row">
+                                                                                                    <div class="col-lg-1"></div>
+                                                                                                    <div class="col-lg-1">
+                                                                                                        <input hidden="hidden" name="idContrato" value="{{ contrato.id }}">
+                                                                                                        <button class="btn btn-info" formaction="{{ path('eliminarContrato') }}" formmethod="post">Aceptar</button>
+                                                                                                    </div>
+                                                                                                    <div class="col-lg-3"></div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                               {# {% endif %}#}
+
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if contrato.noContrato == '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarDatos-{{ contrato.id }}" title="Insertar datos del contrato">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarDatos-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Datos </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarDatosContratoA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">No</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input style="text-align: center" name="noContrato" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Año</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <input style="text-align: center" name="annoContrato" type="number" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Objeto</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <textarea style="text-align: center" name="objeto" class="form-control" required="required"></textarea>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-1"></div>
+                                                                                            <div class="col-sm-5">
+                                                                                                <label class="control-label">Anticipo CUP</label>
+                                                                                                <div class="">
+                                                                                                    <input style="text-align: center" name="valorCUP" type="text" class="form-control round-input">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-sm-5">
+                                                                                                <label class="control-label">Anticipo CUC</label>
+                                                                                                <div class="">
+                                                                                                    <input style="text-align: center" name="valorCUC" type="text" class="form-control round-input">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-1"></div>
+                                                                                            <div class="col-sm-5">
+                                                                                                <label class="control-label">Valor Contrato CUP</label>
+                                                                                                <div class="">
+                                                                                                    <input style="text-align: center" name="valorCUPContrato" type="text" class="form-control round-input">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-sm-5">
+                                                                                                <label class="control-label">Valor Contrato CUC</label>
+                                                                                                <div class="">
+                                                                                                    <input style="text-align: center" name="valorCUCContrato" type="text" class="form-control round-input">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#verContrato-{{ contrato.id }}" title="Ver datos del contrato">Ver.</a>
+                                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="verContrato-{{ contrato.id }}" class="modal fade">
+                                                                    <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                <h4 class="modal-title">Datos </h4>
+                                                                            </div>
+                                                                            <section class="panel">
+                                                                                <header class="panel-heading tab-bg-primary ">
+                                                                                    <ul class="nav nav-tabs">
+                                                                                        <li class="active">
+                                                                                            <a data-toggle="tab" href="#datos-{{ contrato.id }}">Datos</a>
+                                                                                        </li>
+                                                                                        {% if is_granted('ROLE_ABOGADO') %}
+                                                                                            <li>
+                                                                                                <a data-toggle="tab" href="#editar-{{ contrato.id }}">Editar</a>
+                                                                                            </li>
+                                                                                        {% endif %}
+                                                                                    </ul>
+                                                                                </header>
+                                                                                <div class="panel-body">
+                                                                                    <div class="tab-content">
+                                                                                        <div id="datos-{{ contrato.id }}" class="tab-pane active">
+                                                                                            <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                                                                                <tbody>
+                                                                                                <tr>
+                                                                                                    <td colspan="2">Anticipo</td>
+                                                                                                    <td colspan="2">Valor</td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <td>CUP</td>
+                                                                                                    <td>CUC</td>
+                                                                                                    <td>CUP</td>
+                                                                                                    <td>CUC</td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <td>${{ contrato.valorAnticipoCUP | number_format(2, '.', ',') }}</td>
+                                                                                                    <td>${{ contrato.valorAnticipoCUC | number_format(2, '.', ',') }}</td>
+                                                                                                    <td>${{ contrato.valorContratoCUP | number_format(2, '.', ',') }}</td>
+                                                                                                    <td>${{ contrato.valorContratoCUC | number_format(2, '.', ',') }}</td>
+                                                                                                </tr>
+                                                                                                </tbody>
+                                                                                            </table>
+                                                                                            <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                                                                                <tbody>
+                                                                                                <tr>
+                                                                                                    <td>Objeto</td>
+                                                                                                </tr>
+                                                                                                <tr>
+                                                                                                    <td>
+                                                                                                        {{ contrato.objeto }}
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                </tbody>
+                                                                                            </table>
+                                                                                        </div>
+                                                                                        <div id="editar-{{ contrato.id }}" class="tab-pane">
+                                                                                            <form class="form-horizontal" method="post" action="{{ path('editarDatosContratoA') }}">
+                                                                                                <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                                <div class="form-group">
+                                                                                                    <label class="col-sm-4 control-label">No</label>
+                                                                                                    <div class="col-sm-6">
+                                                                                                        <input style="text-align: center" name="noContrato" type="text" class="form-control round-input" required="required" value="{{ contrato.noContrato }}">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="form-group">
+                                                                                                    <label class="col-sm-4 control-label">Año</label>
+                                                                                                    <div class="col-sm-6">
+                                                                                                        <input style="text-align: center" name="annoContrato" type="text" class="form-control round-input" required="required" value="{{ contrato.anno }}">
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="form-group">
+                                                                                                    <label class="col-sm-4 control-label">Objeto</label>
+                                                                                                    <div class="col-sm-6">
+                                                                                                        <textarea style="text-align: center" name="objeto" class="form-control" required="required">{{ contrato.objeto }}</textarea>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="form-group">
+                                                                                                    <div class="col-sm-1"></div>
+                                                                                                    <div class="col-sm-5">
+                                                                                                        <label class="control-label">Anticipo CUP</label>
+                                                                                                        <div class="">
+                                                                                                            <input style="text-align: center" name="valorCUP" type="text" class="form-control round-input" value="{{ contrato.valorAnticipoCUP }}">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-sm-5">
+                                                                                                        <label class="control-label">Anticipo CUC</label>
+                                                                                                        <div class="">
+                                                                                                            <input style="text-align: center" name="valorCUC" type="text" class="form-control round-input" value="{{ contrato.valorAnticipoCUC }}">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="form-group">
+                                                                                                    <div class="col-sm-1"></div>
+                                                                                                    <div class="col-sm-5">
+                                                                                                        <label class="control-label">Valor Contrato CUP</label>
+                                                                                                        <div class="">
+                                                                                                            <input style="text-align: center" name="valorCUPContrato" type="text" class="form-control round-input" value="{{ contrato.valorContratoCUP }}">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-sm-5">
+                                                                                                        <label class="control-label">Valor Contrato CUC</label>
+                                                                                                        <div class="">
+                                                                                                            <input style="text-align: center" name="valorCUCContrato" type="text" class="form-control round-input" value="{{ contrato.valorContratoCUC }}">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="form-group">
+                                                                                                    <div class="col-sm-1">
+                                                                                                        <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </form>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </section>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                        </td>
+                                                        {#<td>
+                                                            {% if contrato.fechaSecretaria != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarFechaSecretaria-{{ contrato.id }}" title="Editar la fecha de entrega a Secretaría">{{ contrato.fechaSecretaria | date('d.m.Y') }}</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarFechaSecretaria-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Secretaría </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarFechaSecretariaA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaSecretaria" type="text" class="form-control round-input" required="required" VALUE="{{ contrato.fechaSecretaria | date('d.m.Y') }}">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {{ contrato.fechaSecretaria | date('d.m.Y') }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarSecretaria-{{ contrato.id }}" title="Insertar la fecha de entrega a secretaría">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarSecretaria-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Secretaría </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarFechaSecretariaA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaSecretaria" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if contrato.fechaEconomia != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarFechaEconomia-{{ contrato.id }}" title="Editar la fecha de entrega a economía">{{ contrato.fechaEconomia | date('d.m.Y') }}</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarFechaEconomia-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Economía </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarFechaEconomiaA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaEconomia" type="text" class="form-control round-input" required="required" VALUE="{{ contrato.fechaEconomia | date('d.m.Y') }}">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {{ contrato.fechaEconomia | date('d.m.Y') }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarEconomia-{{ contrato.id }}" title="Insertar la fecha de entrega a economía">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarEconomia-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Economía </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarFechaEconomiaA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaEconomia" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if contrato.fechaNegocios != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarFechaNegocios-{{ contrato.id }}" title="Editar la fecha de entrega a negocios">{{ contrato.fechaNegocios | date('d.m.Y') }}</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarFechaNegocios-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Negocios </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarFechaNegociosA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaNegocios" type="text" class="form-control round-input" required="required" VALUE="{{ contrato.fechaNegocios | date('d.m.Y') }}">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {{ contrato.fechaNegocios | date('d.m.Y') }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarNegocios-{{ contrato.id }}" title="Insertar la fecha de entrega a negocios">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarNegocios-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Negocios </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarFechaNegociosA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaNegocios" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if contrato.fechaEjecucion != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarFechaEjecusion-{{ contrato.id }}" title="Editar la fecha de entrega a ejecución">{{ contrato.fechaEjecucion | date('d.m.Y') }}</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarFechaEjecusion-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Ejecución </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarFechaEjecucionA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaEjecucion" type="text" class="form-control round-input" required="required" VALUE="{{ contrato.fechaEjecucion | date('d.m.Y') }}">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {{ contrato.fechaEjecucion | date('d.m.Y') }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarEjecucion-{{ contrato.id }}" title="Insertar la fecha de entrega a ejecución">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarEjecucion-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Ejecución </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarFechaEjecucionA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaEjecucion" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>#}
+                                                       {# <td>
+                                                            {% if contrato.fechaEntregaCliente != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarFechaEntregaCliente-{{ contrato.id }}" title="Editar la fecha de entrega al cliente">{{ contrato.fechaEntregaCliente | date('d.m.Y') }}</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarFechaEntregaCliente-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Entrega al Cliente </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarFechaEntregaA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaEntregaCliente" type="text" class="form-control round-input" required="required" VALUE="{{ contrato.fechaEntregaCliente | date('d.m.Y') }}">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {{ contrato.fechaEntregaCliente | date('d.m.Y') }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarEntregaCliente-{{ contrato.id }}" title="Insertar la fecha de entrega al cliente">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarEntregaCliente-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Entrega al Cliente </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarFechaEntregaA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaEntregaCliente" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>#}
+                                                        <td>
+                                                            {% if is_granted('ROLE_ABOGADO') %}
+                                                                {% if contrato.estado == '' %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarEstado-{{ contrato.id }}" title="Insertar estado del contrato">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarEstado-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Estado del Contrato </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarEstadoContratoA') }}">
+                                                                                        {% if contrato.idSolicitudOferta != '' %}
+                                                                                            <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        {% endif %}
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Estado</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <select style="text-align: center" name="estado" class="form-control round-input" required="required">
+                                                                                                    <option></option>
+                                                                                                    <option value="En Proceso">En Proceso</option>
+                                                                                                    <option value="Cancelado">Cancelado</option>
+                                                                                                    {#<option value="Firmado">Firmado</option>#}
+                                                                                                </select>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Nota</label>
+                                                                                            <div class="col-sm-6">
+                                                                                                <textarea style="text-align: center" name="nota" class="form-control" required="required"></textarea>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {% if contrato.estado !='Firmado' %}
+                                                                        <a class="tooltips" data-placement="bottom" data-toggle="modal" href="#editarEstado-{{ contrato.id }}" title="Editar el estado del contrato">{{ contrato.estado }}</a>
+                                                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarEstado-{{ contrato.id }}" class="modal fade">
+                                                                            <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                        <h4 class="modal-title">Editar el estado del Contrato </h4>
+                                                                                    </div>
+                                                                                    <div class="modal-body">
+                                                                                        <form class="form-horizontal" method="post" action="{{ path('editarEstadoContratoA') }}">
+                                                                                            {% if contrato.idSolicitudOferta != '' %}
+                                                                                                <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                            {% endif %}
+                                                                                            <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                            <div class="form-group">
+                                                                                                <label class="col-sm-4 control-label">Estado</label>
+                                                                                                <div class="col-sm-6">
+                                                                                                    <select style="text-align: center" name="estado" class="form-control round-input" required="required">
+                                                                                                        <option></option>
+                                                                                                        <option value="Firmado">Firmado</option>
+                                                                                                        <option value="Cancelado">Cancelado</option>
+                                                                                                    </select>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group">
+                                                                                                <label class="col-sm-4 control-label">Nota</label>
+                                                                                                <div class="col-sm-6">
+                                                                                                    <textarea style="text-align: center" name="nota" class="form-control" disabled="disabled">{{ contrato.notaEstado }}</textarea>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group">
+                                                                                                <div class="col-sm-10">
+                                                                                                    <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% else %}
+                                                                        {{ contrato.estado }}
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <a class="tooltips" data-placement="bottom" title="{{ contrato.notaEstado }}">{{ contrato.estado }}</a>
+                                                            {% endif %}
+
+                                                        </td>
+                                                        <td>
+                                                            {% if contrato.fechaFirmaCliente != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarFechaFirmaCliente-{{ contrato.id }}" title="Editar la fecha de firma por el cliente">{{ contrato.fechaFirmaCliente | date('d.m.Y') }}</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarFechaFirmaCliente-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Firma por el Cliente </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarFechaFirmaClienteA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaFirmaCliente" type="text" class="form-control round-input" required="required" VALUE="{{ contrato.fechaFirmaCliente | date('d.m.Y') }}">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {{ contrato.fechaFirmaCliente | date('d.m.Y') }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarFirmaCliente-{{ contrato.id }}" title="Insertar la fecha de firma por el cliente">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarFirmaCliente-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Firma por el Cliente </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarFechaFirmaClienteA') }}">
+                                                                                        {% if contrato.idSolicitudOferta != '' %}
+                                                                                            <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        {% endif %}
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaFirmaCliente" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                        {#<td>
+                                                            {% if contrato.fechaFirmaFinal != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarFechaFirmaFinal-{{ contrato.id }}" title="Editar la fecha de firma por la CCC">{{ contrato.fechaFirmaFinal | date('d.m.Y') }}</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarFechaFirmaFinal-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Contrato firmado por la CCC </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarFechaFinalContratoA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaFinalContrato" type="text" class="form-control round-input" required="required" VALUE="{{ contrato.fechaFirmaFinal | date('d.m.Y') }}">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {{ contrato.fechaFirmaFinal | date('d.m.Y') }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarEntregaFinal-{{ contrato.id }}" title="Insertar la fecha de firma por la CCC">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarEntregaFinal-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Contrato firmado por la CCC</h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarFechaFinalContratoA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaFinalContrato" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>#}
+                                                        <td>
+                                                            {% if is_granted('ROLE_ABOGADO') %}
+                                                                {% if contrato.vigencia == '' %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarVigencia-{{ contrato.id }}" title="Insertar vigencia">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarVigencia-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Vigencia </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarVigenciaContratoA') }}">
+                                                                                        {% if contrato.idSolicitudOferta != '' %}
+                                                                                            <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        {% endif %}
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-1"></div>
+                                                                                            <div class="col-sm-5">
+                                                                                                <label class="control-label">Cantidad</label>
+                                                                                                <div class="">
+                                                                                                    <input style="text-align: center" name="cantidad" type="number" class="form-control round-input" pattern="[0-9]{1,2}" required="required">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-sm-5">
+                                                                                                <label class="control-label">Tiempo</label>
+                                                                                                <div class="">
+                                                                                                    <select style="text-align: center" name="tiempo" class="form-control round-input" required="required">
+                                                                                                        <option></option>
+                                                                                                        <option value="dia">Días</option>
+                                                                                                        <option value="mes">Meses</option>
+                                                                                                        <option value="anno">Año</option>
+                                                                                                    </select>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarVigencia-{{ contrato.id }}" title="Editar la vigencia del Contrato">
+                                                                        {{ contrato.vigencia }}
+                                                                        {% if contrato.tipoTiempo == 'dia' %}
+                                                                            días
+                                                                        {% elseif contrato.tipoTiempo == 'mes' %}
+                                                                            meses
+                                                                        {% elseif contrato.tipoTiempo == 'anno' %}
+                                                                            años
+                                                                        {% endif %}
+                                                                    </a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarVigencia-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Vigencia </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarVigenciaContratoA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-1"></div>
+                                                                                            <div class="col-sm-5">
+                                                                                                <label class="control-label">Cantidad</label>
+                                                                                                <div class="">
+                                                                                                    <input style="text-align: center" name="cantidad" type="number" class="form-control round-input" pattern="[0-9]{1,2}" required="required" value="{{ contrato.vigencia }}">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-sm-5">
+                                                                                                <label class="control-label">Tiempo</label>
+                                                                                                <div class="">
+                                                                                                    <select style="text-align: center" name="tiempo" class="form-control round-input" required="required">
+                                                                                                        <option></option>
+                                                                                                        <option {% if contrato.tipoTiempo == 'dia' %}selected{% endif %} value="dia">Días</option>
+                                                                                                        <option {% if contrato.tipoTiempo == 'mes' %}selected{% endif %} value="mes">Meses</option>
+                                                                                                        <option {% if contrato.tipoTiempo == 'anno' %}selected{% endif %} value="anno">Año</option>
+                                                                                                    </select>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {{ contrato.vigencia }}
+                                                                {% if contrato.tipoTiempo == 'dia' %}
+                                                                    días
+                                                                {% elseif contrato.tipoTiempo == 'mes' %}
+                                                                    meses
+                                                                {% elseif contrato.tipoTiempo == 'anno' %}
+                                                                    años
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if contrato.fechaActaInicio != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarFechaActaInicio-{{ contrato.id }}" title="Editar la fecha del acta de inicio">{{ contrato.fechaActaInicio | date('d.m.Y') }}</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarFechaActaInicio-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Acta de Inicio </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarActaInicioA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaActaInicio" type="text" class="form-control round-input" required="required" VALUE="{{ contrato.fechaActaInicio | date('d.m.Y') }}">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {{ contrato.fechaActaInicio | date('d.m.Y') }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarActaInicio-{{ contrato.id }}" title="Insertar la fecha del acta de inicio">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarActaInicio-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Acta de Inicio </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarActaInicioA') }}">
+                                                                                        {% if contrato.idSolicitudOferta != '' %}
+                                                                                            <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        {% endif %}
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaActaInicio" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+
+                                                        <td>
+                                                            {% if contrato.idSolicitudOferta != '' %}
+                                                                {% if contrato.idSolicitudOferta.tiempoEjecucion != '' %}
+                                                                    {{ contrato.idSolicitudOferta.tiempoEjecucion }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+
+                                                        </td>
+
+                                                        <td>
+                                                            {% if contrato.fechaActaEntrega != '' %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a class="tooltips" data-placement="top" data-toggle="modal" href="#editarFechaActaEntrega-{{ contrato.id }}" title="Editar la fecha del acta de entrega">{{ contrato.fechaActaEntrega | date('d.m.Y') }}</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarFechaActaEntrega-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Acta de Entrega </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('editarActaEntregaA') }}">
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaActaEntrega" type="text" class="form-control round-input" required="required" VALUE="{{ contrato.fechaActaEntrega | date('d.m.Y') }}">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    {{ contrato.fechaActaEntrega | date('d.m.Y') }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if is_granted('ROLE_ABOGADO') %}
+                                                                    <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarActaEntrega-{{ contrato.id }}" title="Insertar la fecha del acta de entrega">Ins.</a>
+                                                                    <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarActaEntrega-{{ contrato.id }}" class="modal fade">
+                                                                        <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                                    <h4 class="modal-title">Acta de Entrega </h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form class="form-horizontal" method="post" action="{{ path('insertarActaEntregaA') }}">
+                                                                                        {% if contrato.idSolicitudOferta != '' %}
+                                                                                            <input hidden="hidden" type="text" name="idSolicitud" value="{{ contrato.idSolicitudOferta.id }}">
+                                                                                        {% endif %}
+                                                                                        <input hidden="hidden" type="text" name="idContrato" value="{{ contrato.id }}">
+                                                                                        <div class="form-group">
+                                                                                            <label class="col-sm-4 control-label">Fecha</label>
+                                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                                <input style="text-align: center" name="fechaActaEntrega" type="text" class="form-control round-input" required="required">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <div class="col-sm-10">
+                                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+         {% endblock %}
+
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/printThis.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print_btn').click(function () {
+                $('#imprimir').printThis();
+            });
+        });
+    </script>
+
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.js')}}" type="text/javascript" ></script>
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.min.js')}}" type="text/javascript" ></script>
+    <script>
+        $('#sandbox-container input').datepicker({
+            format: "dd.mm.yyyy",
+            language: "es",
+            orientation: "bottom auto",
+            autoclose: true,
+            todayHighlight: true
+        });
+    </script>
+
+    {#  PARA LA CABECERA DE LA TABLA ESTATICA   #}
+    <script>
+        $(function () {
+            $("table").stickyTableHeaders();
+        });
+
+        /*! Copyright (c) 2011 by Jonas Mosbech - https://github.com/jmosbech/StickyTableHeaders
+         MIT license info: https://github.com/jmosbech/StickyTableHeaders/blob/master/license.txt */
+
+        ;
+        (function ($, window, undefined) {
+            'use strict';
+
+            var name = 'stickyTableHeaders',
+                    id = 0,
+                    defaults = {
+                        fixedOffset: 0,
+                        leftOffset: 0,
+                        marginTop: 0,
+                        scrollableArea: window
+                    };
+
+            function Plugin(el, options) {
+                // To avoid scope issues, use 'base' instead of 'this'
+                // to reference this class from internal events and functions.
+                var base = this;
+
+                // Access to jQuery and DOM versions of element
+                base.$el = $(el);
+                base.el = el;
+                base.id = id++;
+                base.$window = $(window);
+                base.$document = $(document);
+
+                // Listen for destroyed, call teardown
+                base.$el.bind('destroyed',
+                        $.proxy(base.teardown, base));
+
+                // Cache DOM refs for performance reasons
+                base.$clonedHeader = null;
+                base.$originalHeader = null;
+
+                // Keep track of state
+                base.isSticky = false;
+                base.hasBeenSticky = false;
+                base.leftOffset = null;
+                base.topOffset = null;
+
+                base.init = function () {
+                    base.$el.each(function () {
+                        var $this = $(this);
+
+                        // remove padding on <table> to fix issue #7
+                        $this.css('padding', 0);
+
+                        base.$originalHeader = $('thead:first', this);
+                        base.$clonedHeader = base.$originalHeader.clone();
+                        $this.trigger('clonedHeader.' + name, [base.$clonedHeader]);
+
+                        base.$clonedHeader.addClass('tableFloatingHeader');
+                        base.$clonedHeader.css('display', 'none');
+
+                        base.$originalHeader.addClass('tableFloatingHeaderOriginal');
+
+                        base.$originalHeader.after(base.$clonedHeader);
+
+                        base.$printStyle = $('<style type="text/css" media="print">' +
+                                '.tableFloatingHeader{display:none !important;}' +
+                                '.tableFloatingHeaderOriginal{position:static !important;}' +
+                                '</style>');
+                        $('head').append(base.$printStyle);
+                    });
+
+                    base.setOptions(options);
+                    base.updateWidth();
+                    base.toggleHeaders();
+                    base.bind();
+                };
+
+                base.destroy = function () {
+                    base.$el.unbind('destroyed', base.teardown);
+                    base.teardown();
+                };
+
+                base.teardown = function () {
+                    if (base.isSticky) {
+                        base.$originalHeader.css('position', 'static');
+                    }
+                    $.removeData(base.el, 'plugin_' + name);
+                    base.unbind();
+
+                    base.$clonedHeader.remove();
+                    base.$originalHeader.removeClass('tableFloatingHeaderOriginal');
+                    base.$originalHeader.css('visibility', 'visible');
+                    base.$printStyle.remove();
+
+                    base.el = null;
+                    base.$el = null;
+                };
+
+                base.bind = function () {
+                    base.$scrollableArea.on('scroll.' + name, base.toggleHeaders);
+                    if (!base.isWindowScrolling) {
+                        base.$window.on('scroll.' + name + base.id, base.setPositionValues);
+                        base.$window.on('resize.' + name + base.id, base.toggleHeaders);
+                    }
+                    base.$scrollableArea.on('resize.' + name, base.toggleHeaders);
+                    base.$scrollableArea.on('resize.' + name, base.updateWidth);
+                };
+
+                base.unbind = function () {
+                    // unbind window events by specifying handle so we don't remove too much
+                    base.$scrollableArea.off('.' + name, base.toggleHeaders);
+                    if (!base.isWindowScrolling) {
+                        base.$window.off('.' + name + base.id, base.setPositionValues);
+                        base.$window.off('.' + name + base.id, base.toggleHeaders);
+                    }
+                    base.$scrollableArea.off('.' + name, base.updateWidth);
+                };
+
+                base.toggleHeaders = function () {
+                    if (base.$el) {
+                        base.$el.each(function () {
+                            var $this = $(this),
+                                    newLeft,
+                                    newTopOffset = base.isWindowScrolling ? (
+                                            isNaN(base.options.fixedOffset) ? base.options.fixedOffset.outerHeight() : base.options.fixedOffset) : base.$scrollableArea.offset().top + (!isNaN(base.options.fixedOffset) ? base.options.fixedOffset : 0),
+                                    offset = $this.offset(),
+
+                                    scrollTop = base.$scrollableArea.scrollTop() + newTopOffset,
+                                    scrollLeft = base.$scrollableArea.scrollLeft(),
+
+                                    scrolledPastTop = base.isWindowScrolling ? scrollTop > offset.top : newTopOffset > offset.top,
+                                    notScrolledPastBottom = (base.isWindowScrolling ? scrollTop : 0) < (offset.top + $this.height() - base.$clonedHeader.height() - (base.isWindowScrolling ? 0 : newTopOffset));
+
+                            if (scrolledPastTop && notScrolledPastBottom) {
+                                newLeft = offset.left - scrollLeft + base.options.leftOffset;
+                                base.$originalHeader.css({
+                                    'position': 'fixed',
+                                    'margin-top': base.options.marginTop,
+                                    'left': newLeft,
+                                    'z-index': 3 // #18: opacity bug
+                                });
+                                base.leftOffset = newLeft;
+                                base.topOffset = newTopOffset;
+                                base.$clonedHeader.css('display', '');
+                                if (!base.isSticky) {
+                                    base.isSticky = true;
+                                    // make sure the width is correct: the user might have resized the browser while in static mode
+                                    base.updateWidth();
+                                }
+                                base.setPositionValues();
+                            } else if (base.isSticky) {
+                                base.$originalHeader.css('position', 'static');
+                                base.$clonedHeader.css('display', 'none');
+                                base.isSticky = false;
+                                base.resetWidth($('td,th', base.$clonedHeader), $('td,th', base.$originalHeader));
+                            }
+                        });
+                    }
+                };
+
+                base.setPositionValues = function () {
+                    var winScrollTop = base.$window.scrollTop(),
+                            winScrollLeft = base.$window.scrollLeft();
+                    if (!base.isSticky || winScrollTop < 0 || winScrollTop + base.$window.height() > base.$document.height() || winScrollLeft < 0 || winScrollLeft + base.$window.width() > base.$document.width()) {
+                        return;
+                    }
+                    base.$originalHeader.css({
+                        'top': base.topOffset - (base.isWindowScrolling ? 0 : winScrollTop),
+                        'left': base.leftOffset - (base.isWindowScrolling ? 0 : winScrollLeft)
+                    });
+                };
+
+                base.updateWidth = function () {
+                    if (!base.isSticky) {
+                        return;
+                    }
+                    // Copy cell widths from clone
+                    if (!base.$originalHeaderCells) {
+                        base.$originalHeaderCells = $('th,td', base.$originalHeader);
+                    }
+                    if (!base.$clonedHeaderCells) {
+                        base.$clonedHeaderCells = $('th,td', base.$clonedHeader);
+                    }
+                    var cellWidths = base.getWidth(base.$clonedHeaderCells);
+                    base.setWidth(cellWidths, base.$clonedHeaderCells, base.$originalHeaderCells);
+
+                    // Copy row width from whole table
+                    base.$originalHeader.css('width', base.$clonedHeader.width());
+                };
+
+                base.getWidth = function ($clonedHeaders) {
+                    var widths = [];
+                    $clonedHeaders.each(function (index) {
+                        var width, $this = $(this);
+
+                        if ($this.css('box-sizing') === 'border-box') {
+                            width = $this[0].getBoundingClientRect().width; // #39: border-box bug
+                        } else {
+                            var $origTh = $('th', base.$originalHeader);
+                            if ($origTh.css('border-collapse') === 'collapse') {
+                                if (window.getComputedStyle) {
+                                    width = parseFloat(window.getComputedStyle(this, null).width);
+                                } else {
+                                    // ie8 only
+                                    var leftPadding = parseFloat($this.css('padding-left'));
+                                    var rightPadding = parseFloat($this.css('padding-right'));
+                                    // Needs more investigation - this is assuming constant border around this cell and it's neighbours.
+                                    var border = parseFloat($this.css('border-width'));
+                                    width = $this.outerWidth() - leftPadding - rightPadding - border;
+                                }
+                            } else {
+                                width = $this.width();
+                            }
+                        }
+
+                        widths[index] = width;
+                    });
+                    return widths;
+                };
+
+                base.setWidth = function (widths, $clonedHeaders, $origHeaders) {
+                    $clonedHeaders.each(function (index) {
+                        var width = widths[index];
+                        $origHeaders.eq(index).css({
+                            'min-width': width,
+                            'max-width': width
+                        });
+                    });
+                };
+
+                base.resetWidth = function ($clonedHeaders, $origHeaders) {
+                    $clonedHeaders.each(function (index) {
+                        var $this = $(this);
+                        $origHeaders.eq(index).css({
+                            'min-width': $this.css('min-width'),
+                            'max-width': $this.css('max-width')
+                        });
+                    });
+                };
+
+                base.setOptions = function (options) {
+                    base.options = $.extend({}, defaults, options);
+                    base.$scrollableArea = $(base.options.scrollableArea);
+                    base.isWindowScrolling = base.$scrollableArea[0] === window;
+                };
+
+                base.updateOptions = function (options) {
+                    base.setOptions(options);
+                    // scrollableArea might have changed
+                    base.unbind();
+                    base.bind();
+                    base.updateWidth();
+                    base.toggleHeaders();
+                };
+
+                // Run initializer
+                base.init();
+            }
+
+            // A plugin wrapper around the constructor,
+            // preventing against multiple instantiations
+            $.fn[name] = function (options) {
+                return this.each(function () {
+                    var instance = $.data(this, 'plugin_' + name);
+                    if (instance) {
+                        if (typeof options === 'string') {
+                            instance[options].apply(instance);
+                        } else {
+                            instance.updateOptions(options);
+                        }
+                    } else if (options !== 'destroy') {
+                        $.data(this, 'plugin_' + name, new Plugin(this, options));
+                    }
+                });
+            };
+
+        })(jQuery, window);
+    </script>
+
+{% endblock %}
+

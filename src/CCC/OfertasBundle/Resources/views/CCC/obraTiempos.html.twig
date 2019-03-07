@@ -1,0 +1,194 @@
+{% extends 'CCCBundle:CCC:obras.html.twig' %}
+
+{% block encabezado %}
+   {{ obra.nombre }}
+{% endblock %}
+
+ {% block cuerpo %}
+
+     <div class="row">
+         <div class="col-lg-3"></div>
+         <div class="col-lg-6">
+             <section class="panel">
+                 <header class="panel-heading no-border" style="text-align: center">
+                     TIEMPO
+                 </header>
+                 <table class="table table-bordered">
+                     <tbody>
+                     <tr style="text-align: center; width: auto">
+                         <td><i class="icon_cogs" style="text-align: center"></i></td>
+                         <td>Laborables</td>
+                         <td>Consumido Lab</td>
+                         <td>Remanente Lab</td>
+                     </tr>
+                     <tr style="text-align: center">
+                         <td>DIAS</td>
+                         {% set totalDias = obra.duracion * 30 %}
+                         <td>
+                             {% set totalDiasLaborables = obra.duracion * 24 %}
+                             {{ totalDiasLaborables }}
+                         </td>
+                         {% set diferencia = date('now',"US/Pacific-New").diff(obra.fechaInicio) %}
+                         {% set diasConsumidos = diferencia.days %}
+                         {% set diasRestantes = totalDias - diasConsumidos %}
+                         {% if date('now',"US/Pacific-New") < obra.posibleFechaFin %}
+                             {% if diasConsumidos in [7,8,9,10,11,12,13] %}
+                                 {% set diasConsumidosLaborables = diasConsumidos - 2 %}
+                             {% elseif diasConsumidos in [14,15,16,17,18,19,20] %}
+                                 {% set diasConsumidosLaborables = diasConsumidos - 4 %}
+                             {% elseif diasConsumidos in [21,22,23,24,25,26,27] %}
+                                 {% set diasConsumidosLaborables = diasConsumidos - 6 %}
+                             {% elseif diasConsumidos > 27 %}
+                                 {% set diasConsumidosLaborables = diasConsumidos - 8 %}
+                             {% endif %}
+                             {% set diasRestantesLaborables = totalDiasLaborables - diasConsumidosLaborables %}
+                             <td>
+                                 {{ diasConsumidosLaborables }}
+                                 {% set porCientoConsumidoLab = (diasConsumidosLaborables * 100) / totalDiasLaborables %}
+                                 {% set porCientoConsumidoLabRem = 100 - porCientoConsumidoLab %}
+                             </td>
+                             <td>{{ diasRestantesLaborables }}</td>
+                         {% else %}
+                             {% set diferencia = obra.posibleFechaFin.diff(date('now',"US/Pacific-New")) %}
+                             {% set diasConsum = diferencia.days %}
+                             {% set diasRestantes = diasConsumidos - totalDias %}
+                             {% if diasConsum < 6 %}
+                                 {% set diasConsumidosLaborables = diasConsum %}
+                             {% elseif diasConsum in [7,8,9,10,11,12,13] %}
+                                 {% set diasConsumidosLaborables = diasConsum - 2 %}
+                             {% elseif diasConsum in [14,15,16,17,18,19,20] %}
+                                 {% set diasConsumidosLaborables = diasConsum - 4 %}
+                             {% elseif diasConsum in [21,22,23,24,25,26,27] %}
+                                 {% set diasConsumidosLaborables = diasConsum - 6 %}
+                             {% elseif diasConsum > 27 %}
+                                 {% set diasConsumidosLaborables = diasConsum - 8 %}
+                             {% endif %}
+                             {% set diasConsumidosLab = totalDiasLaborables + diasConsumidosLaborables %}
+                             {% set diasRestantesLaborables = diasConsumidosLaborables %}
+                             <td>
+                                 {{ diasConsumidosLab }}
+                                 {% set porCientoConsumidoLab = (diasConsumidosLab * 100) / totalDiasLaborables %}
+                                 {% set porCientoConsumidoLabRem = porCientoConsumidoLab - 100 %}
+                             </td>
+                             <td>
+                                 {% if diasRestantesLaborables!=0 %}
+                                     +{{ diasRestantesLaborables }}
+                                 {% else %}
+                                     {{ diasRestantesLaborables }}
+                                 {% endif %}
+                             </td>
+                         {% endif %}
+                     </tr>
+                     <tr style="text-align: center">
+                         <td>%</td>
+                         <td STYLE="text-align: center">100</td>
+                         <td>
+                             {{ porCientoConsumidoLab | number_format(2, '.', ',') }}
+                         </td>
+                         <td>
+                             {% if porCientoConsumidoLab <= 100 %}
+                                 {{ porCientoConsumidoLabRem | number_format(2, '.', ',') }}
+                             {% else %}
+                                 +{{ porCientoConsumidoLabRem | number_format(2, '.', ',') }}
+                             {% endif %}
+                         </td>
+                     </tr>
+                     </tbody>
+                 </table>
+             </section>
+         </div>
+     </div>
+
+     <div class="row">
+
+         <div class="col-lg-3"></div>
+         <div class="col-lg-6">
+             <section class="panel">
+                 <div id="chartContainer" style="height: 80px; width: 100%;"></div>
+             </section>
+         </div>
+     </div>
+
+
+ {% endblock %}
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/graficos/canvasjs.min.js')}}"></script>
+    <script type="text/javascript">
+        {% set totalDiasLaborables = obra.duracion * 24 %}
+        {% set diferencia = date('now',"US/Pacific-New").diff(obra.fechaInicio) %}
+        {% set diasConsumidos = diferencia.days %}
+        {% if date('now',"US/Pacific-New") < obra.posibleFechaFin %}
+            {% if diasConsumidos in [7,8,9,10,11,12,13] %}
+                {% set diasConsumidosLaborables = diasConsumidos - 2 %}
+            {% elseif diasConsumidos in [14,15,16,17,18,19,20] %}
+                {% set diasConsumidosLaborables = diasConsumidos - 4 %}
+            {% elseif diasConsumidos in [21,22,23,24,25,26,27] %}
+                {% set diasConsumidosLaborables = diasConsumidos - 6 %}
+            {% elseif diasConsumidos > 27 %}
+                {% set diasConsumidosLaborables = diasConsumidos - 8 %}
+            {% endif %}
+            {% set diasRestantesLaborables = totalDiasLaborables - diasConsumidosLaborables %}
+            {% set porCientoConsumidoLab = (diasConsumidosLaborables * 100) / totalDiasLaborables %}
+            {% set porCientoConsumidoLabRem = 100 - porCientoConsumidoLab %}
+        {% else %}
+            {% set diferencia = obra.posibleFechaFin.diff(date('now',"US/Pacific-New")) %}
+            {% set diasConsum = diferencia.days %}
+            {% set diasRestantes = diasConsumidos - totalDias %}
+            {% if diasConsum < 6 %}
+                {% set diasConsumidosLaborables = diasConsum %}
+            {% elseif diasConsum in [7,8,9,10,11,12,13] %}
+                {% set diasConsumidosLaborables = diasConsum - 2 %}
+            {% elseif diasConsum in [14,15,16,17,18,19,20] %}
+                {% set diasConsumidosLaborables = diasConsum - 4 %}
+            {% elseif diasConsum in [21,22,23,24,25,26,27] %}
+                {% set diasConsumidosLaborables = diasConsum - 6 %}
+            {% elseif diasConsum > 27 %}
+                {% set diasConsumidosLaborables = diasConsum - 8 %}
+            {% endif %}
+            {% set diasConsumidosLab = totalDiasLaborables + diasConsumidosLaborables %}
+            {% set diasRestantesLaborables = diasConsumidosLaborables %}
+            {% set porCientoConsumidoLab = (diasConsumidosLab * 100) / totalDiasLaborables %}
+            {% set porCientoConsumidoLabRem = porCientoConsumidoLab - 100 %}
+        {% endif %}
+
+        window.onload = function ()
+        {
+            var chart = new CanvasJS.Chart("chartContainer",
+                    {
+                        axisX: {
+                            interval: 0
+                        },
+                        axisY: {
+                            title: "Días",
+                            maximum: {{ totalDiasLaborables }}
+                        },
+                        data: [
+                            {
+                            {% if porCientoConsumidoLab < 80 %}
+                                color:"#51A351",
+                            {% else %}
+                                color:"red",
+                            {% endif %}
+                                type: "bar",
+                                toolTipContent: "<b>{label}</b><br>dias: {y}<br>%: {gdp}",
+
+                                dataPoints: [
+                                    { label:"Consumido", y: {{ diasConsumidosLaborables }},gdp:{{ porCientoConsumidoLab | number_format(2, '.', ',') }} },
+                                ]
+                            }
+                        ]
+                    });
+            chart.render();
+        }
+    </script>
+
+    <script src="{{asset('bundles/ccc/js/jquery.hotkeys.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/bootstrap-wysiwyg-custom.js')}}"></script>
+    <script src="{{asset('bundles/ccc/assets/ckeditor/ckeditor.js')}}"></script>
+
+    <script src="{{asset('bundles/ccc/js/respond.min.js')}}"></script>
+    <script src="{{asset('bundles/ccc/js/html5shiv.js')}}"></script>
+{% endblock %}

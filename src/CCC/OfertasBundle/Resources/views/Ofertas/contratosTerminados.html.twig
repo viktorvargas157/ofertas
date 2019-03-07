@@ -1,0 +1,970 @@
+{% extends 'OfertasBundle:Ofertas:usuarios.html.twig' %}
+{% block css %}
+    <link href="{{ asset('bundles/ccc/css/dataTables.fixedColumns.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/ccc/css/jquery.dataTables.min.css') }}" rel="stylesheet" />
+    <style>
+        .btnNuevo{padding: 0px 0px;}
+    </style>
+{% endblock %}
+
+      {% block encabezado %}
+          Contratos
+      {% endblock %}
+
+         {% block cuerpo %}
+             <div class="row">
+                 <div class="col-lg-1">
+                     <a style="width: 72px" class="btn btn-success tooltips" data-placement="top" data-toggle="modal" href="#buscarContratos" title="Buscar contratos">Buscar</a>
+                     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="buscarContratos" class="modal fade">
+                         <div class="modal-dialog" style="text-align: center;width: 550px; height: auto">
+                             <div class="modal-content">
+                                 <div class="modal-header">
+                                     <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                     <h4 class="modal-title">Contrato </h4>
+                                 </div>
+                                 <div class="modal-body">
+                                     <form class="form-horizontal" method="post" action="{{ path('buscarContratos') }}">
+                                         <div class="row">
+                                             <div class="col-lg-1"></div>
+                                             <div class="col-lg-3">
+                                                 <label class="control-label">Año</label>
+                                                 <div class="">
+                                                     <select style="text-align: center" name="anno" class="form-control round-input">
+                                                         <option></option>
+                                                         <option value="2018">2018</option>
+                                                         <option value="2019">2019</option>
+                                                         <option value="2020">2020</option>
+                                                     </select>
+                                                 </div>
+                                             </div>
+                                             <div class="col-lg-6">
+                                                 <label>Cliente</label>
+                                                 <select style="text-align: center" name="cliente" class="form-control round-input">
+                                                     <option></option>
+                                                     {% for cliente in clientes %}
+                                                         <option value="{{ cliente.id }}">{{ cliente.cliente }}-{{ cliente.empresa }}</option>
+                                                     {% endfor %}
+                                                 </select>
+                                             </div>
+                                         </div>
+                                         <br>
+                                         <div class="row">
+                                             <div class="col-lg-1"></div>
+                                             <div class="col-lg-1">
+                                                 <input type="submit" value="Enviar" class="btn btn-success"/>
+                                             </div>
+                                         </div>
+                                     </form>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+             <div class="row">
+                 <div class="col-lg-12">
+                     <table {#id="example"#} class="table table-striped table-advance table-hover table-bordered display" style="text-align: center">
+                         <thead>
+                         <tr style="text-align: center; background-color: #EEEEEE">
+                             <td rowspan="2" style="width: 5px;">No.</td>
+                             <td rowspan="2">No. Ofer.</td>
+                             <td rowspan="2">Documento</td>
+                             <td rowspan="2">Cliente</td>
+                             <td rowspan="2">Obra</td>
+                             <td rowspan="2">Objeto de Obra</td>
+                             {% if is_granted('ROLE_SUPER_ADMIN') or app.user.username == 'operaza' or app.user.username == 'yenised' %}
+                                <td rowspan="2" style="width: 5px;">Archivo</td>
+                             {% endif %}
+                             <td rowspan="2" style="width: 5px;">Firma</td>
+                             <td colspan="2">Vigencia</td>
+                             <td colspan="1">Días</td>
+                             <td colspan="3">Valor</td>
+                             <td colspan="3">Anticipo</td>
+                         </tr>
+                         <tr style="text-align: center; background-color: #EEEEEE">
+                             <td style="width: 5px;">Días</td>
+                             <td style="width: 5px;">Venc.</td>
+                             <td style="width: 5px;">Ejec.</td>
+                             <td style="width: 5px;">CUP</td>
+                             <td style="width: 5px;">CUC</td>
+                             <td style="width: 5px;">Todo CUC</td>
+                             <td style="width: 5px;">%</td>
+                             <td style="width: 5px;">CUP</td>
+                             <td style="width: 5px;">CUC</td>
+                         </tr>
+                         </thead>
+                         <tbody>
+
+                         {% for contrato in contratos %}
+                             <tr>
+                                 <td>
+                                     {% if contrato.tieneScaner == true %}
+                                         <a style="color: #797979;
+                                             {% if contrato.essuplemento == false and contrato.idcontratopadre == '' %}
+                                                     color: #FFFFFF;background-color: #468847;
+                                             {% endif %}
+                                         " class="tooltips" data-placement="top" data-toggle="modal" href="#verScanner-{{ contrato.id }}" title="Ver Contrato Escaneado">
+                                             {% if contrato.essuplemento == false and contrato.idcontratopadre == '' %}
+                                                 {{ contrato.no }}/{{ contrato.anno }}
+                                             {% elseif contrato.essuplemento == false and contrato.idcontratopadre != '' %}
+                                                 CE-{{ contrato.no }}
+                                             {% elseif contrato.essuplemento == true %}
+                                                 Sup-{{ contrato.no }}
+                                             {% endif %}
+                                         </a>
+                                         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="verScanner-{{ contrato.id }}" class="modal fade">
+                                             <div class="modal-dialog" style="text-align: center;width: 90%; height: auto">
+                                                 <div class="modal-content">
+                                                     <div class="modal-header">
+                                                         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                         <h4 class="modal-title">Contrato Escaneado </h4>
+                                                     </div>
+                                                     <div class="modal-body">
+                                                         <embed src="{{ asset('bundles/ccc/contratosObra/'~contrato.id~'.pdf') }}" width="100%" height="650"></embed>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     {% else %}
+                                         {{ contrato.no }}{% if contrato.essuplemento == false and contrato.idcontratopadre == '' %}/{{ contrato.anno }}{% endif %}
+                                     {% endif %}
+                                 </td>
+                                 <td>
+                                     {% for sol in solicitudes if sol.id == contrato.idsolicitud %}
+                                         {{ sol.codigo }}/{{ sol.anno }}
+                                     {% endfor %}
+                                 </td>
+                                 <td>
+                                     {% if (is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_COMERCIAL') or app.user.username == 'operaza') and contrato.essuplemento == false %}
+                                         <a style="color: #797979;" class="tooltips" data-placement="top" data-toggle="modal" href="#nuevoContratoSup-{{ contrato.id }}" title="Nuevo {% if contrato.esmarco == true %}C.E.O. /{% endif %} Suplemento">{{ contrato.tipodocumento }}</a>
+                                         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="nuevoContratoSup-{{ contrato.id }}" class="modal fade">
+                                             <div class="modal-dialog" style="text-align: center;width: 850px; height: auto">
+                                                 <div class="modal-content">
+                                                     <div class="modal-header">
+                                                         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                         <h4 class="modal-title">Nuevo {% if contrato.esmarco == true %}C.E.O. /{% endif %} Suplemento </h4>
+                                                     </div>
+                                                     <div class="modal-body">
+                                                         <form class="form-horizontal" role="form">
+                                                             <div class="form-group">
+                                                                 <div class="row">
+                                                                     <div class="col-lg-12">
+                                                                         {#<form>
+                                                                             <div class="row" style="text-align: center">
+                                                                                 <div class="col-lg-1"></div>
+                                                                                  <div class="col-lg-4">
+                                                                                      <label>Tipo Contrato</label>
+                                                                                      <select style="text-align: center" name="tipoContrato" class="form-control round-input" required="required">
+                                                                                          <option></option>
+                                                                                          {% if contrato.esmarco == true %}
+                                                                                            <option value="ceo-Contrato de Ejecución de Obra">C.E.O.</option>
+                                                                                          {% endif %}
+                                                                                          <option value="sup-Suplemento">Suplemento</option>
+                                                                                      </select>
+                                                                                  </div>
+                                                                                 <div class="col-lg-6">
+                                                                                     <label>Oferta</label>
+                                                                                     <select style="text-align: center" name="idOferta" class="form-control round-input" required="required">
+                                                                                         <option></option>
+                                                                                         {% for oferta in ofertas %}
+                                                                                             <option value="{{ oferta.id }}">{{ oferta.codigo }}{% if oferta.nombreobra!='' %}-{{ oferta.nombreobra }}{% endif %}</option>
+                                                                                         {% endfor %}
+                                                                                     </select>
+                                                                                 </div>
+                                                                             </div>
+
+                                                                             <div class="row">
+                                                                                 <div class="col-lg-1"></div>
+                                                                                 <div id="sandbox-container" class="col-lg-4">
+                                                                                     <label>Firma</label>
+                                                                                     <input style="text-align: center" name="fechaFirma" type="text" class="form-control round-input">
+                                                                                 </div>
+                                                                                 <div  class="col-lg-3">
+                                                                                     <label>Vigencia</label>
+                                                                                     <select style="text-align: center" name="vigencia" class="form-control round-input">
+                                                                                         <option></option>
+                                                                                         <option value="365">365</option>
+                                                                                         <option value="730">730</option>
+                                                                                     </select>
+                                                                                 </div>
+                                                                                 <div class="col-lg-3">
+                                                                                     <label>Anticipo</label>
+                                                                                     <input style="text-align: center" name="anticipo" type="number" class="form-control round-input">
+                                                                                 </div>
+                                                                             </div>
+
+                                                                             <br>
+                                                                             <div class="row">
+                                                                                 <div class="col-lg-1"></div>
+                                                                                 <div class="col-lg-1">
+                                                                                     <input name="idContrato" value="{{ contrato.id }}" hidden="hidden">
+                                                                                     <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('generarProformaCEOSup')}}" formenctype="multipart/form-data">Generar</button>
+                                                                                 </div>
+                                                                             </div>
+                                                                         </form>#}
+
+                                                                         <form>
+                                                                             <header class="panel-heading tab-bg-primary ">
+                                                                                 <ul class="nav nav-tabs">
+                                                                                     <li class="active">
+                                                                                         <a data-toggle="tab" href="#datosContrato-{{ contrato.id }}">Contrato</a>
+                                                                                     </li>
+                                                                                     <li>
+                                                                                         <a data-toggle="tab" href="#datosLegalesCLiente-{{ contrato.id }}">Datos Legales</a>
+                                                                                     </li>
+                                                                                 </ul>
+                                                                             </header>
+                                                                             <div class="panel-body">
+                                                                                 <div class="tab-content">
+                                                                                     <div id="datosContrato-{{ contrato.id }}" class="tab-pane active">
+                                                                                         <div class="row" style="text-align: center">
+                                                                                             <script type="text/javascript">
+                                                                                                 function mostrar(id,cont) {
+                                                                                                     if (id == "sup-Suplemento-"+cont)
+                                                                                                     {
+                                                                                                         $("#suplemento-"+cont).show();
+                                                                                                     }
+                                                                                                     if (id != "sup-Suplemento-"+cont)
+                                                                                                     {
+                                                                                                         $("#suplemento-"+cont).hide();
+                                                                                                     }
+                                                                                                 }
+                                                                                             </script>
+                                                                                             <div class="col-lg-1"></div>
+                                                                                             <div class="col-lg-4">
+                                                                                                 <label>Tipo Contrato</label>
+                                                                                                 <select onChange="mostrar(this.value,{{ contrato.id }});" style="text-align: center" name="tipoContrato" class="form-control round-input" required="required">
+                                                                                                     <option></option>
+                                                                                                     {% if contrato.esmarco == true %}
+                                                                                                         <option value="ceo-Contrato Específico">C. Específico</option>
+                                                                                                     {% endif %}
+                                                                                                     <option value="sup-Suplemento-{{ contrato.id }}">Suplemento</option>
+                                                                                                 </select>
+                                                                                             </div>
+                                                                                             <div class="col-lg-4">
+                                                                                                 <label>Oferta</label>
+                                                                                                 <select style="text-align: center" name="idOferta" class="form-control round-input" required="required">
+                                                                                                     <option></option>
+                                                                                                     {% for oferta in ofertas %}
+                                                                                                         <option value="{{ oferta.id }}">{{ oferta.codigo }}{% if oferta.nombreobra!='' %}-{{ oferta.nombreobra }}{% endif %}</option>
+                                                                                                     {% endfor %}
+                                                                                                 </select>
+                                                                                             </div>
+
+                                                                                             <div class="col-lg-2">
+                                                                                                 <label>Anticipo</label>
+                                                                                                 <input style="text-align: center" name="anticipo" type="number" class="form-control round-input">
+                                                                                             </div>
+                                                                                         </div>
+
+                                                                                         <div id="suplemento-{{ contrato.id }}" class="row" style="text-align: center; display: none;">
+                                                                                             <br>
+                                                                                             <div class="col-lg-12">
+                                                                                                 <label style="color: #0c0c0c">Tipo Suplemento</label>
+                                                                                                 <div class="row">
+                                                                                                     <div class="col-lg-1"></div>
+                                                                                                     <div class="col-lg-5">
+                                                                                                         <label style="color: #0c0c0c">
+                                                                                                             <input type="radio" name="tipoSuplemento" value="tiempo" checked> Incremento de tiempo
+                                                                                                         </label>
+                                                                                                     </div>
+                                                                                                     <div class="col-lg-5">
+                                                                                                         <label style="color: #0c0c0c">
+                                                                                                             <input type="radio" name="tipoSuplemento" value="act"> Incremento de actividades
+                                                                                                         </label>
+                                                                                                     </div>
+                                                                                                 </div>
+                                                                                                 <div class="row">
+                                                                                                     <div class="col-lg-1"></div>
+                                                                                                     <div class="col-lg-5">
+                                                                                                         <label style="color: #0c0c0c">
+                                                                                                             <input type="radio" name="tipoSuplemento" value="acttiempo"> Incremento de actividades  y tiempo
+                                                                                                         </label>
+                                                                                                     </div>
+                                                                                                 </div>
+                                                                                             </div>
+                                                                                         </div>
+
+                                                                                         {#<div class="row">
+                                                                                             <div class="col-lg-1"></div>
+                                                                                             <div id="sandbox-container" class="col-lg-4">
+                                                                                                 <label>Firma</label>
+                                                                                                 <input style="text-align: center" name="fechaFirma" type="text" class="form-control round-input">
+                                                                                             </div>
+                                                                                             <div  class="col-lg-3">
+                                                                                                 <label>Vigencia</label>
+                                                                                                 <select style="text-align: center" name="vigencia" class="form-control round-input">
+                                                                                                     <option></option>
+                                                                                                     <option value="365">365</option>
+                                                                                                     <option value="730">730</option>
+                                                                                                 </select>
+                                                                                             </div>
+                                                                                         </div>#}
+                                                                                     </div>
+                                                                                     <div id="datosLegalesCLiente-{{ contrato.id }}" class="tab-pane">
+                                                                                         {% set nombreEmpresa = '' %}
+                                                                                         {% set noResolucion = '' %}
+                                                                                         {% set fechaResolucion = '' %}
+                                                                                         {#{% set nombreResolucion = '' %}#}
+                                                                                         {% set organismoResolucion = '' %}
+                                                                                         {% set domicilioLegal = '' %}
+                                                                                         {% set reeup = '' %}
+                                                                                         {% set noidentributaria = '' %}
+                                                                                         {% set cuentacuc = '' %}
+                                                                                         {% set titularcuentacuc = '' %}
+                                                                                         {% set bancocuentacuc = '' %}
+                                                                                         {% set sucursalcuentacuc = '' %}
+                                                                                         {% set direccioncuentacuc = '' %}
+                                                                                         {% set cuentacup = '' %}
+                                                                                         {% set titularcuentacup = '' %}
+                                                                                         {% set bancocuentacup = '' %}
+                                                                                         {% set sucursalcuentacup = '' %}
+                                                                                         {% set direccioncuentacup = '' %}
+                                                                                         {% set nolicencia = '' %}
+                                                                                         {% set noregistro = '' %}
+                                                                                         {% set replicencia = '' %}
+                                                                                         {% set cargoreplicencia = '' %}
+                                                                                         {% set noresolrep = '' %}
+                                                                                         {% set fecharesrep = '' %}
+                                                                                         {% set emitidaresolrep = '' %}
+                                                                                         {% for clien in clientes if clien.id == contrato.cliente %}
+                                                                                             {% set nombreEmpresa = clien.nombreempresa %}
+                                                                                             {% set noResolucion = clien.noresolucion %}
+                                                                                                {% if clien.fecharesolucion != '' %}
+                                                                                                    {% set fechaResolucion = clien.fechaResolucion %}
+                                                                                                {% endif %}
+                                                                                             {#{% set nombreResolucion = clien.nombreresolucion %}#}
+                                                                                             {% set organismoResolucion = clien.organismoemite %}
+                                                                                             {% set domicilioLegal = clien.direccionresolucion %}
+                                                                                             {% set reeup = clien.reeup %}
+                                                                                             {% set noidentributaria = clien.noidentributaria %}
+                                                                                             {% set cuentacuc = clien.cuentacuc %}
+                                                                                             {% set titularcuentacuc = clien.titularcuentacuc %}
+                                                                                             {% set bancocuentacuc = clien.bancocuentacuc %}
+                                                                                             {% set sucursalcuentacuc = clien.sucursalcuentacuc %}
+                                                                                             {% set direccioncuentacuc = clien.direccioncuentacuc %}
+                                                                                             {% set cuentacup = clien.cuentacup %}
+                                                                                             {% set titularcuentacup = clien.titularcuentacup %}
+                                                                                             {% set bancocuentacup = clien.bancocuentacup %}
+                                                                                             {% set sucursalcuentacup = clien.sucursalcuentacup %}
+                                                                                             {% set direccioncuentacup = clien.direccioncuentacup %}
+                                                                                             {% set nolicencia = clien.nolicencia %}
+                                                                                             {% set noregistro = clien.noregistro %}
+                                                                                             {% set replicencia = clien.replicencia %}
+                                                                                             {% set cargoreplicencia = clien.cargoreplicencia %}
+                                                                                             {% set noresolrep = clien.noresolrep %}
+                                                                                             {% if clien.fecharesrep != '' %}
+                                                                                                 {% set fecharesrep = clien.fecharesrep %}
+                                                                                             {% endif %}
+                                                                                             {% set emitidaresolrep = clien.emitidaresolrep %}
+                                                                                         {% endfor %}
+                                                                                         <div class="row" style="text-align: center">
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Nombre Empresa</label>
+                                                                                                 <input style="text-align: center" name="nombreEmpresa" value="{{ nombreEmpresa }}" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Constituida</label>
+                                                                                                 <input style="text-align: center" value="{{ noResolucion }}" name="noResolucion" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                             <div {#id="sandbox-container"#} class="col-lg-3">
+                                                                                                 <label>Fecha Constitución</label>
+                                                                                                 <input style="text-align: center" {% if fechaResolucion != '' %}value="{{ fechaResolucion }}" {% endif %} name="fechaResolucion" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Organismo emite</label>
+                                                                                                 <input style="text-align: center" value="{{ organismoResolucion }}" name="organismoResolucion" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                            {# <div class="col-lg-3">
+                                                                                                 <label>Nombre Resolución</label>
+                                                                                                 <input style="text-align: center" name="nombreResolucion" value="{{ nombreResolucion }}" type="text" class="form-control round-input" required>
+                                                                                             </div>#}
+                                                                                         </div>
+                                                                                         <div class="row" style="text-align: center">
+                                                                                             <div class="col-lg-6">
+                                                                                                 <label>Domicilio legal</label>
+                                                                                                 <textarea style="text-align: center" name="domicilioLegal" class="form-control" required>{{ domicilioLegal }}</textarea>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Código</label>
+                                                                                                 <input style="text-align: center" name="reeup" value="{{ reeup }}" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>NIT</label>
+                                                                                                 <input style="text-align: center" value="{{ noidentributaria }}" name="noTributaria" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                         </div>
+                                                                                         <div class="row" style="text-align: center">
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>No. Cuenta CUC</label>
+                                                                                                 <input style="text-align: center" value="{{ cuentacuc }}" name="noCuentaCUC" type="text" class="form-control round-input">
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Titular CUC</label>
+                                                                                                 <input style="text-align: center" name="titularCuentaCUC" value="{{ titularcuentacuc }}" type="text" class="form-control round-input">
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Banco CUC</label>
+                                                                                                 <input style="text-align: center" value="{{ bancocuentacuc }}" name="bancoCuentaCUC" type="text" class="form-control round-input">
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Sucursal CUC</label>
+                                                                                                 <input style="text-align: center" value="{{ sucursalcuentacuc }}" name="sucursalCuentaCUC" type="text" class="form-control round-input">
+                                                                                             </div>
+                                                                                         </div>
+                                                                                         <div class="row" style="text-align: center">
+                                                                                             <div class="col-lg-6">
+                                                                                                 <label>Dirección Banco CUC</label>
+                                                                                                 <textarea style="text-align: center" name="direccionBancoCUC" class="form-control">{{ direccioncuentacuc }}</textarea>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>No. Cuenta CUP</label>
+                                                                                                 <input style="text-align: center" value="{{ cuentacup }}" name="noCuentaCUP" type="text" class="form-control round-input">
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Titular CUP</label>
+                                                                                                 <input style="text-align: center" name="titularCuentaCUP" value="{{ titularcuentacup }}" type="text" class="form-control round-input">
+                                                                                             </div>
+                                                                                         </div>
+                                                                                         <div class="row" style="text-align: center">
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Banco CUP</label>
+                                                                                                 <input style="text-align: center" value="{{ bancocuentacup }}" name="bancoCuentaCUP" type="text" class="form-control round-input">
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Sucursal CUP</label>
+                                                                                                 <input style="text-align: center" value="{{ sucursalcuentacup }}" name="sucursalCuentaCUP" type="text" class="form-control round-input">
+                                                                                             </div>
+                                                                                             <div class="col-lg-6">
+                                                                                                 <label>Dirección Banco CUP</label>
+                                                                                                 <textarea style="text-align: center" name="direccionBancoCUP" class="form-control">{{ direccioncuentacup }}</textarea>
+                                                                                             </div>
+                                                                                         </div>
+                                                                                         <div class="row" style="text-align: center">
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>No. Licencia</label>
+                                                                                                 <input style="text-align: center" value="{{ nolicencia }}" name="noLicenciaCUC" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>No. Comercial</label>
+                                                                                                 <input style="text-align: center" value="{{ noregistro }}" name="noRegistroCom" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Representada</label>
+                                                                                                 <input style="text-align: center" value="{{ replicencia }}" name="representante" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Cargo</label>
+                                                                                                 <input style="text-align: center" name="cargoRep" value="{{ cargoreplicencia }}" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                         </div>
+                                                                                         <div class="row" style="text-align: center">
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Mediante</label>
+                                                                                                 <input style="text-align: center" value="{{ noresolrep }}" name="noResolucionRep" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                             <div {#id="sandbox-container" #}class="col-lg-3">
+                                                                                                 <label>Fecha</label>
+                                                                                                 <input style="text-align: center" {% if fecharesrep != '' %}value="{{ fecharesrep }}"{% endif %} name="fechaResolRep" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 <label>Emitida por</label>
+                                                                                                 <input style="text-align: center" value="{{ emitidaresolrep }}" name="emitidaPor" type="text" class="form-control round-input" required>
+                                                                                             </div>
+                                                                                         </div>
+                                                                                     </div>
+                                                                                 </div>
+                                                                             </div>
+
+                                                                             <br>
+                                                                             <script>
+                                                                                 function redireccionarPagina()
+                                                                                 {
+                                                                                     window.location = "{{ path('contratos') }}";
+                                                                                 }
+                                                                             </script>
+                                                                             <div class="row">
+                                                                                 <div class="col-lg-1"></div>
+                                                                                 <div class="col-lg-1">
+                                                                                     <input name="idContrato" value="{{ contrato.id }}" hidden="hidden">
+                                                                                     <button onclick="setTimeout('redireccionarPagina()', 2000)" type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('generarProformaCEOSup')}}" formenctype="multipart/form-data">Generar</button>
+                                                                                 </div>
+                                                                             </div>
+                                                                         </form>
+                                                                     </div>
+                                                                 </div>
+                                                             </div>
+                                                         </form>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     {% else %}
+                                         <a style="color: #797979;" class="tooltips" data-placement="top" data-toggle="modal" title="{{ contrato.tiposuplemento }}">{{ contrato.tipodocumento }}</a>
+                                     {% endif %}
+                                 </td>
+                                 <td>
+                                     {% for cliente in clientes if cliente.id == contrato.cliente %}
+                                         <a style="color: #797979;" class="tooltips" data-placement="top" data-toggle="modal" href="{{ asset(contrato.codigo~'.docx') }}" title="Ver Proforma">
+                                             {{ cliente.cliente }}-{{ cliente.empresa }}
+                                         </a>
+                                     {% endfor %}
+                                 </td>
+                                 <td>
+                                     {{ contrato.nombreobra }}
+                                 </td>
+                                 <td>
+                                     {{ contrato.objeto }}
+                                 </td>
+                                 {% if is_granted('ROLE_SUPER_ADMIN') or app.user.username == 'operaza' or app.user.username == 'yenised' %}
+                                     <td>
+                                         {% if contrato.archivo == false %}
+                                             No
+                                         {% else %}
+                                             Si
+                                         {% endif %}
+                                     </td>
+                                 {% endif %}
+                                 <td>
+                                     {% if contrato.fechafirma != '' %}
+                                         {{ contrato.fechafirma | date('d.m.Y') }}
+                                     {% else %}
+                                         {% if is_granted('ROLE_SUPER_ADMIN') or app.user.username == 'operaza' or app.user.username == 'yenised' %}
+                                             <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarFechaFirma-{{ contrato.id }}" title="Insertar fecha">
+                                                Insertar
+                                             </a>
+                                             <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarFechaFirma-{{ contrato.id }}" class="modal fade">
+                                                 <div class="modal-dialog" style="text-align: center;width: 550px; height: auto">
+                                                     <div class="modal-content">
+                                                         <div class="modal-header">
+                                                             <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                             <h4 class="modal-title">Fecha </h4>
+                                                         </div>
+                                                         <div class="modal-body">
+                                                             <form class="form-horizontal" role="form">
+                                                                 <div class="form-group">
+                                                                     <div class="row">
+                                                                         <div class="col-lg-12">
+                                                                             <form>
+                                                                                 <div class="row">
+                                                                                     <div class="col-lg-1"></div>
+                                                                                     <div id="sandbox-container" class="col-lg-5">
+                                                                                         <label>Firma</label>
+                                                                                         <input style="text-align: center" name="fechaFirma" type="text" class="form-control round-input" required="required">
+                                                                                     </div>
+                                                                                     <div class="col-lg-5">
+                                                                                         <label>Vigencia</label>
+                                                                                         <input style="text-align: center" name="vigencia" type="text" class="form-control round-input" required="required">
+                                                                                         {#<select style="text-align: center" name="vigencia" class="form-control round-input" required="required">
+                                                                                             <option></option>
+                                                                                             <option value="365">365</option>
+                                                                                             <option value="730">730</option>
+                                                                                         </select>#}
+                                                                                     </div>
+                                                                                 </div>
+
+                                                                                 <br>
+                                                                                 <div class="row">
+                                                                                     <div class="col-lg-1"></div>
+                                                                                     <div class="col-lg-1">
+                                                                                         <input name="idContrato" value="{{ contrato.id }}" hidden="hidden">
+                                                                                         <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('fechaFirmaContrato')}}" formenctype="multipart/form-data">Enviar</button>
+                                                                                     </div>
+                                                                                 </div>
+                                                                             </form>
+                                                                         </div>
+                                                                         <div class="col-lg-3"></div>
+                                                                     </div>
+                                                                 </div>
+                                                             </form>
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                             </div>
+                                         {% endif %}
+                                     {% endif %}
+                                 </td>
+                                 <td>
+                                     {{ contrato.vigencia }}
+                                 </td>
+                                 <td>
+                                     {% if contrato.fechavencimiento != '' %}
+                                         <a style="color:
+                                         {% if contrato.fechavencimiento|date('U') > "now+28days"|date('U') %}
+
+                                         {% else %}
+                                                 red
+                                         {% endif %}">
+                                             {{ contrato.fechavencimiento | date('d.m.Y') }}
+                                         </a>
+                                     {% endif %}
+                                 </td>
+                                 <td>
+                                     {{ contrato.diasejecucion }}
+                                 </td>
+                                 <td>
+                                     {% set todoCUC = 0 %}
+                                     {% if contrato.esmarco == false %}
+                                         {% set todoCUC = contrato.valorcontratocup / 24 %}
+                                        {{ contrato.valorcontratocup | number_format(2, '.', ',') }}
+                                     {% endif %}
+                                 </td>
+                                 <td>
+                                     {% if contrato.esmarco == false %}
+                                         {% set todoCUC = todoCUC + contrato.valorcontratocuc %}
+                                         {{ contrato.valorcontratocuc | number_format(2, '.', ',') }}
+                                     {% endif %}
+                                 </td>
+                                 <td>
+                                     {% if contrato.esmarco == false %}
+                                         {{ todoCUC | number_format(2, '.', ',') }}
+                                     {% endif %}
+                                 </td>
+                                 <td>
+                                     {% if contrato.esmarco == false %}
+                                         {{ contrato.anticipopc }}
+                                     {% endif %}
+                                 </td>
+                                 <td>
+                                     {% if contrato.esmarco == false %}
+                                         {{ contrato.anticipocup | number_format(2, '.', ',') }}
+                                     {% endif %}
+                                 </td>
+                                 <td>
+                                     {% if contrato.esmarco == false %}
+                                         {{ contrato.anticipocuc | number_format(2, '.', ',') }}
+                                     {% endif %}
+                                 </td>
+                             </tr>
+                         {% endfor %}
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+         {% endblock %}
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/printThis.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print_btn').click(function () {
+                $('#imprimir').printThis();
+            });
+        });
+    </script>
+
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.js')}}" type="text/javascript" ></script>
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.min.js')}}" type="text/javascript" ></script>
+    <script>
+        $('#sandbox-container input').datepicker({
+            format: "dd.mm.yyyy",
+            language: "es",
+            orientation: "bottom auto",
+            autoclose: true,
+            todayHighlight: true
+        });
+    </script>
+
+    {#  PARA EL DATATABLE   #}
+    <script src="{{asset('bundles/ccc/js/jquery.dataTables.js')}}" type="text/javascript" ></script>
+    <script src="{{asset('bundles/ccc/js/dataTables.fixedColumns.min.js')}}" type="text/javascript" ></script>
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable( {
+                "scrollY":        "3000px",
+                "scrollX":        true,
+                /*"scrollCollapse": true,*/
+                "paging":         false,
+                "order": [[ 1, "asc" ]],
+                /*fixedColumns:   {
+                 leftColumns: 2
+                 }*/
+            } );
+        } );
+    </script>
+
+    {#  PARA LA CABECERA DE LA TABLA ESTATICA   #}
+    <script>
+        $(function () {
+            $("table").stickyTableHeaders();
+        });
+
+        /*! Copyright (c) 2011 by Jonas Mosbech - https://github.com/jmosbech/StickyTableHeaders
+         MIT license info: https://github.com/jmosbech/StickyTableHeaders/blob/master/license.txt */
+
+        ;
+        (function ($, window, undefined) {
+            'use strict';
+
+            var name = 'stickyTableHeaders',
+                    id = 0,
+                    defaults = {
+                        fixedOffset: 0,
+                        leftOffset: 0,
+                        marginTop: 0,
+                        scrollableArea: window
+                    };
+
+            function Plugin(el, options) {
+                // To avoid scope issues, use 'base' instead of 'this'
+                // to reference this class from internal events and functions.
+                var base = this;
+
+                // Access to jQuery and DOM versions of element
+                base.$el = $(el);
+                base.el = el;
+                base.id = id++;
+                base.$window = $(window);
+                base.$document = $(document);
+
+                // Listen for destroyed, call teardown
+                base.$el.bind('destroyed',
+                        $.proxy(base.teardown, base));
+
+                // Cache DOM refs for performance reasons
+                base.$clonedHeader = null;
+                base.$originalHeader = null;
+
+                // Keep track of state
+                base.isSticky = false;
+                base.hasBeenSticky = false;
+                base.leftOffset = null;
+                base.topOffset = null;
+
+                base.init = function () {
+                    base.$el.each(function () {
+                        var $this = $(this);
+
+                        // remove padding on <table> to fix issue #7
+                        $this.css('padding', 0);
+
+                        base.$originalHeader = $('thead:first', this);
+                        base.$clonedHeader = base.$originalHeader.clone();
+                        $this.trigger('clonedHeader.' + name, [base.$clonedHeader]);
+
+                        base.$clonedHeader.addClass('tableFloatingHeader');
+                        base.$clonedHeader.css('display', 'none');
+
+                        base.$originalHeader.addClass('tableFloatingHeaderOriginal');
+
+                        base.$originalHeader.after(base.$clonedHeader);
+
+                        base.$printStyle = $('<style type="text/css" media="print">' +
+                                '.tableFloatingHeader{display:none !important;}' +
+                                '.tableFloatingHeaderOriginal{position:static !important;}' +
+                                '</style>');
+                        $('head').append(base.$printStyle);
+                    });
+
+                    base.setOptions(options);
+                    base.updateWidth();
+                    base.toggleHeaders();
+                    base.bind();
+                };
+
+                base.destroy = function () {
+                    base.$el.unbind('destroyed', base.teardown);
+                    base.teardown();
+                };
+
+                base.teardown = function () {
+                    if (base.isSticky) {
+                        base.$originalHeader.css('position', 'static');
+                    }
+                    $.removeData(base.el, 'plugin_' + name);
+                    base.unbind();
+
+                    base.$clonedHeader.remove();
+                    base.$originalHeader.removeClass('tableFloatingHeaderOriginal');
+                    base.$originalHeader.css('visibility', 'visible');
+                    base.$printStyle.remove();
+
+                    base.el = null;
+                    base.$el = null;
+                };
+
+                base.bind = function () {
+                    base.$scrollableArea.on('scroll.' + name, base.toggleHeaders);
+                    if (!base.isWindowScrolling) {
+                        base.$window.on('scroll.' + name + base.id, base.setPositionValues);
+                        base.$window.on('resize.' + name + base.id, base.toggleHeaders);
+                    }
+                    base.$scrollableArea.on('resize.' + name, base.toggleHeaders);
+                    base.$scrollableArea.on('resize.' + name, base.updateWidth);
+                };
+
+                base.unbind = function () {
+                    // unbind window events by specifying handle so we don't remove too much
+                    base.$scrollableArea.off('.' + name, base.toggleHeaders);
+                    if (!base.isWindowScrolling) {
+                        base.$window.off('.' + name + base.id, base.setPositionValues);
+                        base.$window.off('.' + name + base.id, base.toggleHeaders);
+                    }
+                    base.$scrollableArea.off('.' + name, base.updateWidth);
+                };
+
+                base.toggleHeaders = function () {
+                    if (base.$el) {
+                        base.$el.each(function () {
+                            var $this = $(this),
+                                    newLeft,
+                                    newTopOffset = base.isWindowScrolling ? (
+                                            isNaN(base.options.fixedOffset) ? base.options.fixedOffset.outerHeight() : base.options.fixedOffset) : base.$scrollableArea.offset().top + (!isNaN(base.options.fixedOffset) ? base.options.fixedOffset : 0),
+                                    offset = $this.offset(),
+
+                                    scrollTop = base.$scrollableArea.scrollTop() + newTopOffset,
+                                    scrollLeft = base.$scrollableArea.scrollLeft(),
+
+                                    scrolledPastTop = base.isWindowScrolling ? scrollTop > offset.top : newTopOffset > offset.top,
+                                    notScrolledPastBottom = (base.isWindowScrolling ? scrollTop : 0) < (offset.top + $this.height() - base.$clonedHeader.height() - (base.isWindowScrolling ? 0 : newTopOffset));
+
+                            if (scrolledPastTop && notScrolledPastBottom) {
+                                newLeft = offset.left - scrollLeft + base.options.leftOffset;
+                                base.$originalHeader.css({
+                                    'position': 'fixed',
+                                    'margin-top': base.options.marginTop,
+                                    'left': newLeft,
+                                    'z-index': 3 // #18: opacity bug
+                                });
+                                base.leftOffset = newLeft;
+                                base.topOffset = newTopOffset;
+                                base.$clonedHeader.css('display', '');
+                                if (!base.isSticky) {
+                                    base.isSticky = true;
+                                    // make sure the width is correct: the user might have resized the browser while in static mode
+                                    base.updateWidth();
+                                }
+                                base.setPositionValues();
+                            } else if (base.isSticky) {
+                                base.$originalHeader.css('position', 'static');
+                                base.$clonedHeader.css('display', 'none');
+                                base.isSticky = false;
+                                base.resetWidth($('td,th', base.$clonedHeader), $('td,th', base.$originalHeader));
+                            }
+                        });
+                    }
+                };
+
+                base.setPositionValues = function () {
+                    var winScrollTop = base.$window.scrollTop(),
+                            winScrollLeft = base.$window.scrollLeft();
+                    if (!base.isSticky || winScrollTop < 0 || winScrollTop + base.$window.height() > base.$document.height() || winScrollLeft < 0 || winScrollLeft + base.$window.width() > base.$document.width()) {
+                        return;
+                    }
+                    base.$originalHeader.css({
+                        'top': base.topOffset - (base.isWindowScrolling ? 0 : winScrollTop),
+                        'left': base.leftOffset - (base.isWindowScrolling ? 0 : winScrollLeft)
+                    });
+                };
+
+                base.updateWidth = function () {
+                    if (!base.isSticky) {
+                        return;
+                    }
+                    // Copy cell widths from clone
+                    if (!base.$originalHeaderCells) {
+                        base.$originalHeaderCells = $('th,td', base.$originalHeader);
+                    }
+                    if (!base.$clonedHeaderCells) {
+                        base.$clonedHeaderCells = $('th,td', base.$clonedHeader);
+                    }
+                    var cellWidths = base.getWidth(base.$clonedHeaderCells);
+                    base.setWidth(cellWidths, base.$clonedHeaderCells, base.$originalHeaderCells);
+
+                    // Copy row width from whole table
+                    base.$originalHeader.css('width', base.$clonedHeader.width());
+                };
+
+                base.getWidth = function ($clonedHeaders) {
+                    var widths = [];
+                    $clonedHeaders.each(function (index) {
+                        var width, $this = $(this);
+
+                        if ($this.css('box-sizing') === 'border-box') {
+                            width = $this[0].getBoundingClientRect().width; // #39: border-box bug
+                        } else {
+                            var $origTh = $('th', base.$originalHeader);
+                            if ($origTh.css('border-collapse') === 'collapse') {
+                                if (window.getComputedStyle) {
+                                    width = parseFloat(window.getComputedStyle(this, null).width);
+                                } else {
+                                    // ie8 only
+                                    var leftPadding = parseFloat($this.css('padding-left'));
+                                    var rightPadding = parseFloat($this.css('padding-right'));
+                                    // Needs more investigation - this is assuming constant border around this cell and it's neighbours.
+                                    var border = parseFloat($this.css('border-width'));
+                                    width = $this.outerWidth() - leftPadding - rightPadding - border;
+                                }
+                            } else {
+                                width = $this.width();
+                            }
+                        }
+
+                        widths[index] = width;
+                    });
+                    return widths;
+                };
+
+                base.setWidth = function (widths, $clonedHeaders, $origHeaders) {
+                    $clonedHeaders.each(function (index) {
+                        var width = widths[index];
+                        $origHeaders.eq(index).css({
+                            'min-width': width,
+                            'max-width': width
+                        });
+                    });
+                };
+
+                base.resetWidth = function ($clonedHeaders, $origHeaders) {
+                    $clonedHeaders.each(function (index) {
+                        var $this = $(this);
+                        $origHeaders.eq(index).css({
+                            'min-width': $this.css('min-width'),
+                            'max-width': $this.css('max-width')
+                        });
+                    });
+                };
+
+                base.setOptions = function (options) {
+                    base.options = $.extend({}, defaults, options);
+                    base.$scrollableArea = $(base.options.scrollableArea);
+                    base.isWindowScrolling = base.$scrollableArea[0] === window;
+                };
+
+                base.updateOptions = function (options) {
+                    base.setOptions(options);
+                    // scrollableArea might have changed
+                    base.unbind();
+                    base.bind();
+                    base.updateWidth();
+                    base.toggleHeaders();
+                };
+
+                // Run initializer
+                base.init();
+            }
+
+            // A plugin wrapper around the constructor,
+            // preventing against multiple instantiations
+            $.fn[name] = function (options) {
+                return this.each(function () {
+                    var instance = $.data(this, 'plugin_' + name);
+                    if (instance) {
+                        if (typeof options === 'string') {
+                            instance[options].apply(instance);
+                        } else {
+                            instance.updateOptions(options);
+                        }
+                    } else if (options !== 'destroy') {
+                        $.data(this, 'plugin_' + name, new Plugin(this, options));
+                    }
+                });
+            };
+
+        })(jQuery, window);
+    </script>
+
+{% endblock %}
+

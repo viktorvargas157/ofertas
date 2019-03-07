@@ -1,0 +1,1850 @@
+{% extends 'OfertasBundle:Ofertas:usuarios.html.twig' %}
+{% block css %}
+    <link href="{{ asset('bundles/ccc/css/dataTables.fixedColumns.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('bundles/ccc/css/jquery.dataTables.min.css') }}" rel="stylesheet" />
+    <style>
+        .btnNuevo{padding: 0px 0px;}
+
+        #scroll{
+            overflow: scroll;
+            height: 650px;
+        }
+        #scrollMat{
+            overflow: scroll;
+            height: 350px;
+        }
+    </style>
+{% endblock %}
+
+        {% block encabezado %}
+            Solicitudes
+        {% endblock %}
+
+         {% block cuerpo %}
+              {# PARA IMPRIMIR LA TABLA  #}
+           {# <div aria-hidden="true" aria-labelledby="labelTabla" role="dialog" tabindex="-1" class="modal fade">
+                <table id="imprimir" class="table table-striped table-advance table-hover table-bordered">
+                    <thead>
+                    <tr style="text-align: center">
+                        <th>Cliente</th>
+                        <th>No</th>
+                        <th>Descripción</th>
+                        <th>Oferta</th>
+                        <th>Entrega</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for solicitud in ofertas %}
+                        <tr style="text-align: center">
+                            <td>{{ solicitud.idCliente.cliente }}</td>
+                            <td>{{ solicitud.codigo }}</td>
+                            <td>{{ solicitud.descripcion }}</td>
+                            <td>
+                                {% if solicitud.fechaElaboracionOferta != '' %}
+                                    <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                        <thead>
+                                            <tr>
+                                                <th>CUC</th>
+                                                <th>CUP</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>${{ solicitud.valorOfertaCUC | number_format(2, '.', ',') }}</td>
+                                                <td>${{ solicitud.valorOfertaCUP | number_format(2, '.', ',') }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                {% endif %}
+                            </td>
+                            <td>{{ solicitud.fechaEntregaCliente | date('d.m.Y') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>#}
+
+
+             <div class="row">
+                {# <div class="col-lg-1">
+                     <button style="width: 72px" class="btn btn-success tooltips" id="print_btn" type="button" title="Imprimir Tabla">Imprimir</button>
+                 </div>#}
+
+                 {#{% if is_granted('ROLE_SUPER_ADMIN') or app.user.username == 'operaza' %}
+                     <div class="col-lg-1">
+                         <a style="width: 72px" class="btn btn-success tooltips" data-placement="top" data-toggle="modal" href="#resumenOfertas" title="Sacar resumen de ofertas">Informe</a>
+                         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="resumenOfertas" class="modal fade">
+                             <div class="modal-dialog" style="text-align: center;width: 400px; height: auto">
+                                 <div class="modal-content">
+                                     <div class="modal-header">
+                                         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                         <h4 class="modal-title">Fechas</h4>
+                                     </div>
+                                     <div class="modal-body">
+                                         <form>
+                                             <div class="row" style="text-align: center">
+                                                 <div class="col-lg-1"></div>
+                                                 <div id="sandbox-container" class="col-lg-5">
+                                                     <label>Fecha Inicial</label>
+                                                     <input style="text-align: center" type="text" class="form-control round-input" name="fechaInicio" required="required"/>
+                                                 </div>
+                                                 <div id="sandbox-container" class="col-lg-5">
+                                                     <label>Fecha Final</label>
+                                                     <input style="text-align: center" type="text" class="form-control round-input" name="fechaFin" required="required"/>
+                                                 </div>
+                                             </div>
+
+                                             <br>
+                                             <div class="row">
+                                                 <div class="col-lg-1"></div>
+                                                 <div class="col-lg-2">
+                                                     <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('generarResumenOfertas') }}" formenctype="multipart/form-data">Enviar</button>
+                                                 </div>
+                                             </div>
+                                         </form>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 {% endif %}#}
+
+                 {% if is_granted('ROLE_SECRETARIA') or is_granted('ROLE_COMERCIAL') %}
+                     <div class="col-lg-1">
+                         <a style="width: 72px" class="btn btn-success tooltips" data-placement="top" data-toggle="modal" href="#nuevaSolicitud" title="Nueva Solicitud">Nueva</a>
+                         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="nuevaSolicitud" class="modal fade">
+                             <div class="modal-dialog" style="text-align: center;width: 750px; height: auto">
+                                 <div class="modal-content">
+                                     <div class="modal-header">
+                                         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                         <h4 class="modal-title">Solicitud</h4>
+                                     </div>
+                                     <div class="modal-body">
+                                         <form class="form-horizontal" method="post" action="{{ path('insertarSolicitudC') }}">
+
+                                             <div class="row">
+                                                 <div class="col-lg-1"></div>
+                                                 <div class="col-lg-4">
+                                                     <label>Cliente</label>
+                                                     <select style="text-align: center" name="idCliente" class="form-control round-input" required="required">
+                                                         <option></option>
+                                                         {% for cliente in clientes %}
+                                                             <option value="{{ cliente.id }}">{{ cliente.cliente }}-{{ cliente.empresa }}</option>
+                                                         {% endfor %}
+                                                     </select>
+                                                 </div>
+
+                                                 <div class="col-lg-6">
+                                                     <label>Obra</label>
+                                                     <input style="text-align: center" name="nombreObra" type="text" class="form-control round-input" required="required">
+                                                 </div>
+                                             </div>
+
+                                             <div class="row">
+                                                 <div class="col-lg-1"></div>
+                                                 <div class="col-lg-5">
+                                                     <label>Dirección Obra</label>
+                                                     <textarea style="text-align: center" name="direccionObra" class="form-control" required="required"></textarea>
+                                                 </div>
+                                                 <div class="col-lg-5">
+                                                     <label>Descripción</label>
+                                                     <textarea style="text-align: center" name="descripcion" class="form-control" required="required"></textarea>
+                                                 </div>
+                                             </div>
+                                             <div class="form-group" style="text-align: center">
+                                                 <h4>Levantamiento</h4>
+
+                                                 <div class="col-sm-2"></div>
+
+                                                 <label class="col-sm-1 control-label">Fecha</label>
+                                                 <div id="sandbox-container" class="col-sm-3">
+                                                     <input style="text-align: center" name="fechaLevantamiento" type="text" class="form-control round-input" required="required">
+                                                 </div>
+
+                                                 <label class="col-sm-1 control-label">Hora</label>
+                                                 <div class="col-sm-3">
+                                                     <input style="text-align: center" name="horaLevantamiento" type="time" class="form-control round-input" required="required">
+                                                 </div>
+                                             </div>
+                                             <div class="form-group">
+                                                 <div class="col-lg-1"></div>
+                                                 <div class="col-lg-1">
+                                                     <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                 </div>
+                                             </div>
+                                         </form>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 {% endif %}
+
+                {# <div class="col-lg-1">
+                     <a style="width: 72px" class="btn btn-success tooltips" data-placement="top" data-toggle="modal" href="#totalSolicitud" title="Ver total ofertado">Ofertado</a>
+                     <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="totalSolicitud" class="modal fade">
+                         <div class="modal-dialog" style="text-align: center;width: 400px; height: auto">
+                             <div class="modal-content">
+                                 <div class="modal-header">
+                                     <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                     <h4 class="modal-title">Ofertado</h4>
+                                 </div>
+                                 <div class="modal-body">
+                                     <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                         <tbody>
+                                         <tr>
+                                             <td rowspan="2" style="width: 5px;">Costeo</td>
+                                             <td colspan="2" style="width: 5px;">Oferta</td>
+                                         </tr>
+                                         <tr>
+                                             <td>CUP</td>
+                                             <td>CUC</td>
+                                         </tr>
+                                         <tr>
+                                             <td>{{ montoCosteo | number_format(2, '.', ',') }}</td>
+                                             <td>
+                                                 <b></b>{{ montoOfertaCUP | number_format(2, '.', ',') }}
+                                             </td>
+                                             <td>
+                                                 <b></b>{{ montoOfertaCUC | number_format(2, '.', ',') }}
+                                             </td>
+                                         </tr>
+                                         </tbody>
+                                     </table>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>#}
+
+
+                 {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_PRESUPUESTISTA') or is_granted('ROLE_COMERCIAL') %}
+                    <div class="col-lg-1">
+                         <a style="width: 72px" class="btn btn-danger tooltips" data-placement="top" data-toggle="modal" href="#generarCaratula" title="Generar carátula de Oferta">Carátula</a>
+                         <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="generarCaratula" class="modal fade">
+                             <div class="modal-dialog" style="text-align: center;width: 650px; height: auto">
+                                 <div class="modal-content">
+                                     <div class="modal-header">
+                                         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                         <h4 class="modal-title">Generar carátula de Oferta </h4>
+                                     </div>
+                                     <div class="modal-body">
+                                         <form class="form-horizontal" role="form">
+                                             <div class="form-group">
+                                                 <div class="row">
+                                                     <div class="col-lg-1"></div>
+                                                     <div class="col-lg-6">
+
+                                                     </div>
+                                                 </div>
+
+                                                 <div class="row">
+                                                     <div class="col-lg-12">
+                                                         <form>
+                                                             <div class="row" style="text-align: center">
+                                                                 <div class="col-lg-3"></div>
+                                                                 <div class="col-lg-6">
+                                                                     <label>Solicitud</label>
+                                                                     <select  style="text-align: center" name="idSolicitud" class="form-control round-input" required="required">
+                                                                         <option></option>
+                                                                         {% for solicitud in ofertas %}
+                                                                             <option value="{{ solicitud.id }}">{{ solicitud.codigo }}-{{ solicitud.nombreObra }}-{{ solicitud.descripcion }}</option>
+                                                                         {% endfor %}
+                                                                     </select>
+                                                                 </div>
+                                                             </div>
+                                                             <div class="row" style="text-align: center">
+                                                                 <div class="col-lg-12">
+                                                                     <label>Alcance</label>
+                                                                 </div>
+                                                             </div>
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="alcance[]" value="Demolición"> Demolición
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-4">
+                                                                     <label>
+                                                                         <input type="checkbox" name="alcance[]" value="Restauración"> Restauración
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="alcance[]" value="Electricidad"> Electricidad
+                                                                     </label>
+                                                                 </div>
+                                                             </div>
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="alcance[]" value="Hidrosanitaria"> Hidrosanitaria
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-4">
+                                                                     <label>
+                                                                         <input type="checkbox" name="alcance[]" value="Impermeabilización"> Impermeabilización
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="alcance[]" value="Carpintería"> Carpintería
+                                                                     </label>
+                                                                 </div>
+                                                             </div>
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="alcance[]" value="Pintura"> Pintura
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-4">
+                                                                     <label>
+                                                                         <input type="checkbox" name="alcance[]" value="Clima"> Clima
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="alcance[]" value="Mantenimiento"> Mantenimiento
+                                                                     </label>
+                                                                 </div>
+                                                             </div>
+
+                                                             <hr>
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>Materiales</label>
+                                                                     </div>
+                                                                 <div class="col-lg-4">
+                                                                     <label>Herramientas</label></div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>Equipos</label>
+                                                                 </div>
+                                                             </div>
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="materiales[]" value="cliente"> Por Cliente
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-4">
+                                                                     <label>
+                                                                         <input type="checkbox" name="herramientas[]" value="cliente"> Por Cliente
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="equipos[]" value="cliente"> Por Cliente
+                                                                     </label>
+                                                                 </div>
+                                                             </div>
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="materiales[]" value="ccc"> Por CCC
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-4">
+                                                                     <label>
+                                                                         <input type="checkbox" name="herramientas[]" value="ccc"> Por CCC
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>
+                                                                         <input type="checkbox" name="equipos[]" value="ccc"> Por CCC
+                                                                     </label>
+                                                                 </div>
+                                                             </div>
+
+                                                             <hr>
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-7">
+                                                                     <label>Calidad</label></div>
+                                                                 <div class="col-lg-3">
+                                                                     <label>Anticipo</label>
+                                                                 </div>
+                                                             </div>
+
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-6">
+                                                                     <label>
+                                                                         <input type="checkbox" name="calidad[]" value="requerimientos"> Requerimientos Cliente
+                                                                     </label>
+                                                                 </div>
+                                                                 <div class="col-lg-4" style="text-align: center">
+                                                                     <input style="text-align: center;" class="form-control round-input" type="text" name="anticipo">
+                                                                 </div>
+                                                             </div>
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-6">
+                                                                     <label>
+                                                                         <input type="checkbox" name="calidad[]" value="regulaciones"> Regulaciones
+                                                                     </label>
+                                                                 </div>
+                                                             </div>
+                                                             <div class="row" style="text-align: left">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-6">
+                                                                     <label>
+                                                                         <input type="checkbox" name="calidad[]" value="normas"> Normas
+                                                                     </label>
+                                                                 </div>
+                                                             </div>
+
+                                                             <br>
+                                                             <div class="row">
+                                                                 <div class="col-lg-1"></div>
+                                                                 <div class="col-lg-1">
+                                                                     <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('generarCaratulaOfertaR') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                 </div>
+                                                             </div>
+                                                         </form>
+                                                     </div>
+                                                     <div class="col-lg-3"></div>
+                                                 </div>
+                                             </div>
+                                         </form>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                    </div>
+                 {% endif %}
+
+                 {% if is_granted('ROLE_SUPER_ADMIN') %}
+                    <div class="col-lg-1">
+                         <a style="width: 72px" class="btn btn-danger tooltips" data-placement="top" data-toggle="modal" href="{{ path('crearDirectorio') }}" title="Crear directorio">Direct.</a>
+                    </div>
+                 {% endif %}
+             </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <table {#id="example"#} class="table table-striped table-advance table-hover table-bordered display" style="text-align: center">
+                        <thead>
+                        <tr style="text-align: center; background-color: #EEEEEE">
+                            <td rowspan="2">Cliente</td>
+                            <td rowspan="2">No</td>
+                            <td rowspan="2">Obra</td>
+                            <td rowspan="2">Dirección</td>
+                            <td rowspan="2">Descripción</td>
+                            <td colspan="2" style="width: 5px;">Levantamiento</td>
+                            <td rowspan="2" >Cuantificación</td>
+                            <td rowspan="2" style="width: 5px;">Costeo</td>
+                            <td rowspan="2" style="width: 5px;">Oferta</td>
+                            <td rowspan="2" style="width: 5px;">Entrega</td>
+                        </tr>
+                        <tr style="text-align: center; background-color: #EEEEEE">
+                            <td style="width: 5px;">Fecha</td>
+                            <td style="width: 5px;">Hora</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% set montoCosteo = 0 %}
+                        {% set montoOfertaCUP = 0 %}
+                        {% set montoOfertaCUC = 0 %}
+                        {% for solicitud in ofertas %}
+                            <tr {% if solicitud.rechazado == true %}style="color: red" {% endif %}>
+                                <td>
+                                    {% if is_granted('ROLE_SECRETARIA') or is_granted('ROLE_COMERCIAL') %}
+                                        <a style="color: #797979;" class="tooltips" data-toggle="modal" href="#rechazarSolicitud-{{ solicitud.id }}" title="Dar como Rechazada la solicitud">
+                                            {{ solicitud.idCliente.cliente }}-{{ solicitud.idCliente.empresa }}
+                                        </a>
+                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="rechazarSolicitud-{{ solicitud.id }}" class="modal fade">
+                                            <div class="modal-dialog" style="text-align: center">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                        <h4 class="modal-title">Solicitud Rechazada</h4>
+                                                    </div>
+                                                    <div class="alert alert-block alert-danger fade in" style="text-align: center">
+                                                        <button data-dismiss="alert" class="close close-sm" type="button">
+                                                            <i class="icon-remove"></i>
+                                                        </button>
+                                                        <strong>¿ Está seguro que desea dar como rechazada la solicitud?</strong><br><br>
+                                                        <form role="form" style="text-align: center">
+                                                            <div class="form-group">
+                                                                <div class="row">
+                                                                    <div class="col-lg-1"></div>
+                                                                    <div class="col-lg-10">
+                                                                        <label style="color: #000000"><strong>Causas del Rechazo</strong></label>
+                                                                        <textarea style="text-align: center" name="causasRechazo" class="form-control" required="required"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <br>
+                                                                <div class="row">
+                                                                    <div class="col-lg-1"></div>
+                                                                    <div class="col-lg-1">
+                                                                        <button class="btn btn-info" formaction="{{ path('rechazarSolicitud', {'id' : solicitud.id}) }}" formmethod="post">Aceptar</button>
+                                                                    </div>
+                                                                    <div class="col-lg-3"></div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        {{ solicitud.idCliente.cliente }}-{{ solicitud.idCliente.empresa }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if solicitud.tieneCaratula == true %}
+                                        <a style="color: #797979;" class="tooltips" data-placement="top" target="_blank" data-toggle="modal" href="http://192.168.1.47/ofertas/web/Oferta {{ solicitud.codigo }}.docx" title="Ver Carátula Generada">
+                                            {{ solicitud.codigo }}
+                                        </a>
+                                    {% else %}
+                                        {{ solicitud.codigo }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ solicitud.nombreObra }}</td>
+                                <td>
+                                    {% if solicitud.direccionObra !='' %}
+                                        <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#verDireccion-{{ solicitud.id }}" title="Ver dirección de la Obra">Ver</a>
+                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="verDireccion-{{ solicitud.id }}" class="modal fade">
+                                            <div class="modal-dialog" style="text-align: center;width: 650px; height: auto">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                        <h4 class="modal-title">Obra </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="form-horizontal" method="post" action="#">
+                                                            <div class="row">
+                                                                <div class="col-lg-1"></div>
+                                                                <div class="col-lg-10">
+                                                                    <label>Dirección</label>
+                                                                    <textarea style="text-align: center" name="direccionObra" class="form-control" disabled="disabled">{{ solicitud.direccionObra }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if is_granted('ROLE_SECRETARIA') or is_granted('ROLE_COMERCIAL') %}
+                                        <a style="color: #797979;" class="tooltips" data-placement="top" data-toggle="modal" href="#editarDescripcion-{{ solicitud.id }}" title="Editar Descripción">
+                                            {% if solicitud.esReoferta == 1 %}
+                                                {% for sol in solicitudes if sol.id == solicitud.idsolicitudoriginal %}
+                                                    {{ sol.descripcion }}
+                                                {% endfor %}
+                                                <a style="color: darkgreen;">{{ solicitud.descripcion }}</a>
+                                            {% else %}
+                                                {{ solicitud.descripcion }}
+                                            {% endif %}
+                                        </a>
+                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarDescripcion-{{ solicitud.id }}" class="modal fade">
+                                            <div class="modal-dialog" style="text-align: center;width: 650px; height: auto">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                        <h4 class="modal-title">Editar </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="form-horizontal" method="post" action="{{ path('editarSolicitudC') }}">
+                                                            <input hidden="hidden" type="text" name="idSolicitud" value="{{ solicitud.id }}">
+                                                            <div class="row">
+                                                                <div class="col-lg-1"></div>
+                                                                <div class="col-lg-4">
+                                                                    <label>Cliente</label>
+                                                                    <select style="text-align: center" name="idCliente" class="form-control round-input" required="required">
+                                                                        <option></option>
+                                                                        {% for cliente in clientes %}
+                                                                            <option {% if cliente.id == solicitud.idCliente.id %} selected {% endif %} value="{{ cliente.id }}">{{ cliente.cliente }}</option>
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+
+                                                                <div class="col-lg-6">
+                                                                    <label>Obra</label>
+                                                                    <input style="text-align: center" name="nombreObra" type="text" class="form-control round-input" value="{{ solicitud.nombreObra }}">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-lg-1"></div>
+                                                                <div class="col-lg-5">
+                                                                    <label>Dirección Obra</label>
+                                                                    <textarea style="text-align: center" name="direccionObra" class="form-control">{{ solicitud.direccionObra }}</textarea>
+                                                                </div>
+                                                                <div class="col-lg-5">
+                                                                    <label>Descripción</label>
+                                                                    <textarea style="text-align: center" name="descripcion" class="form-control" required="required">{{ solicitud.descripcion }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group" style="text-align: center">
+                                                                <h4>Levantamiento</h4>
+
+                                                                <div class="col-sm-2"></div>
+
+                                                                <label class="col-sm-1 control-label">Fecha</label>
+                                                                <div id="sandbox-container" class="col-sm-3">
+                                                                    <input style="text-align: center" name="fechaLevantamiento" type="text" class="form-control round-input" required="required" value="{{ solicitud.fechaLevantamiento | date('d.m.Y') }}">
+                                                                </div>
+
+                                                                <label class="col-sm-1 control-label">Hora</label>
+                                                                <div class="col-sm-3">
+                                                                    <input style="text-align: center" name="horaLevantamiento" type="time" class="form-control round-input" required="required" value="{{ solicitud.horaLevantamiento | date('H:i') }}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div class="col-lg-1"></div>
+                                                                <div class="col-lg-1">
+                                                                    <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        {% if solicitud.esReoferta == 1 %}
+                                            {% for sol in solicitudes if sol.id == solicitud.idsolicitudoriginal %}
+                                                {{ sol.descripcion }} //
+                                            {% endfor %}
+                                            <a style="color: darkgreen;">{{ solicitud.descripcion }}</a>
+                                        {% else %}
+                                            {{ solicitud.descripcion }}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>{{ solicitud.fechaLevantamiento | date('d.m.Y') }}</td>
+                                <td>{{ solicitud.horaLevantamiento | date('H:i') }}</td>
+                                <td>
+                                    {% if solicitud.fechaCuantificacion == '' %}
+                                        {% if is_granted('ROLE_INGENIERO') or is_granted('ROLE_COMERCIAL') %}
+                                            <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarCuantificacion-{{ solicitud.id }}" title="Insertar la fecha de cuantificación">Ins.</a>
+                                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarCuantificacion-{{ solicitud.id }}" class="modal fade">
+                                                <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                            <h4 class="modal-title">Cuantificación </h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="form-horizontal" method="post" action="{{ path('insertarFechaCuantificacionA') }}">
+                                                                <input hidden="hidden" type="text" name="idSolicitud" value="{{ solicitud.id }}">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-4 control-label">Fecha</label>
+                                                                    <div id="sandbox-container" class="col-sm-6">
+                                                                        <input style="text-align: center" name="fechaCuantificacion" type="text" class="form-control round-input" required="required">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-10">
+                                                                        <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           {# {% if app.user.username == 'viktor' %}
+                                                <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="{{ path('generarCuantificacion', {'id' : solicitud.id}) }}" title="Generar cuantificación">Ins.</a>
+                                            {% endif %}#}
+                                        {% endif %}
+                                    {% else %}
+                                        {% if is_granted('ROLE_INGENIERO') or is_granted('ROLE_COMERCIAL') %}
+                                            <a style="color: #797979;" class="tooltips" data-placement="top" data-toggle="modal" href="#editarCuantificacion-{{ solicitud.id }}" title="Editar la fecha de cuantificación">
+                                                {{ solicitud.fechaCuantificacion | date('d.m.Y') }}
+                                            </a>
+                                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarCuantificacion-{{ solicitud.id }}" class="modal fade">
+                                                <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                            <h4 class="modal-title">Cuantificación </h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="form-horizontal" method="post" action="{{ path('editarFechaCuantificacionA') }}">
+                                                                <input hidden="hidden" type="text" name="idSolicitud" value="{{ solicitud.id }}">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-4 control-label">Fecha</label>
+                                                                    <div id="sandbox-container" class="col-sm-6">
+                                                                        <input style="text-align: center" name="fechaCuantificacion" type="text" class="form-control round-input" required="required" value="{{ solicitud.fechaCuantificacion | date('d.m.Y') }}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-10">
+                                                                        <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            {{ solicitud.fechaCuantificacion | date('d.m.Y') }}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if solicitud.fechaCosteo != '' %}
+                                        <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#verCosteo-{{ solicitud.id }}" title="Ver datos del costeo">Ver.</a>
+                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="verCosteo-{{ solicitud.id }}" class="modal fade">
+                                            <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                        <h4 class="modal-title">Costeo </h4>
+                                                    </div>
+                                                    <section class="panel">
+                                                        <header class="panel-heading tab-bg-primary ">
+                                                            <ul class="nav nav-tabs">
+                                                                <li class="active">
+                                                                    <a data-toggle="tab" href="#datos-{{ solicitud.id }}">Datos</a>
+                                                                </li>
+                                                                {% if is_granted('ROLE_PRESUPUESTISTA') or is_granted('ROLE_COMERCIAL') %}
+                                                                    <li>
+                                                                        <a data-toggle="tab" href="#editar-{{ solicitud.id }}">Editar</a>
+                                                                    </li>
+                                                                {% endif %}
+                                                            </ul>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="tab-content">
+                                                                <div id="datos-{{ solicitud.id }}" class="tab-pane active">
+                                                                    <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th>Fecha</th>
+                                                                            <th>Valor</th>
+                                                                            <th>Moneda</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            {% set montoCosteo = montoCosteo + solicitud.valorCosteo %}
+                                                                            <td>{{ solicitud.fechaCosteo | date('d.m.Y') }}</td>
+                                                                            <td>${{ solicitud.valorCosteo | number_format(2, '.', ',') }}</td>
+                                                                            <td>{{ solicitud.tipoMoneda }}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div id="editar-{{ solicitud.id }}" class="tab-pane">
+                                                                    <form class="form-horizontal" method="post" action="{{ path('editarCosteoA') }}">
+                                                                        <input hidden="hidden" type="text" name="idSolicitud" value="{{ solicitud.id }}">
+                                                                        <div class="form-group">
+                                                                            <label class="col-sm-4 control-label">Fecha Costeo</label>
+                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                <input style="text-align: center" name="fechaCosteo" type="text" class="form-control round-input" required="required" value="{{ solicitud.fechaCosteo | date('d.m.Y') }}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-1"></div>
+                                                                            <div class="col-sm-5">
+                                                                                <label class="control-label">Valor Costeo</label>
+                                                                                <div class="">
+                                                                                    <input style="text-align: center" name="valorCosteo" type="text" class="form-control round-input" required="required" value="{{ solicitud.valorCosteo }}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-5">
+                                                                                <label class="control-label">Tipo Moneda</label>
+                                                                                <div class="">
+                                                                                    <select name="tipoMoneda" class="form-control round-input" required="required">
+                                                                                        <option></option>
+                                                                                        <option selected style="text-align: center" value="CUC">CUC</option>
+                                                                                        <option style="text-align: center" value="CUP">CUP</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-10">
+                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        {% if is_granted('ROLE_PRESUPUESTISTA') or is_granted('ROLE_COMERCIAL') %}
+                                            <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarCosteo-{{ solicitud.id }}" title="Insertar datos del costeo">Ins.</a>
+                                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarCosteo-{{ solicitud.id }}" class="modal fade">
+                                                <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                            <h4 class="modal-title">Costeo </h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="form-horizontal" method="post" action="{{ path('insertarCosteoA') }}">
+                                                                <input hidden="hidden" type="text" name="idSolicitud" value="{{ solicitud.id }}">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-4 control-label">Fecha Costeo</label>
+                                                                    <div id="sandbox-container" class="col-sm-6">
+                                                                        <input style="text-align: center" name="fechaCosteo" type="text" class="form-control round-input" required="required">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-1"></div>
+                                                                    <div class="col-sm-5">
+                                                                        <label class="control-label">Valor Costeo</label>
+                                                                        <div class="">
+                                                                            <input style="text-align: center" name="valorCosteo" type="text" class="form-control round-input" required="required">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-5">
+                                                                        <label class="control-label">Tipo Moneda</label>
+                                                                        <div class="">
+                                                                            <select name="tipoMoneda" class="form-control round-input" required="required">
+                                                                                <option></option>
+                                                                                <option style="text-align: center" value="CUC">CUC</option>
+                                                                                <option style="text-align: center" value="CUP">CUP</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-4 control-label">Oferta Elaborada</label>
+                                                                    <div id="sandbox-container" class="col-sm-6">
+                                                                        <input style="text-align: center" name="fechaElaboradaOferta" type="text" class="form-control round-input" required="required">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-1"></div>
+                                                                    <div class="col-sm-5">
+                                                                        <label class="control-label">Valor Oferta CUP</label>
+                                                                        <div class="">
+                                                                            <input style="text-align: center" name="valorOfertaCUP" type="text" class="form-control round-input">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-5">
+                                                                        <label class="control-label">Valor Oferta CUC</label>
+                                                                        <div class="">
+                                                                            <input style="text-align: center" name="valorOfertaCUC" type="text" class="form-control round-input">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-1"></div>
+                                                                    <div class="col-sm-5">
+                                                                        <label class="control-label">Valor Materiales CUP</label>
+                                                                        <div class="">
+                                                                            <input style="text-align: center" name="valorMaterialesCUP" type="text" class="form-control round-input">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-5">
+                                                                        <label class="control-label">Valor Materiales CUC</label>
+                                                                        <div class="">
+                                                                            <input style="text-align: center" name="valorMaterialesCUC" type="text" class="form-control round-input">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-1"></div>
+                                                                    <div class="col-sm-5">
+                                                                        <label class="control-label">Cantidad Trabajadores</label>
+                                                                        <div class="">
+                                                                            <input style="text-align: center" name="cantidadTrabajadores" type="number" class="form-control round-input">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-5">
+                                                                        <label class="control-label">Tiempo Ejecución(días)</label>
+                                                                        <div class="">
+                                                                            <input style="text-align: center" name="tiempoEjecucion" type="text" class="form-control round-input">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-10">
+                                                                        <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {% if app.user.username == 'viktor' and solicitud.presupuestoExcelComun | length == 0 %}
+                                                <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-toggle="modal" href="#cargarPresupuesto-{{ solicitud.id }}" title="Cargar Presupuesto">Cargar</a>
+                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="cargarPresupuesto-{{ solicitud.id }}" class="modal fade">
+                                                    <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                                <h4 class="modal-title">Costeo</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="form-horizontal" role="form">
+                                                                    <div class="form-group">
+                                                                        <div class="row">
+                                                                            <div class="col-lg-1"></div>
+                                                                            <div class="col-lg-10">
+                                                                                <script type="text/javascript">
+                                                                                    function mostrar(id) {
+                                                                                        if (id == "excelComun") {
+                                                                                            $("#excelComun").show();
+                                                                                            $("#prewin").hide();
+                                                                                        }
+                                                                                        if (id == "prewin") {
+                                                                                            $("#excelComun").hide();
+                                                                                            $("#prewin").show();
+                                                                                        }
+                                                                                        if (id != "prewin" && id != "excelComun") {
+                                                                                            $("#excelComun").hide();
+                                                                                            $("#prewin").hide();
+                                                                                        }
+                                                                                    }
+                                                                                </script>
+                                                                                <form>
+                                                                                    <div class="row" style="text-align: center">
+                                                                                        <div class="col-lg-10">
+                                                                                            <label>Tipo</label>
+                                                                                            <select id="tipoPresupuesto" onChange="mostrar(this.value);" name="tipoPresupuesto"  class="form-control round-input" required="required">
+                                                                                                <option></option>
+                                                                                                <option style="text-align: center;" value="excelComun">Excel Común</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div id="excelComun" class="row" style="text-align: center; display: none;">
+                                                                                        <div class="col-lg-12">
+                                                                                            <img src="{{ asset('bundles/ccc/img/excelComun.png') }}" width="100%" height="auto">
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div id="prewin" class="row" style="text-align: center; display: none;">
+                                                                                        Prewin
+                                                                                    </div>
+
+                                                                                    <div class="row">
+                                                                                        <div class="col-lg-10">
+                                                                                            <label>Buscar Excel</label>
+                                                                                            <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                                            <input type="hidden" value="{{ solicitud.id }}" name="idSolicitud">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="row">
+                                                                                        <div class="col-lg-1">
+                                                                                            <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('cargarPresupuesto') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                            <div class="col-lg-3"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% elseif app.user.username == 'viktor' and solicitud.presupuestoExcelComun | length != 0 %}
+                                                <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-toggle="modal" href="#verPresupuesto-{{ solicitud.id }}" title="Ver Presupuesto">Ver</a>
+                                                <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="verPresupuesto-{{ solicitud.id }}" class="modal fade">
+                                                    <div class="modal-dialog" style="text-align: center;width: 850px; height: auto">
+                                                        <section class="panel">
+                                                            <header class="panel-heading tab-bg-primary ">
+                                                                <ul class="nav nav-tabs">
+                                                                    <li class="active">
+                                                                        <a data-toggle="tab" href="#hojaResumen-{{ solicitud.id }}">Hoja Resumen</a>
+                                                                    </li>
+                                                                    <li class="">
+                                                                        <a data-toggle="tab" href="#actividades-{{ solicitud.id }}">Actividades</a>
+                                                                    </li>
+                                                                    <li class="">
+                                                                        <a data-toggle="tab" href="#materiales-{{ solicitud.id }}">Materiales</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </header>
+
+                                                            <div class="panel-body">
+                                                                <div class="tab-content">
+                                                                    <div id="hojaResumen-{{ solicitud.id }}" class="tab-pane active">
+                                                                        <div class="row">
+                                                                            <div class="col-lg-1"></div>
+                                                                            <div class="col-lg-10">
+                                                                                <table class="table table-striped table-advance table-hover table-bordered display" style="text-align: center">
+                                                                                    <thead>
+                                                                                    <tr style="text-align: center; background-color: #EEEEEE">
+                                                                                        <td style="width: 5px;">No.</td>
+                                                                                        <td style="">Concepto de Gastos</td>
+                                                                                        <td style="">CUP</td>
+                                                                                        <td style="">CUC</td>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                    {% if solicitud.presupuestoExcelComun[0].resumenpresupuestocup != 0 or solicitud.presupuestoExcelComun[0].resumenpresupuestocuc != 0 %}
+                                                                                        <tr>
+                                                                                            <td>1</td>
+                                                                                            <td>Resumen de presupuesto</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].resumenpresupuestocup | number_format(2, '.', ',') }}</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].resumenpresupuestocuc | number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    {% if solicitud.presupuestoExcelComun[0].gastosdirectoscup != 0 or solicitud.presupuestoExcelComun[0].gastosdirectoscuc != 0 %}
+                                                                                        <tr>
+                                                                                            <td>2</td>
+                                                                                            <td>Gastos Directos de Obra</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].gastosdirectoscup | number_format(2, '.', ',') }}</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].gastosdirectoscuc | number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    {% if solicitud.presupuestoExcelComun[0].gastosgeneralescup != 0 or solicitud.presupuestoExcelComun[0].gastosgeneralescuc != 0 %}
+                                                                                        <tr>
+                                                                                            <td>3</td>
+                                                                                            <td>Gastos Generales de Obra</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].gastosgeneralescup | number_format(2, '.', ',') }}</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].gastosgeneralescuc | number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    {% if solicitud.presupuestoExcelComun[0].gastosindirectoscup != 0 or solicitud.presupuestoExcelComun[0].gastosindirectoscuc != 0 %}
+                                                                                        <tr>
+                                                                                            <td>4</td>
+                                                                                            <td>Gastos Indirectos de Obra</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].gastosindirectoscup | number_format(2, '.', ',') }}</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].gastosindirectoscuc | number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    {% if solicitud.presupuestoExcelComun[0].presupuestosindependientescup != 0 or solicitud.presupuestoExcelComun[0].presupuestosindependientescuc != 0 %}
+                                                                                        <tr>
+                                                                                            <td>5</td>
+                                                                                            <td>Presupuestos Independientes</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].presupuestosindependientescup | number_format(2, '.', ',') }}</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].presupuestosindependientescuc | number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    {% if solicitud.presupuestoExcelComun[0].imprevistoscup != 0 or solicitud.presupuestoExcelComun[0].imprevistoscuc != 0 %}
+                                                                                        <tr>
+                                                                                            <td>6</td>
+                                                                                            <td>Imprevistos</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].imprevistoscup | number_format(2, '.', ',') }}</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].imprevistoscuc | number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    <tr>
+                                                                                        <td>7</td>
+                                                                                        <td>Costo Total</td>
+                                                                                        <td>{{ solicitud.presupuestoExcelComun[0].costototalcup | number_format(2, '.', ',') }}</td>
+                                                                                        <td>{{ solicitud.presupuestoExcelComun[0].costototalcuc | number_format(2, '.', ',') }}</td>
+                                                                                    </tr>
+                                                                                    {% if solicitud.presupuestoExcelComun[0].utilidadcup != 0 or solicitud.presupuestoExcelComun[0].utilidadcuc != 0 %}
+                                                                                        <tr>
+                                                                                            <td>8</td>
+                                                                                            <td>Utilidad ({{ solicitud.presupuestoExcelComun[0].pcutilidad | number_format(2, '.', ',') }}%)</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].utilidadcup | number_format(2, '.', ',') }}</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].utilidadcuc | number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    <tr>
+                                                                                        <td>9</td>
+                                                                                        <td>Precio del Servicio de Construcción</td>
+                                                                                        <td>{{ solicitud.presupuestoExcelComun[0].precioservconstcup | number_format(2, '.', ',') }}</td>
+                                                                                        <td>{{ solicitud.presupuestoExcelComun[0].precioservconstcuc | number_format(2, '.', ',') }}</td>
+                                                                                    </tr>
+                                                                                    {% if solicitud.presupuestoExcelComun[0].pagotributoscup != 0 or solicitud.presupuestoExcelComun[0].pagotributoscuc != 0 %}
+                                                                                        <tr>
+                                                                                            <td>10</td>
+                                                                                            <td>Pago de Tributos</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].pagotributoscup | number_format(2, '.', ',') }}</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].pagotributoscuc | number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    <tr>
+                                                                                        <td>11</td>
+                                                                                        <td>Precio Mano de Obra</td>
+                                                                                        <td>{{ solicitud.presupuestoExcelComun[0].preciomanoobracup | number_format(2, '.', ',') }}</td>
+                                                                                        <td>{{ solicitud.presupuestoExcelComun[0].preciomanoobracuc | number_format(2, '.', ',') }}</td>
+                                                                                    </tr>
+                                                                                    {% if solicitud.presupuestoExcelComun[0].preciomaterialescup != 0 or solicitud.presupuestoExcelComun[0].preciomaterialescuc != 0 %}
+                                                                                        <tr>
+                                                                                            <td>12</td>
+                                                                                            <td>Precio Materiales</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].preciomaterialescup | number_format(2, '.', ',') }}</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].preciomaterialescuc | number_format(2, '.', ',') }}</td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    <tr>
+                                                                                        <td>13</td>
+                                                                                        <td>Precio Total Servicio de Construcción</td>
+                                                                                        <td>{{ solicitud.presupuestoExcelComun[0].preciototalcup | number_format(2, '.', ',') }}</td>
+                                                                                        <td>{{ solicitud.presupuestoExcelComun[0].preciototalcuc | number_format(2, '.', ',') }}</td>
+                                                                                    </tr>
+                                                                                    {% if solicitud.presupuestoExcelComun[0].tiempoejecuciondias != 0 %}
+                                                                                        <tr>
+                                                                                            <td style="background-color: #EEEEEE; border-color: #EEEEEE"></td>
+                                                                                            <td>Tiempo de ejecución: (días)</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].tiempoejecuciondias }}</td>
+                                                                                            <td style="background-color: #EEEEEE; border-color: #EEEEEE"></td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    {% if solicitud.presupuestoExcelComun[0].canthombres != 0 %}
+                                                                                        <tr>
+                                                                                            <td style="background-color: #EEEEEE; border-color: #EEEEEE"></td>
+                                                                                            <td>Cantidad de hombres</td>
+                                                                                            <td>{{ solicitud.presupuestoExcelComun[0].canthombres }}</td>
+                                                                                            <td style="background-color: #EEEEEE; border-color: #EEEEEE"></td>
+                                                                                        </tr>
+                                                                                    {% endif %}
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div id="actividades-{{ solicitud.id }}" class="tab-pane">
+                                                                        {% if solicitud.presupuestoExcelComun[0].objetivos | length == 0 %}
+                                                                            <div class="row">
+                                                                                <div class="col-lg-1"></div>
+                                                                                <div class="col-lg-10">
+                                                                                    <form class="form-horizontal" role="form">
+                                                                                        <div class="form-group">
+                                                                                            <div class="row">
+                                                                                                <div class="col-lg-1"></div>
+                                                                                                <div class="col-lg-10">
+                                                                                                    <form>
+                                                                                                        {#<div class="row" style="text-align: center">
+                                                                                                            <div class="col-lg-3">
+                                                                                                                <label>No. Hoja del Excel</label>
+                                                                                                                <select id="noHoja" name="noHoja"  class="form-control round-input" required="required">
+                                                                                                                    <option></option>
+                                                                                                                    <option style="text-align: center;" value="1">1</option>
+                                                                                                                    <option style="text-align: center;" value="2">2</option>
+                                                                                                                    <option style="text-align: center;" value="3">3</option>
+                                                                                                                    <option style="text-align: center;" value="4">4</option>
+                                                                                                                    <option style="text-align: center;" value="5">5</option>
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <br>#}
+                                                                                                        <br>
+
+                                                                                                        <div class="row" style="text-align: center;">
+                                                                                                            <div class="col-lg-12">
+                                                                                                                <img src="{{ asset('bundles/ccc/img/excelComunAct.png') }}" width="100%" height="auto">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="row">
+                                                                                                            <div class="col-lg-10">
+                                                                                                                <label>Buscar Excel</label>
+                                                                                                                <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                                                                <input type="hidden" value="{{ solicitud.id }}" name="idSolicitud">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="row">
+                                                                                                            <div class="col-lg-1">
+                                                                                                                <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('cargarActPresupuesto') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </form>
+                                                                                                </div>
+                                                                                                <div class="col-lg-3"></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% else %}
+                                                                            <div class="row">
+                                                                                <div class="col-lg-1"></div>
+                                                                                <div class="col-lg-11">
+                                                                                    <div id="scroll">
+                                                                                        <table {#id="example"#} class="table table-striped table-advance table-hover table-bordered display" style="text-align: center">
+                                                                                            <thead>
+                                                                                            <tr style="text-align: center; background-color: #EEEEEE">
+                                                                                                <td style="width: 5px;">Código</td>
+                                                                                                <td style="">Desglose de actividades</td>
+                                                                                                <td style="">UM</td>
+                                                                                                <td style="">Cant</td>
+                                                                                                <td style="">CUC</td>
+                                                                                                <td style="">Importe</td>
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                            {% for objetivo in solicitud.presupuestoExcelComun[0].objetivos %}
+                                                                                                {% set totalGrupo = 0 %}
+                                                                                                {% for grupo in objetivo.gruposActividades %}
+                                                                                                    {% for actividad in grupo.actividades %}
+                                                                                                        {% set totalGrupo = totalGrupo + actividad.total %}
+                                                                                                    {% endfor %}
+                                                                                                    <tr>
+                                                                                                        <td>{{ grupo.codigo }}</td>
+                                                                                                        <td colspan="4">{{ grupo.grupo }}</td>
+                                                                                                        <td>
+                                                                                                            <b>{{ totalGrupo | number_format(2, '.', ',') }}</b>
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                    {% for actividad in grupo.actividades %}
+                                                                                                        <tr>
+                                                                                                            <td>{{ actividad.codigo }}</td>
+                                                                                                            <td>{{ actividad.actividad }}</td>
+                                                                                                            <td>{{ actividad.um }}</td>
+                                                                                                            <td>{{ actividad.cantidad }}</td>
+                                                                                                            <td>{{ actividad.precio | number_format(2, '.', ',') }}</td>
+                                                                                                            <td>{{ actividad.total | number_format(2, '.', ',') }}</td>
+                                                                                                        </tr>
+                                                                                                    {% endfor %}
+                                                                                                {% endfor %}
+                                                                                            {% endfor %}
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+
+                                                                    <div id="materiales-{{ solicitud.id }}" class="tab-pane">
+                                                                        {% if solicitud.presupuestoExcelComun[0].materiales | length == 0 %}
+                                                                            <div class="row">
+                                                                                <div class="col-lg-1"></div>
+                                                                                <div class="col-lg-10">
+                                                                                    <form class="form-horizontal" role="form">
+                                                                                        <div class="form-group">
+                                                                                            <div class="row">
+                                                                                                <div class="col-lg-1"></div>
+                                                                                                <div class="col-lg-10">
+                                                                                                    <form>
+                                                                                                       {# <div class="row" style="text-align: center">
+                                                                                                            <div class="col-lg-3">
+                                                                                                                <label>No. Hoja del Excel</label>
+                                                                                                                <select id="noHoja" name="noHoja"  class="form-control round-input" required="required">
+                                                                                                                    <option></option>
+                                                                                                                    <option style="text-align: center;" value="1">1</option>
+                                                                                                                    <option style="text-align: center;" value="2">2</option>
+                                                                                                                    <option style="text-align: center;" value="3">3</option>
+                                                                                                                    <option style="text-align: center;" value="4">4</option>
+                                                                                                                    <option style="text-align: center;" value="5">5</option>
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                        </div>#}
+                                                                                                        <br>
+
+                                                                                                        <div class="row" style="text-align: center;">
+                                                                                                            <div class="col-lg-12">
+                                                                                                                <img src="{{ asset('bundles/ccc/img/excelComunMat.png') }}" width="100%" height="auto">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="row">
+                                                                                                            <div class="col-lg-10">
+                                                                                                                <label>Buscar Excel</label>
+                                                                                                                <input required type="file" name="nombreArchivo" id="nombreArchivo" value="Buscar" title="Buscar" class="btn btn-success"/><br>
+                                                                                                                <input type="hidden" value="{{ solicitud.id }}" name="idSolicitud">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="row">
+                                                                                                            <div class="col-lg-1">
+                                                                                                                <button type="submit" class="btn btn-primary" formmethod="post" formaction="{{ path('cargarMatPresupuesto') }}" formenctype="multipart/form-data">Enviar</button>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </form>
+                                                                                                </div>
+                                                                                                <div class="col-lg-3"></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% else %}
+                                                                            <div class="row">
+                                                                                <div class="col-lg-1"></div>
+                                                                                <div class="col-lg-11">
+                                                                                    <div id="scrollMat">
+                                                                                        <table {#id="example"#} class="table table-striped table-advance table-hover table-bordered display" style="text-align: center">
+                                                                                            <thead>
+                                                                                            <tr style="text-align: center; background-color: #EEEEEE">
+                                                                                                <td style="">Material</td>
+                                                                                                <td style="width: 5px;">UM</td>
+                                                                                                <td style="width: 5px;">Cant</td>
+                                                                                                <td style="">CUC</td>
+                                                                                                <td style="">Importe</td>
+                                                                                            </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                            {% set totalMaterial = 0 %}
+                                                                                            {% for material in solicitud.presupuestoExcelComun[0].materiales %}
+                                                                                                <tr>
+                                                                                                    <td>{{ material.material }}</td>
+                                                                                                    <td>{{ material.um }}</td>
+                                                                                                    <td>{{ material.cantidad | number_format(2, '.', ',') }}</td>
+                                                                                                    <td>{{ material.precio | number_format(2, '.', ',') }}</td>
+                                                                                                    <td>{{ material.importe | number_format(2, '.', ',') }}</td>
+                                                                                                    {% set totalMaterial = totalMaterial + material.importe %}
+                                                                                                </tr>
+                                                                                            {% endfor %}
+                                                                                            <tr>
+                                                                                                <td colspan="4"></td>
+                                                                                                <td>
+                                                                                                    <b>{{ totalMaterial | number_format(2, '.', ',') }}</b>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if solicitud.fechaCosteo != '' %}
+                                        <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#verOferta-{{ solicitud.id }}" title="Ver datos de la Oferta">Ver.</a>
+                                        <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="verOferta-{{ solicitud.id }}" class="modal fade">
+                                            <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                        <h4 class="modal-title">Oferta </h4>
+                                                    </div>
+                                                    <section class="panel">
+                                                        <header class="panel-heading tab-bg-primary ">
+                                                            <ul class="nav nav-tabs">
+                                                                <li class="active">
+                                                                    <a data-toggle="tab" href="#datosOferta-{{ solicitud.id }}">Datos</a>
+                                                                </li>
+                                                                {% if is_granted('ROLE_PRESUPUESTISTA') or is_granted('ROLE_COMERCIAL') %}
+                                                                    <li>
+                                                                        <a data-toggle="tab" href="#editarOferta-{{ solicitud.id }}">Editar</a>
+                                                                    </li>
+                                                                {% endif %}
+                                                            </ul>
+                                                        </header>
+                                                        <div class="panel-body">
+                                                            <div class="tab-content">
+                                                                <div id="datosOferta-{{ solicitud.id }}" class="tab-pane active">
+                                                                    <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th>Fecha</th>
+                                                                            <th>CUC</th>
+                                                                            <th>CUP</th>
+                                                                            <th>Ejecución</th>
+                                                                            <th>Trabajadores</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            {% set montoOfertaCUP = montoOfertaCUP + solicitud.valorOfertaCUP %}
+                                                                            {% set montoOfertaCUC = montoOfertaCUC + solicitud.valorOfertaCUC %}
+                                                                            <td>{{ solicitud.fechaElaboracionOferta | date('d.m.Y') }}</td>
+                                                                            <td>${{ solicitud.valorOfertaCUC | number_format(2, '.', ',') }}</td>
+                                                                            <td>${{ solicitud.valorOfertaCUP | number_format(2, '.', ',') }}</td>
+                                                                            <td>{{ solicitud.tiempoEjecucion }}</td>
+                                                                            <td>{{ solicitud.cantidadTrabajadores }}</td>
+
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+
+                                                                    <table class="table table-striped table-advance table-hover table-bordered" style="text-align: center">
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td colspan="2" style="width: 5px"><strong>Materiales</strong></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width: 5px"><strong>CUC</strong></td>
+                                                                            <td style="width: 5px"><strong>CUP</strong></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>${{ solicitud.valorOfertaMaterialesCUC | number_format(2, '.', ',') }}</td>
+                                                                            <td>${{ solicitud.valorOfertaMaterialesCUP | number_format(2, '.', ',') }}</td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div id="editarOferta-{{ solicitud.id }}" class="tab-pane">
+                                                                    <form class="form-horizontal" method="post" action="{{ path('editarDatosOfertaA') }}">
+                                                                        <input hidden="hidden" type="text" name="idSolicitud" value="{{ solicitud.id }}">
+
+                                                                        <div class="form-group">
+                                                                            <label class="col-sm-4 control-label">Oferta Elaborada</label>
+                                                                            <div id="sandbox-container" class="col-sm-6">
+                                                                                <input style="text-align: center" name="fechaElaboradaOferta" type="text" class="form-control round-input" required="required" value="{{ solicitud.fechaElaboracionOferta | date('d.m.Y') }}">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-1"></div>
+                                                                            <div class="col-sm-5">
+                                                                                <label class="control-label">Valor Oferta CUP</label>
+                                                                                <div class="">
+                                                                                    <input style="text-align: center" name="valorOfertaCUP" type="text" class="form-control round-input" value="{{ solicitud.valorOfertaCUP }}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-5">
+                                                                                <label class="control-label">Valor Oferta CUC</label>
+                                                                                <div class="">
+                                                                                    <input style="text-align: center" name="valorOfertaCUC" type="text" class="form-control round-input" value="{{ solicitud.valorOfertaCUC }}">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-1"></div>
+                                                                            <div class="col-sm-5">
+                                                                                <label class="control-label">Valor Materiales CUP</label>
+                                                                                <div class="">
+                                                                                    <input style="text-align: center" name="valorMaterialesCUP" type="text" class="form-control round-input" value="{{ solicitud.valorOfertaMaterialesCUP }}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-5">
+                                                                                <label class="control-label">Valor Materiales CUC</label>
+                                                                                <div class="">
+                                                                                    <input style="text-align: center" name="valorMaterialesCUC" type="text" class="form-control round-input" value="{{ solicitud.valorOfertaMaterialesCUP }}">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-1"></div>
+                                                                            <div class="col-sm-5">
+                                                                                <label class="control-label">Cantidad Trabajadores</label>
+                                                                                <div class="">
+                                                                                    <input style="text-align: center" name="cantidadTrabajadores" type="number" class="form-control round-input" value="{{ solicitud.cantidadTrabajadores }}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-5">
+                                                                                <label class="control-label">Tiempo Ejecución(días)</label>
+                                                                                <div class="">
+                                                                                    <input style="text-align: center" name="tiempoEjecucion" type="text" class="form-control round-input" value="{{ solicitud.tiempoEjecucion }}">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-10">
+                                                                                <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if solicitud.fechaEntregaCliente == '' %}
+                                        {% if is_granted('ROLE_COMERCIAL') and (solicitud.valorOfertaCUP != 0 or solicitud.valorOfertaCUC != 0) and (solicitud.valorCosteo != 0) %}
+                                            <a style="width: 50px" class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#insertarFechaEntregaCliente-{{ solicitud.id }}" title="Insertar la fecha de entrega al cliente">Ins.</a>
+                                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="insertarFechaEntregaCliente-{{ solicitud.id }}" class="modal fade">
+                                                <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                            <h4 class="modal-title">Entrega al Cliente </h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="form-horizontal" method="post" action="{{ path('insertarFechaEntregaCliente') }}">
+                                                                <input hidden="hidden" type="text" name="idCliente" value="{{ solicitud.idCliente.id }}">
+                                                                <input hidden="hidden" type="text" name="idSolicitud" value="{{ solicitud.id }}">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-4 control-label">Fecha</label>
+                                                                    <div id="sandbox-container" class="col-sm-6">
+                                                                        <input style="text-align: center" name="fechaEntregaCliente" type="text" class="form-control round-input" required="required">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-10">
+                                                                        <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        {{ solicitud.fechaEntregaCliente | date('d.m.Y') }}
+                                        {% if is_granted('ROLE_COMERCIAL') %}
+                                            <a class="btn btn-success btnNuevo tooltips" data-placement="top" data-toggle="modal" href="#editarEntrega-{{ solicitud.id }}" title="Editar la fecha de entrega al Cliente">E</a>
+                                            <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="editarEntrega-{{ solicitud.id }}" class="modal fade">
+                                                <div class="modal-dialog" style="text-align: center;width: 500px; height: auto">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                            <h4 class="modal-title">Entrega al Cliente </h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="form-horizontal" method="post" action="{{ path('editarFechaEntregaClienteA') }}">
+                                                                <input hidden="hidden" type="text" name="idSolicitud" value="{{ solicitud.id }}">
+                                                                <div class="form-group">
+                                                                    <label class="col-sm-4 control-label">Fecha</label>
+                                                                    <div id="sandbox-container" class="col-sm-6">
+                                                                        <input style="text-align: center" name="fechaEntregaCliente" type="text" class="form-control round-input" required="required" value="{{ solicitud.fechaEntregaCliente | date('d.m.Y') }}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-10">
+                                                                        <input type="submit" value="Enviar" class="btn btn-info"/>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+         {% endblock %}
+
+
+{% block js %}
+
+    <script src="{{asset('bundles/ccc/js/printThis.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#print_btn').click(function () {
+                $('#imprimir').printThis();
+            });
+        });
+    </script>
+
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.js')}}" type="text/javascript" ></script>
+    <script src="{{asset('bundles/ccc/js/datepicker/bootstrap-datepicker.min.js')}}" type="text/javascript" ></script>
+    <script>
+        $('#sandbox-container input').datepicker({
+            format: "dd.mm.yyyy",
+            language: "es",
+            orientation: "bottom auto",
+            autoclose: true,
+            todayHighlight: true
+        });
+    </script>
+
+    {#  PARA EL DATATABLE   #}
+    <script src="{{asset('bundles/ccc/js/jquery.dataTables.js')}}" type="text/javascript" ></script>
+    <script src="{{asset('bundles/ccc/js/dataTables.fixedColumns.min.js')}}" type="text/javascript" ></script>
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable( {
+                "scrollY":        "1200px",
+                "scrollX":        true,
+                /*"scrollCollapse": true,*/
+                "paging":         false,
+                "order": [[ 1, "asc" ]],
+                /*fixedColumns:   {
+                    leftColumns: 2
+                }*/
+            } );
+        } );
+    </script>
+
+    {#  PARA LA CABECERA DE LA TABLA ESTATICA   #}
+    <script>
+        $(function () {
+            $("table").stickyTableHeaders();
+        });
+
+        /*! Copyright (c) 2011 by Jonas Mosbech - https://github.com/jmosbech/StickyTableHeaders
+         MIT license info: https://github.com/jmosbech/StickyTableHeaders/blob/master/license.txt */
+
+        ;
+        (function ($, window, undefined) {
+            'use strict';
+
+            var name = 'stickyTableHeaders',
+                    id = 0,
+                    defaults = {
+                        fixedOffset: 0,
+                        leftOffset: 0,
+                        marginTop: 0,
+                        scrollableArea: window
+                    };
+
+            function Plugin(el, options) {
+                // To avoid scope issues, use 'base' instead of 'this'
+                // to reference this class from internal events and functions.
+                var base = this;
+
+                // Access to jQuery and DOM versions of element
+                base.$el = $(el);
+                base.el = el;
+                base.id = id++;
+                base.$window = $(window);
+                base.$document = $(document);
+
+                // Listen for destroyed, call teardown
+                base.$el.bind('destroyed',
+                        $.proxy(base.teardown, base));
+
+                // Cache DOM refs for performance reasons
+                base.$clonedHeader = null;
+                base.$originalHeader = null;
+
+                // Keep track of state
+                base.isSticky = false;
+                base.hasBeenSticky = false;
+                base.leftOffset = null;
+                base.topOffset = null;
+
+                base.init = function () {
+                    base.$el.each(function () {
+                        var $this = $(this);
+
+                        // remove padding on <table> to fix issue #7
+                        $this.css('padding', 0);
+
+                        base.$originalHeader = $('thead:first', this);
+                        base.$clonedHeader = base.$originalHeader.clone();
+                        $this.trigger('clonedHeader.' + name, [base.$clonedHeader]);
+
+                        base.$clonedHeader.addClass('tableFloatingHeader');
+                        base.$clonedHeader.css('display', 'none');
+
+                        base.$originalHeader.addClass('tableFloatingHeaderOriginal');
+
+                        base.$originalHeader.after(base.$clonedHeader);
+
+                        base.$printStyle = $('<style type="text/css" media="print">' +
+                                '.tableFloatingHeader{display:none !important;}' +
+                                '.tableFloatingHeaderOriginal{position:static !important;}' +
+                                '</style>');
+                        $('head').append(base.$printStyle);
+                    });
+
+                    base.setOptions(options);
+                    base.updateWidth();
+                    base.toggleHeaders();
+                    base.bind();
+                };
+
+                base.destroy = function () {
+                    base.$el.unbind('destroyed', base.teardown);
+                    base.teardown();
+                };
+
+                base.teardown = function () {
+                    if (base.isSticky) {
+                        base.$originalHeader.css('position', 'static');
+                    }
+                    $.removeData(base.el, 'plugin_' + name);
+                    base.unbind();
+
+                    base.$clonedHeader.remove();
+                    base.$originalHeader.removeClass('tableFloatingHeaderOriginal');
+                    base.$originalHeader.css('visibility', 'visible');
+                    base.$printStyle.remove();
+
+                    base.el = null;
+                    base.$el = null;
+                };
+
+                base.bind = function () {
+                    base.$scrollableArea.on('scroll.' + name, base.toggleHeaders);
+                    if (!base.isWindowScrolling) {
+                        base.$window.on('scroll.' + name + base.id, base.setPositionValues);
+                        base.$window.on('resize.' + name + base.id, base.toggleHeaders);
+                    }
+                    base.$scrollableArea.on('resize.' + name, base.toggleHeaders);
+                    base.$scrollableArea.on('resize.' + name, base.updateWidth);
+                };
+
+                base.unbind = function () {
+                    // unbind window events by specifying handle so we don't remove too much
+                    base.$scrollableArea.off('.' + name, base.toggleHeaders);
+                    if (!base.isWindowScrolling) {
+                        base.$window.off('.' + name + base.id, base.setPositionValues);
+                        base.$window.off('.' + name + base.id, base.toggleHeaders);
+                    }
+                    base.$scrollableArea.off('.' + name, base.updateWidth);
+                };
+
+                base.toggleHeaders = function () {
+                    if (base.$el) {
+                        base.$el.each(function () {
+                            var $this = $(this),
+                                    newLeft,
+                                    newTopOffset = base.isWindowScrolling ? (
+                                            isNaN(base.options.fixedOffset) ? base.options.fixedOffset.outerHeight() : base.options.fixedOffset) : base.$scrollableArea.offset().top + (!isNaN(base.options.fixedOffset) ? base.options.fixedOffset : 0),
+                                    offset = $this.offset(),
+
+                                    scrollTop = base.$scrollableArea.scrollTop() + newTopOffset,
+                                    scrollLeft = base.$scrollableArea.scrollLeft(),
+
+                                    scrolledPastTop = base.isWindowScrolling ? scrollTop > offset.top : newTopOffset > offset.top,
+                                    notScrolledPastBottom = (base.isWindowScrolling ? scrollTop : 0) < (offset.top + $this.height() - base.$clonedHeader.height() - (base.isWindowScrolling ? 0 : newTopOffset));
+
+                            if (scrolledPastTop && notScrolledPastBottom) {
+                                newLeft = offset.left - scrollLeft + base.options.leftOffset;
+                                base.$originalHeader.css({
+                                    'position': 'fixed',
+                                    'margin-top': base.options.marginTop,
+                                    'left': newLeft,
+                                    'z-index': 3 // #18: opacity bug
+                                });
+                                base.leftOffset = newLeft;
+                                base.topOffset = newTopOffset;
+                                base.$clonedHeader.css('display', '');
+                                if (!base.isSticky) {
+                                    base.isSticky = true;
+                                    // make sure the width is correct: the user might have resized the browser while in static mode
+                                    base.updateWidth();
+                                }
+                                base.setPositionValues();
+                            } else if (base.isSticky) {
+                                base.$originalHeader.css('position', 'static');
+                                base.$clonedHeader.css('display', 'none');
+                                base.isSticky = false;
+                                base.resetWidth($('td,th', base.$clonedHeader), $('td,th', base.$originalHeader));
+                            }
+                        });
+                    }
+                };
+
+                base.setPositionValues = function () {
+                    var winScrollTop = base.$window.scrollTop(),
+                            winScrollLeft = base.$window.scrollLeft();
+                    if (!base.isSticky || winScrollTop < 0 || winScrollTop + base.$window.height() > base.$document.height() || winScrollLeft < 0 || winScrollLeft + base.$window.width() > base.$document.width()) {
+                        return;
+                    }
+                    base.$originalHeader.css({
+                        'top': base.topOffset - (base.isWindowScrolling ? 0 : winScrollTop),
+                        'left': base.leftOffset - (base.isWindowScrolling ? 0 : winScrollLeft)
+                    });
+                };
+
+                base.updateWidth = function () {
+                    if (!base.isSticky) {
+                        return;
+                    }
+                    // Copy cell widths from clone
+                    if (!base.$originalHeaderCells) {
+                        base.$originalHeaderCells = $('th,td', base.$originalHeader);
+                    }
+                    if (!base.$clonedHeaderCells) {
+                        base.$clonedHeaderCells = $('th,td', base.$clonedHeader);
+                    }
+                    var cellWidths = base.getWidth(base.$clonedHeaderCells);
+                    base.setWidth(cellWidths, base.$clonedHeaderCells, base.$originalHeaderCells);
+
+                    // Copy row width from whole table
+                    base.$originalHeader.css('width', base.$clonedHeader.width());
+                };
+
+                base.getWidth = function ($clonedHeaders) {
+                    var widths = [];
+                    $clonedHeaders.each(function (index) {
+                        var width, $this = $(this);
+
+                        if ($this.css('box-sizing') === 'border-box') {
+                            width = $this[0].getBoundingClientRect().width; // #39: border-box bug
+                        } else {
+                            var $origTh = $('th', base.$originalHeader);
+                            if ($origTh.css('border-collapse') === 'collapse') {
+                                if (window.getComputedStyle) {
+                                    width = parseFloat(window.getComputedStyle(this, null).width);
+                                } else {
+                                    // ie8 only
+                                    var leftPadding = parseFloat($this.css('padding-left'));
+                                    var rightPadding = parseFloat($this.css('padding-right'));
+                                    // Needs more investigation - this is assuming constant border around this cell and it's neighbours.
+                                    var border = parseFloat($this.css('border-width'));
+                                    width = $this.outerWidth() - leftPadding - rightPadding - border;
+                                }
+                            } else {
+                                width = $this.width();
+                            }
+                        }
+
+                        widths[index] = width;
+                    });
+                    return widths;
+                };
+
+                base.setWidth = function (widths, $clonedHeaders, $origHeaders) {
+                    $clonedHeaders.each(function (index) {
+                        var width = widths[index];
+                        $origHeaders.eq(index).css({
+                            'min-width': width,
+                            'max-width': width
+                        });
+                    });
+                };
+
+                base.resetWidth = function ($clonedHeaders, $origHeaders) {
+                    $clonedHeaders.each(function (index) {
+                        var $this = $(this);
+                        $origHeaders.eq(index).css({
+                            'min-width': $this.css('min-width'),
+                            'max-width': $this.css('max-width')
+                        });
+                    });
+                };
+
+                base.setOptions = function (options) {
+                    base.options = $.extend({}, defaults, options);
+                    base.$scrollableArea = $(base.options.scrollableArea);
+                    base.isWindowScrolling = base.$scrollableArea[0] === window;
+                };
+
+                base.updateOptions = function (options) {
+                    base.setOptions(options);
+                    // scrollableArea might have changed
+                    base.unbind();
+                    base.bind();
+                    base.updateWidth();
+                    base.toggleHeaders();
+                };
+
+                // Run initializer
+                base.init();
+            }
+
+            // A plugin wrapper around the constructor,
+            // preventing against multiple instantiations
+            $.fn[name] = function (options) {
+                return this.each(function () {
+                    var instance = $.data(this, 'plugin_' + name);
+                    if (instance) {
+                        if (typeof options === 'string') {
+                            instance[options].apply(instance);
+                        } else {
+                            instance.updateOptions(options);
+                        }
+                    } else if (options !== 'destroy') {
+                        $.data(this, 'plugin_' + name, new Plugin(this, options));
+                    }
+                });
+            };
+
+        })(jQuery, window);
+    </script>
+
+{% endblock %}
+
