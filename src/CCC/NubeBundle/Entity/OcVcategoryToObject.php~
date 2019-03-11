@@ -1,0 +1,43 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcVcategoryToObject
+ *
+ * @ORM\Table(name="oc_vcategory_to_object")
+ * @ORM\Entity
+ */
+class OcVcategoryToObject
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="categoryid", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $categoryid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="objid", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $objid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=64, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $type;
+
+
+}

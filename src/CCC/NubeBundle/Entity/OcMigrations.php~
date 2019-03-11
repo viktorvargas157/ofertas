@@ -1,0 +1,34 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcMigrations
+ *
+ * @ORM\Table(name="oc_migrations")
+ * @ORM\Entity
+ */
+class OcMigrations
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="app", type="string", length=177, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $app;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="version", type="string", length=14, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $version;
+
+
+}

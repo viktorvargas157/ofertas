@@ -1,0 +1,67 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcFilesTrash
+ *
+ * @ORM\Table(name="oc_files_trash")
+ * @ORM\Entity
+ */
+class OcFilesTrash
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="auto_id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $autoId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="id", type="string", length=250, nullable=false)
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="user", type="string", length=64, nullable=false)
+     */
+    private $user;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="timestamp", type="string", length=12, nullable=false)
+     */
+    private $timestamp;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="location", type="string", length=512, nullable=false)
+     */
+    private $location;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=4, nullable=true)
+     */
+    private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mime", type="string", length=255, nullable=true)
+     */
+    private $mime;
+
+
+}

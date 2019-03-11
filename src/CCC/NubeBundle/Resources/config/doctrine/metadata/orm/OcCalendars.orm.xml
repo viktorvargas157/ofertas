@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcCalendars" table="oc_calendars">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="principaluri" type="string" column="principaluri" length="255" nullable="true"/>
+    <field name="displayname" type="string" column="displayname" length="255" nullable="true"/>
+    <field name="uri" type="string" column="uri" length="255" nullable="true"/>
+    <field name="synctoken" type="integer" column="synctoken" nullable="false"/>
+    <field name="description" type="string" column="description" length="255" nullable="true"/>
+    <field name="calendarorder" type="integer" column="calendarorder" nullable="false"/>
+    <field name="calendarcolor" type="string" column="calendarcolor" length="255" nullable="true"/>
+    <field name="timezone" type="text" column="timezone" nullable="true"/>
+    <field name="components" type="string" column="components" length="20" nullable="true"/>
+    <field name="transparent" type="smallint" column="transparent" nullable="false"/>
+  </entity>
+</doctrine-mapping>

@@ -1,0 +1,95 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcCalendars
+ *
+ * @ORM\Table(name="oc_calendars")
+ * @ORM\Entity
+ */
+class OcCalendars
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="principaluri", type="string", length=255, nullable=true)
+     */
+    private $principaluri;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="displayname", type="string", length=255, nullable=true)
+     */
+    private $displayname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uri", type="string", length=255, nullable=true)
+     */
+    private $uri;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="synctoken", type="integer", nullable=false)
+     */
+    private $synctoken;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="calendarorder", type="integer", nullable=false)
+     */
+    private $calendarorder;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="calendarcolor", type="string", length=255, nullable=true)
+     */
+    private $calendarcolor;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="timezone", type="text", nullable=true)
+     */
+    private $timezone;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="components", type="string", length=20, nullable=true)
+     */
+    private $components;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="transparent", type="smallint", nullable=false)
+     */
+    private $transparent;
+
+
+}

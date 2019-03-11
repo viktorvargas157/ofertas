@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcFilesTrash" table="oc_files_trash">
+    <id name="autoId" type="bigint" column="auto_id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="id" type="string" column="id" length="250" nullable="false"/>
+    <field name="user" type="string" column="user" length="64" nullable="false"/>
+    <field name="timestamp" type="string" column="timestamp" length="12" nullable="false"/>
+    <field name="location" type="string" column="location" length="512" nullable="false"/>
+    <field name="type" type="string" column="type" length="4" nullable="true"/>
+    <field name="mime" type="string" column="mime" length="255" nullable="true"/>
+  </entity>
+</doctrine-mapping>

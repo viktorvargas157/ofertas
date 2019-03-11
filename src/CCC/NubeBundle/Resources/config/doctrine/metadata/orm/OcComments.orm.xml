@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcComments" table="oc_comments">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="parentId" type="integer" column="parent_id" nullable="false"/>
+    <field name="topmostParentId" type="integer" column="topmost_parent_id" nullable="false"/>
+    <field name="childrenCount" type="integer" column="children_count" nullable="false"/>
+    <field name="actorType" type="string" column="actor_type" length="64" nullable="false"/>
+    <field name="actorId" type="string" column="actor_id" length="64" nullable="false"/>
+    <field name="message" type="text" column="message" nullable="true"/>
+    <field name="verb" type="string" column="verb" length="64" nullable="true"/>
+    <field name="creationTimestamp" type="datetime" column="creation_timestamp" nullable="true"/>
+    <field name="latestChildTimestamp" type="datetime" column="latest_child_timestamp" nullable="true"/>
+    <field name="objectType" type="string" column="object_type" length="64" nullable="false"/>
+    <field name="objectId" type="string" column="object_id" length="64" nullable="false"/>
+  </entity>
+</doctrine-mapping>

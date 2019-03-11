@@ -1,3 +1,8 @@
+nube:
+    resource: "@NubeBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 ofertas:
     resource: "@OfertasBundle/Controller/"
     type:     annotation

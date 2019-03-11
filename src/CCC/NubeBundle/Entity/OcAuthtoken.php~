@@ -1,0 +1,81 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcAuthtoken
+ *
+ * @ORM\Table(name="oc_authtoken")
+ * @ORM\Entity
+ */
+class OcAuthtoken
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uid", type="string", length=64, nullable=false)
+     */
+    private $uid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="login_name", type="string", length=64, nullable=false)
+     */
+    private $loginName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password", type="text", nullable=true)
+     */
+    private $password;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="text", nullable=false)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=200, nullable=false)
+     */
+    private $token;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="type", type="smallint", nullable=false)
+     */
+    private $type;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_activity", type="integer", nullable=false)
+     */
+    private $lastActivity;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_check", type="integer", nullable=false)
+     */
+    private $lastCheck;
+
+
+}

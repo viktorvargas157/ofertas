@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcExternalApplicable" table="oc_external_applicable">
+    <id name="applicableId" type="bigint" column="applicable_id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="mountId" type="bigint" column="mount_id" nullable="false"/>
+    <field name="type" type="integer" column="type" nullable="false"/>
+    <field name="value" type="string" column="value" length="64" nullable="true"/>
+  </entity>
+</doctrine-mapping>

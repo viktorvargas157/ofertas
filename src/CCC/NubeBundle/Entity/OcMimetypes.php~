@@ -1,0 +1,32 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcMimetypes
+ *
+ * @ORM\Table(name="oc_mimetypes")
+ * @ORM\Entity
+ */
+class OcMimetypes
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mimetype", type="string", length=255, nullable=false)
+     */
+    private $mimetype;
+
+
+}

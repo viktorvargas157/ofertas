@@ -1,0 +1,53 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcAddressbookchanges
+ *
+ * @ORM\Table(name="oc_addressbookchanges")
+ * @ORM\Entity
+ */
+class OcAddressbookchanges
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uri", type="string", length=255, nullable=true)
+     */
+    private $uri;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="synctoken", type="integer", nullable=false)
+     */
+    private $synctoken;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="addressbookid", type="integer", nullable=false)
+     */
+    private $addressbookid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="operation", type="smallint", nullable=false)
+     */
+    private $operation;
+
+
+}

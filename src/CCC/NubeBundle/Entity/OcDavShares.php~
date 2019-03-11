@@ -1,0 +1,60 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcDavShares
+ *
+ * @ORM\Table(name="oc_dav_shares")
+ * @ORM\Entity
+ */
+class OcDavShares
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="principaluri", type="string", length=255, nullable=true)
+     */
+    private $principaluri;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255, nullable=true)
+     */
+    private $type;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="access", type="smallint", nullable=true)
+     */
+    private $access;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="resourceid", type="integer", nullable=false)
+     */
+    private $resourceid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="publicuri", type="string", length=255, nullable=true)
+     */
+    private $publicuri;
+
+
+}

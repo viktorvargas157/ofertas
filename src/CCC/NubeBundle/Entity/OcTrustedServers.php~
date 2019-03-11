@@ -1,0 +1,67 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcTrustedServers
+ *
+ * @ORM\Table(name="oc_trusted_servers")
+ * @ORM\Entity
+ */
+class OcTrustedServers
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=512, nullable=false)
+     */
+    private $url;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url_hash", type="string", length=255, nullable=false)
+     */
+    private $urlHash;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=128, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="shared_secret", type="string", length=256, nullable=true)
+     */
+    private $sharedSecret;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="status", type="integer", nullable=false)
+     */
+    private $status;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sync_token", type="string", length=512, nullable=true)
+     */
+    private $syncToken;
+
+
+}

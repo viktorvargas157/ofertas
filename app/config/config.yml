@@ -62,6 +62,14 @@ doctrine:
                 user:     %database_user%
                 password: %database_password%
                 charset:  UTF8
+            nube:
+                driver:   %database_driver%
+                host:     %database_host1%
+                port:     %database_port%
+                dbname:   %database_name1%
+                user:     %database_user1%
+                password: %database_password1%
+                charset:  UTF8
         # if using pdo_sqlite as your database driver, add the path in parameters.yml
         # e.g. database_path: %kernel.root_dir%/data/data.db3
 
@@ -76,6 +84,10 @@ doctrine:
                 connection:       almacen
                 mappings:
                     OfertasBundle: ~
+            nube:
+                connection:       nube
+                mappings:
+                    NubeBundle: ~
 #        auto_generate_proxy_classes: %kernel.debug%
 #        auto_mapping: true
 

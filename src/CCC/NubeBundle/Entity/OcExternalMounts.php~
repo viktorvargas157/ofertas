@@ -1,0 +1,60 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcExternalMounts
+ *
+ * @ORM\Table(name="oc_external_mounts")
+ * @ORM\Entity
+ */
+class OcExternalMounts
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mount_id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $mountId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mount_point", type="string", length=128, nullable=false)
+     */
+    private $mountPoint;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="storage_backend", type="string", length=64, nullable=false)
+     */
+    private $storageBackend;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="auth_backend", type="string", length=64, nullable=false)
+     */
+    private $authBackend;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="priority", type="integer", nullable=false)
+     */
+    private $priority;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="type", type="integer", nullable=false)
+     */
+    private $type;
+
+
+}

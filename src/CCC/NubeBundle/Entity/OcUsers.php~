@@ -1,0 +1,39 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcUsers
+ *
+ * @ORM\Table(name="oc_users")
+ * @ORM\Entity
+ */
+class OcUsers
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uid", type="string", length=64, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $uid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="displayname", type="string", length=64, nullable=true)
+     */
+    private $displayname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=255, nullable=false)
+     */
+    private $password;
+
+
+}

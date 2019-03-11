@@ -1,0 +1,46 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcCommentsReadMarkers
+ *
+ * @ORM\Table(name="oc_comments_read_markers")
+ * @ORM\Entity
+ */
+class OcCommentsReadMarkers
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="user_id", type="string", length=64, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $userId;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="marker_datetime", type="datetime", nullable=true)
+     */
+    private $markerDatetime;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="object_type", type="string", length=64, nullable=false)
+     */
+    private $objectType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="object_id", type="string", length=64, nullable=false)
+     */
+    private $objectId;
+
+
+}

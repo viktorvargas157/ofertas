@@ -1,0 +1,46 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcStorages
+ *
+ * @ORM\Table(name="oc_storages")
+ * @ORM\Entity
+ */
+class OcStorages
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="numeric_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $numericId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="id", type="string", length=64, nullable=true)
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="available", type="integer", nullable=false)
+     */
+    private $available;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_checked", type="integer", nullable=true)
+     */
+    private $lastChecked;
+
+
+}

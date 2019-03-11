@@ -2,12 +2,19 @@ parameters:
     database_driver: pdo_mysql
     #database_host: 192.168.1.105
     database_host: 192.168.1.107
+    #database_host1: 192.168.1.108
+    database_host1: 127.0.0.1
     #database_host: localhost
     database_port: '3306'
     database_name: ofertas
+    database_name1: owncloud
     database_user: sistema
+    #database_user1: owncloud
+    database_user1: root
     #database_user: root
     database_password: 'ccc2015***'
+    #database_password1: '7ef992513bd88308e9fb178c97f582ec'
+    database_password1: ''
     #database_password: ''
     mailer_transport: smtp
     mailer_auth_mode: login

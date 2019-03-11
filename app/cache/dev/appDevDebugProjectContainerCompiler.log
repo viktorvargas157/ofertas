@@ -33,12 +33,20 @@ Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: R
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.dbal.logger.chain.almacen" (parent: doctrine.dbal.logger.chain).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.dbal.almacen_connection.event_manager" (parent: doctrine.dbal.connection.event_manager).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.dbal.almacen_connection" (parent: doctrine.dbal.connection).
+Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.dbal.nube_connection.configuration" (parent: doctrine.dbal.connection.configuration).
+Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.dbal.logger.profiling.nube" (parent: doctrine.dbal.logger.profiling).
+Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.dbal.logger.chain.nube" (parent: doctrine.dbal.logger.chain).
+Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.dbal.nube_connection.event_manager" (parent: doctrine.dbal.connection.event_manager).
+Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.dbal.nube_connection" (parent: doctrine.dbal.connection).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.orm.default_configuration" (parent: doctrine.orm.configuration).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.orm.default_manager_configurator" (parent: doctrine.orm.manager_configurator.abstract).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.orm.default_entity_manager" (parent: doctrine.orm.entity_manager.abstract).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.orm.almacen_configuration" (parent: doctrine.orm.configuration).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.orm.almacen_manager_configurator" (parent: doctrine.orm.manager_configurator.abstract).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.orm.almacen_entity_manager" (parent: doctrine.orm.entity_manager.abstract).
+Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.orm.nube_configuration" (parent: doctrine.orm.configuration).
+Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.orm.nube_manager_configurator" (parent: doctrine.orm.manager_configurator.abstract).
+Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "doctrine.orm.nube_entity_manager" (parent: doctrine.orm.entity_manager.abstract).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "monolog.logger.request" (parent: monolog.logger_prototype).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "monolog.logger.emergency" (parent: monolog.logger_prototype).
 Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPass: Resolving inheritance for "monolog.logger.event" (parent: monolog.logger_prototype).
@@ -53,6 +61,7 @@ Symfony\Component\DependencyInjection\Compiler\RemovePrivateAliasesPass: Removed
 Symfony\Component\DependencyInjection\Compiler\RemovePrivateAliasesPass: Removed service "doctrine.orm.metadata.annotation_reader"; reason: private alias
 Symfony\Component\DependencyInjection\Compiler\RemovePrivateAliasesPass: Removed service "doctrine.orm.default_entity_manager.event_manager"; reason: private alias
 Symfony\Component\DependencyInjection\Compiler\RemovePrivateAliasesPass: Removed service "doctrine.orm.almacen_entity_manager.event_manager"; reason: private alias
+Symfony\Component\DependencyInjection\Compiler\RemovePrivateAliasesPass: Removed service "doctrine.orm.nube_entity_manager.event_manager"; reason: private alias
 Symfony\Component\DependencyInjection\Compiler\RemoveAbstractDefinitionsPass: Removed service "templating.asset.path_package"; reason: abstract
 Symfony\Component\DependencyInjection\Compiler\RemoveAbstractDefinitionsPass: Removed service "templating.asset.url_package"; reason: abstract
 Symfony\Component\DependencyInjection\Compiler\RemoveAbstractDefinitionsPass: Removed service "templating.asset.request_aware_package"; reason: abstract
@@ -123,6 +132,7 @@ Symfony\Component\DependencyInjection\Compiler\ReplaceAliasByActualDefinitionPas
 Symfony\Component\DependencyInjection\Compiler\ReplaceAliasByActualDefinitionPass: Changed reference of service "validator.mapping.loader.annotation_loader" previously pointing to "annotations.file_cache_reader" to "annotation_reader".
 Symfony\Component\DependencyInjection\Compiler\ReplaceAliasByActualDefinitionPass: Changed reference of service "doctrine.orm.default_annotation_metadata_driver" previously pointing to "annotations.file_cache_reader" to "annotation_reader".
 Symfony\Component\DependencyInjection\Compiler\ReplaceAliasByActualDefinitionPass: Changed reference of service "doctrine.orm.almacen_annotation_metadata_driver" previously pointing to "annotations.file_cache_reader" to "annotation_reader".
+Symfony\Component\DependencyInjection\Compiler\ReplaceAliasByActualDefinitionPass: Changed reference of service "doctrine.orm.nube_annotation_metadata_driver" previously pointing to "annotations.file_cache_reader" to "annotation_reader".
 Symfony\Component\DependencyInjection\Compiler\ReplaceAliasByActualDefinitionPass: Changed reference of service "sensio_framework_extra.controller.listener" previously pointing to "annotations.file_cache_reader" to "annotation_reader".
 Symfony\Component\DependencyInjection\Compiler\ReplaceAliasByActualDefinitionPass: Changed reference of service "sensio_framework_extra.routing.loader.annot_class" previously pointing to "annotations.file_cache_reader" to "annotation_reader".
 Symfony\Component\DependencyInjection\Compiler\ReplaceAliasByActualDefinitionPass: Changed reference of service "security.validator.user_password" previously pointing to "security.encoder_factory.generic" to "security.encoder_factory".
@@ -227,6 +237,9 @@ Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inl
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.dbal.logger.chain.almacen" to "doctrine.dbal.almacen_connection.configuration".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.dbal.almacen_connection.configuration" to "doctrine.dbal.almacen_connection".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.dbal.almacen_connection.event_manager" to "doctrine.dbal.almacen_connection".
+Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.dbal.logger.chain.nube" to "doctrine.dbal.nube_connection.configuration".
+Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.dbal.nube_connection.configuration" to "doctrine.dbal.nube_connection".
+Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.dbal.nube_connection.event_manager" to "doctrine.dbal.nube_connection".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.default_metadata_cache" to "doctrine.orm.default_configuration".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.default_query_cache" to "doctrine.orm.default_configuration".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.default_result_cache" to "doctrine.orm.default_configuration".
@@ -239,6 +252,12 @@ Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inl
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.almacen_metadata_driver" to "doctrine.orm.almacen_configuration".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.almacen_annotation_metadata_driver" to "doctrine.orm.almacen_metadata_driver".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.almacen_configuration" to "doctrine.orm.almacen_entity_manager".
+Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.nube_metadata_cache" to "doctrine.orm.nube_configuration".
+Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.nube_query_cache" to "doctrine.orm.nube_configuration".
+Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.nube_result_cache" to "doctrine.orm.nube_configuration".
+Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.nube_metadata_driver" to "doctrine.orm.nube_configuration".
+Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.nube_annotation_metadata_driver" to "doctrine.orm.nube_metadata_driver".
+Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "doctrine.orm.nube_configuration" to "doctrine.orm.nube_entity_manager".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "swiftmailer.transport.buffer" to "swiftmailer.mailer.default.transport".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "swiftmailer.transport.authhandler" to "swiftmailer.mailer.default.transport".
 Symfony\Component\DependencyInjection\Compiler\InlineServiceDefinitionsPass: Inlined service "swiftmailer.mailer.default.transport.eventdispatcher" to "swiftmailer.mailer.default.transport".
@@ -354,6 +373,9 @@ Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Remo
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.dbal.almacen_connection.configuration"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.dbal.logger.chain.almacen"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.dbal.almacen_connection.event_manager"; reason: unused
+Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.dbal.nube_connection.configuration"; reason: unused
+Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.dbal.logger.chain.nube"; reason: unused
+Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.dbal.nube_connection.event_manager"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.proxy_cache_warmer"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.listeners.resolve_target_entity"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.naming_strategy.underscore"; reason: unused
@@ -369,6 +391,12 @@ Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Remo
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.almacen_metadata_cache"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.almacen_result_cache"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.almacen_query_cache"; reason: unused
+Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.nube_configuration"; reason: unused
+Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.nube_annotation_metadata_driver"; reason: unused
+Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.nube_metadata_driver"; reason: unused
+Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.nube_metadata_cache"; reason: unused
+Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.nube_result_cache"; reason: unused
+Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "doctrine.orm.nube_query_cache"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "sensio_framework_extra.routing.loader.annot_dir"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "sensio_framework_extra.routing.loader.annot_file"; reason: unused
 Symfony\Component\DependencyInjection\Compiler\RemoveUnusedDefinitionsPass: Removed service "assetic.twig_directory_resource.kernel"; reason: unused

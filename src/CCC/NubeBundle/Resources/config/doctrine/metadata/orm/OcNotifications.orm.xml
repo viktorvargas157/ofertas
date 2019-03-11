@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcNotifications" table="oc_notifications">
+    <id name="notificationId" type="integer" column="notification_id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="app" type="string" column="app" length="32" nullable="false"/>
+    <field name="user" type="string" column="user" length="64" nullable="false"/>
+    <field name="timestamp" type="integer" column="timestamp" nullable="false"/>
+    <field name="objectType" type="string" column="object_type" length="64" nullable="false"/>
+    <field name="objectId" type="string" column="object_id" length="64" nullable="false"/>
+    <field name="subject" type="string" column="subject" length="64" nullable="false"/>
+    <field name="subjectParameters" type="text" column="subject_parameters" nullable="true"/>
+    <field name="message" type="string" column="message" length="64" nullable="true"/>
+    <field name="messageParameters" type="text" column="message_parameters" nullable="true"/>
+    <field name="link" type="string" column="link" length="4000" nullable="true"/>
+    <field name="actions" type="text" column="actions" nullable="true"/>
+    <field name="icon" type="string" column="icon" length="4000" nullable="true"/>
+  </entity>
+</doctrine-mapping>

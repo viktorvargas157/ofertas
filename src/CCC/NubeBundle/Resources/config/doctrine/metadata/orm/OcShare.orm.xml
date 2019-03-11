@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcShare" table="oc_share">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="shareType" type="smallint" column="share_type" nullable="false"/>
+    <field name="shareWith" type="string" column="share_with" length="255" nullable="true"/>
+    <field name="uidOwner" type="string" column="uid_owner" length="64" nullable="false"/>
+    <field name="uidInitiator" type="string" column="uid_initiator" length="64" nullable="true"/>
+    <field name="parent" type="integer" column="parent" nullable="true"/>
+    <field name="itemType" type="string" column="item_type" length="64" nullable="false"/>
+    <field name="itemSource" type="string" column="item_source" length="255" nullable="true"/>
+    <field name="itemTarget" type="string" column="item_target" length="255" nullable="true"/>
+    <field name="fileSource" type="bigint" column="file_source" nullable="true"/>
+    <field name="fileTarget" type="string" column="file_target" length="512" nullable="true"/>
+    <field name="permissions" type="smallint" column="permissions" nullable="false"/>
+    <field name="stime" type="bigint" column="stime" nullable="false"/>
+    <field name="accepted" type="smallint" column="accepted" nullable="false"/>
+    <field name="expiration" type="datetime" column="expiration" nullable="true"/>
+    <field name="token" type="string" column="token" length="32" nullable="true"/>
+    <field name="mailSend" type="smallint" column="mail_send" nullable="false"/>
+    <field name="shareName" type="string" column="share_name" length="64" nullable="true"/>
+  </entity>
+</doctrine-mapping>

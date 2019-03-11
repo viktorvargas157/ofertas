@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcAccounts" table="oc_accounts">
+    <id name="id" type="bigint" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="email" type="string" column="email" length="255" nullable="true"/>
+    <field name="userId" type="string" column="user_id" length="255" nullable="false"/>
+    <field name="lowerUserId" type="string" column="lower_user_id" length="255" nullable="false"/>
+    <field name="displayName" type="string" column="display_name" length="255" nullable="true"/>
+    <field name="quota" type="string" column="quota" length="32" nullable="true"/>
+    <field name="lastLogin" type="integer" column="last_login" nullable="false"/>
+    <field name="backend" type="string" column="backend" length="64" nullable="false"/>
+    <field name="home" type="string" column="home" length="1024" nullable="false"/>
+    <field name="state" type="smallint" column="state" nullable="false"/>
+  </entity>
+</doctrine-mapping>

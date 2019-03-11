@@ -1,0 +1,46 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcFileLocks
+ *
+ * @ORM\Table(name="oc_file_locks")
+ * @ORM\Entity
+ */
+class OcFileLocks
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="lock", type="integer", nullable=false)
+     */
+    private $lock;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="key", type="string", length=64, nullable=false)
+     */
+    private $key;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="ttl", type="integer", nullable=false)
+     */
+    private $ttl;
+
+
+}

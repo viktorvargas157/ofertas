@@ -1,0 +1,60 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcAddressbooks
+ *
+ * @ORM\Table(name="oc_addressbooks")
+ * @ORM\Entity
+ */
+class OcAddressbooks
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="principaluri", type="string", length=255, nullable=true)
+     */
+    private $principaluri;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="displayname", type="string", length=255, nullable=true)
+     */
+    private $displayname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uri", type="string", length=255, nullable=true)
+     */
+    private $uri;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="synctoken", type="integer", nullable=false)
+     */
+    private $synctoken;
+
+
+}

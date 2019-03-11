@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcAuthtoken" table="oc_authtoken">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="uid" type="string" column="uid" length="64" nullable="false"/>
+    <field name="loginName" type="string" column="login_name" length="64" nullable="false"/>
+    <field name="password" type="text" column="password" nullable="true"/>
+    <field name="name" type="text" column="name" nullable="false"/>
+    <field name="token" type="string" column="token" length="200" nullable="false"/>
+    <field name="type" type="smallint" column="type" nullable="false"/>
+    <field name="lastActivity" type="integer" column="last_activity" nullable="false"/>
+    <field name="lastCheck" type="integer" column="last_check" nullable="false"/>
+  </entity>
+</doctrine-mapping>

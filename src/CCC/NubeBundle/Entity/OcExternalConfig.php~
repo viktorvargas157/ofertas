@@ -1,0 +1,46 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcExternalConfig
+ *
+ * @ORM\Table(name="oc_external_config")
+ * @ORM\Entity
+ */
+class OcExternalConfig
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="config_id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $configId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mount_id", type="bigint", nullable=false)
+     */
+    private $mountId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="key", type="string", length=64, nullable=false)
+     */
+    private $key;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="value", type="string", length=4096, nullable=false)
+     */
+    private $value;
+
+
+}

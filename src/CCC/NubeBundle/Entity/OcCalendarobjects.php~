@@ -1,0 +1,102 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcCalendarobjects
+ *
+ * @ORM\Table(name="oc_calendarobjects")
+ * @ORM\Entity
+ */
+class OcCalendarobjects
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="calendardata", type="blob", nullable=true)
+     */
+    private $calendardata;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uri", type="string", length=255, nullable=true)
+     */
+    private $uri;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="calendarid", type="integer", nullable=false)
+     */
+    private $calendarid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="lastmodified", type="integer", nullable=true)
+     */
+    private $lastmodified;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="etag", type="string", length=32, nullable=true)
+     */
+    private $etag;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="size", type="bigint", nullable=false)
+     */
+    private $size;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="componenttype", type="string", length=8, nullable=true)
+     */
+    private $componenttype;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="firstoccurence", type="bigint", nullable=true)
+     */
+    private $firstoccurence;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="lastoccurence", type="bigint", nullable=true)
+     */
+    private $lastoccurence;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uid", type="string", length=255, nullable=true)
+     */
+    private $uid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="classification", type="integer", nullable=true)
+     */
+    private $classification;
+
+
+}

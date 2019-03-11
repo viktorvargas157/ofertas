@@ -1,0 +1,46 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcVcategory
+ *
+ * @ORM\Table(name="oc_vcategory")
+ * @ORM\Entity
+ */
+class OcVcategory
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uid", type="string", length=64, nullable=false)
+     */
+    private $uid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=64, nullable=false)
+     */
+    private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="category", type="string", length=255, nullable=false)
+     */
+    private $category;
+
+
+}

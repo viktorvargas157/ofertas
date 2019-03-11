@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcAddressbookchanges" table="oc_addressbookchanges">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="uri" type="string" column="uri" length="255" nullable="true"/>
+    <field name="synctoken" type="integer" column="synctoken" nullable="false"/>
+    <field name="addressbookid" type="integer" column="addressbookid" nullable="false"/>
+    <field name="operation" type="smallint" column="operation" nullable="false"/>
+  </entity>
+</doctrine-mapping>

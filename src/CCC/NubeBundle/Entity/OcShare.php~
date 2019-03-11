@@ -1,0 +1,144 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcShare
+ *
+ * @ORM\Table(name="oc_share")
+ * @ORM\Entity
+ */
+class OcShare
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="share_type", type="smallint", nullable=false)
+     */
+    private $shareType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="share_with", type="string", length=255, nullable=true)
+     */
+    private $shareWith;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uid_owner", type="string", length=64, nullable=false)
+     */
+    private $uidOwner;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uid_initiator", type="string", length=64, nullable=true)
+     */
+    private $uidInitiator;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="parent", type="integer", nullable=true)
+     */
+    private $parent;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_type", type="string", length=64, nullable=false)
+     */
+    private $itemType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_source", type="string", length=255, nullable=true)
+     */
+    private $itemSource;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_target", type="string", length=255, nullable=true)
+     */
+    private $itemTarget;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="file_source", type="bigint", nullable=true)
+     */
+    private $fileSource;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="file_target", type="string", length=512, nullable=true)
+     */
+    private $fileTarget;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="permissions", type="smallint", nullable=false)
+     */
+    private $permissions;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="stime", type="bigint", nullable=false)
+     */
+    private $stime;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="accepted", type="smallint", nullable=false)
+     */
+    private $accepted;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="expiration", type="datetime", nullable=true)
+     */
+    private $expiration;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=32, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mail_send", type="smallint", nullable=false)
+     */
+    private $mailSend;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="share_name", type="string", length=64, nullable=true)
+     */
+    private $shareName;
+
+
+}

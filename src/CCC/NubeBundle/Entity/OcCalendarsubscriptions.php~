@@ -1,0 +1,102 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcCalendarsubscriptions
+ *
+ * @ORM\Table(name="oc_calendarsubscriptions")
+ * @ORM\Entity
+ */
+class OcCalendarsubscriptions
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uri", type="string", length=255, nullable=true)
+     */
+    private $uri;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="principaluri", type="string", length=255, nullable=true)
+     */
+    private $principaluri;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="source", type="string", length=255, nullable=true)
+     */
+    private $source;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="displayname", type="string", length=100, nullable=true)
+     */
+    private $displayname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="refreshrate", type="string", length=10, nullable=true)
+     */
+    private $refreshrate;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="calendarorder", type="integer", nullable=false)
+     */
+    private $calendarorder;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="calendarcolor", type="string", length=255, nullable=true)
+     */
+    private $calendarcolor;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="striptodos", type="smallint", nullable=true)
+     */
+    private $striptodos;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="stripalarms", type="smallint", nullable=true)
+     */
+    private $stripalarms;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="stripattachments", type="smallint", nullable=true)
+     */
+    private $stripattachments;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="lastmodified", type="integer", nullable=false)
+     */
+    private $lastmodified;
+
+
+}

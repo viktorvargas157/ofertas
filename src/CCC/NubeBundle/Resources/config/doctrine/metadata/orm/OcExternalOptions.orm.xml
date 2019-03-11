@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcExternalOptions" table="oc_external_options">
+    <id name="optionId" type="bigint" column="option_id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="mountId" type="bigint" column="mount_id" nullable="false"/>
+    <field name="key" type="string" column="key" length="64" nullable="false"/>
+    <field name="value" type="string" column="value" length="256" nullable="false"/>
+  </entity>
+</doctrine-mapping>

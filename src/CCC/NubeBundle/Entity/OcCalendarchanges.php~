@@ -1,0 +1,53 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcCalendarchanges
+ *
+ * @ORM\Table(name="oc_calendarchanges")
+ * @ORM\Entity
+ */
+class OcCalendarchanges
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uri", type="string", length=255, nullable=true)
+     */
+    private $uri;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="synctoken", type="integer", nullable=false)
+     */
+    private $synctoken;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="calendarid", type="integer", nullable=false)
+     */
+    private $calendarid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="operation", type="smallint", nullable=false)
+     */
+    private $operation;
+
+
+}

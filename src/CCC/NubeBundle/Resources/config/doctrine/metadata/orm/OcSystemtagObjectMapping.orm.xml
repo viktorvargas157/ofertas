@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcSystemtagObjectMapping" table="oc_systemtag_object_mapping">
+    <id name="objectid" type="string" column="objectid" length="64">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="objecttype" type="string" column="objecttype" length="64" nullable="false"/>
+    <field name="systemtagid" type="integer" column="systemtagid" nullable="false"/>
+  </entity>
+</doctrine-mapping>

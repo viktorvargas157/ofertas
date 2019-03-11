@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcPreferences" table="oc_preferences">
+    <id name="userid" type="string" column="userid" length="64"/>
+    <id name="appid" type="string" column="appid" length="32"/>
+    <id name="configkey" type="string" column="configkey" length="64"/>
+    <field name="configvalue" type="text" column="configvalue" nullable="true"/>
+  </entity>
+</doctrine-mapping>

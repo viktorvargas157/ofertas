@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcFilecache" table="oc_filecache">
+    <id name="fileid" type="bigint" column="fileid">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="storage" type="integer" column="storage" nullable="false"/>
+    <field name="path" type="string" column="path" length="4000" nullable="true"/>
+    <field name="pathHash" type="string" column="path_hash" length="32" nullable="false"/>
+    <field name="parent" type="bigint" column="parent" nullable="false"/>
+    <field name="name" type="string" column="name" length="250" nullable="true"/>
+    <field name="mimetype" type="integer" column="mimetype" nullable="false"/>
+    <field name="mimepart" type="integer" column="mimepart" nullable="false"/>
+    <field name="size" type="bigint" column="size" nullable="false"/>
+    <field name="mtime" type="bigint" column="mtime" nullable="false"/>
+    <field name="storageMtime" type="bigint" column="storage_mtime" nullable="false"/>
+    <field name="encrypted" type="integer" column="encrypted" nullable="false"/>
+    <field name="unencryptedSize" type="bigint" column="unencrypted_size" nullable="false"/>
+    <field name="etag" type="string" column="etag" length="40" nullable="true"/>
+    <field name="permissions" type="integer" column="permissions" nullable="true"/>
+    <field name="checksum" type="string" column="checksum" length="255" nullable="true"/>
+  </entity>
+</doctrine-mapping>

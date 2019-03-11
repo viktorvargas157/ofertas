@@ -1,0 +1,67 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcCards
+ *
+ * @ORM\Table(name="oc_cards")
+ * @ORM\Entity
+ */
+class OcCards
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="addressbookid", type="integer", nullable=false)
+     */
+    private $addressbookid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="carddata", type="blob", nullable=true)
+     */
+    private $carddata;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="uri", type="string", length=255, nullable=true)
+     */
+    private $uri;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="lastmodified", type="bigint", nullable=true)
+     */
+    private $lastmodified;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="etag", type="string", length=32, nullable=true)
+     */
+    private $etag;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="size", type="bigint", nullable=false)
+     */
+    private $size;
+
+
+}

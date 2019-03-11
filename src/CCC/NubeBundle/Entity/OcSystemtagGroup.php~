@@ -1,0 +1,34 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcSystemtagGroup
+ *
+ * @ORM\Table(name="oc_systemtag_group")
+ * @ORM\Entity
+ */
+class OcSystemtagGroup
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="gid", type="string", length=255, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $gid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="systemtagid", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $systemtagid;
+
+
+}

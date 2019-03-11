@@ -1,0 +1,46 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcExternalApplicable
+ *
+ * @ORM\Table(name="oc_external_applicable")
+ * @ORM\Entity
+ */
+class OcExternalApplicable
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="applicable_id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $applicableId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mount_id", type="bigint", nullable=false)
+     */
+    private $mountId;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="type", type="integer", nullable=false)
+     */
+    private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="value", type="string", length=64, nullable=true)
+     */
+    private $value;
+
+
+}

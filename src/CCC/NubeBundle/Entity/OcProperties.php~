@@ -1,0 +1,46 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcProperties
+ *
+ * @ORM\Table(name="oc_properties")
+ * @ORM\Entity
+ */
+class OcProperties
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="fileid", type="bigint", nullable=true)
+     */
+    private $fileid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="propertyname", type="string", length=255, nullable=false)
+     */
+    private $propertyname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="propertyvalue", type="string", length=255, nullable=false)
+     */
+    private $propertyvalue;
+
+
+}

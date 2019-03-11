@@ -1,0 +1,109 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcNotifications
+ *
+ * @ORM\Table(name="oc_notifications")
+ * @ORM\Entity
+ */
+class OcNotifications
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="notification_id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $notificationId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="app", type="string", length=32, nullable=false)
+     */
+    private $app;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="user", type="string", length=64, nullable=false)
+     */
+    private $user;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="timestamp", type="integer", nullable=false)
+     */
+    private $timestamp;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="object_type", type="string", length=64, nullable=false)
+     */
+    private $objectType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="object_id", type="string", length=64, nullable=false)
+     */
+    private $objectId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subject", type="string", length=64, nullable=false)
+     */
+    private $subject;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="subject_parameters", type="text", nullable=true)
+     */
+    private $subjectParameters;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="message", type="string", length=64, nullable=true)
+     */
+    private $message;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="message_parameters", type="text", nullable=true)
+     */
+    private $messageParameters;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="link", type="string", length=4000, nullable=true)
+     */
+    private $link;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="actions", type="text", nullable=true)
+     */
+    private $actions;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="icon", type="string", length=4000, nullable=true)
+     */
+    private $icon;
+
+
+}

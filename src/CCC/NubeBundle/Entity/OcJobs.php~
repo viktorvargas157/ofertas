@@ -1,0 +1,67 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcJobs
+ *
+ * @ORM\Table(name="oc_jobs")
+ * @ORM\Entity
+ */
+class OcJobs
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="class", type="string", length=255, nullable=false)
+     */
+    private $class;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="argument", type="string", length=4000, nullable=false)
+     */
+    private $argument;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_run", type="integer", nullable=true)
+     */
+    private $lastRun;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_checked", type="integer", nullable=true)
+     */
+    private $lastChecked;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="reserved_at", type="integer", nullable=true)
+     */
+    private $reservedAt;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="execution_duration", type="integer", nullable=false)
+     */
+    private $executionDuration;
+
+
+}

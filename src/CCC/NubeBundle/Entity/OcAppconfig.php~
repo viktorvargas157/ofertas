@@ -1,0 +1,41 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcAppconfig
+ *
+ * @ORM\Table(name="oc_appconfig")
+ * @ORM\Entity
+ */
+class OcAppconfig
+{
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="appid", type="string", length=32, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $appid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="configkey", type="string", length=64, nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     */
+    private $configkey;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="configvalue", type="text", nullable=true)
+     */
+    private $configvalue;
+
+
+}

@@ -1,0 +1,130 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcFilecache
+ *
+ * @ORM\Table(name="oc_filecache")
+ * @ORM\Entity
+ */
+class OcFilecache
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="fileid", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $fileid;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="storage", type="integer", nullable=false)
+     */
+    private $storage;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="path", type="string", length=4000, nullable=true)
+     */
+    private $path;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="path_hash", type="string", length=32, nullable=false)
+     */
+    private $pathHash;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="parent", type="bigint", nullable=false)
+     */
+    private $parent;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=250, nullable=true)
+     */
+    private $name;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mimetype", type="integer", nullable=false)
+     */
+    private $mimetype;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mimepart", type="integer", nullable=false)
+     */
+    private $mimepart;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="size", type="bigint", nullable=false)
+     */
+    private $size;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mtime", type="bigint", nullable=false)
+     */
+    private $mtime;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="storage_mtime", type="bigint", nullable=false)
+     */
+    private $storageMtime;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="encrypted", type="integer", nullable=false)
+     */
+    private $encrypted;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="unencrypted_size", type="bigint", nullable=false)
+     */
+    private $unencryptedSize;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="etag", type="string", length=40, nullable=true)
+     */
+    private $etag;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="permissions", type="integer", nullable=true)
+     */
+    private $permissions;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="checksum", type="string", length=255, nullable=true)
+     */
+    private $checksum;
+
+
+}

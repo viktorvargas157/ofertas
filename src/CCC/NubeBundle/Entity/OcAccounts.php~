@@ -1,0 +1,88 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcAccounts
+ *
+ * @ORM\Table(name="oc_accounts")
+ * @ORM\Entity
+ */
+class OcAccounts
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     */
+    private $email;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="user_id", type="string", length=255, nullable=false)
+     */
+    private $userId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lower_user_id", type="string", length=255, nullable=false)
+     */
+    private $lowerUserId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="display_name", type="string", length=255, nullable=true)
+     */
+    private $displayName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="quota", type="string", length=32, nullable=true)
+     */
+    private $quota;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_login", type="integer", nullable=false)
+     */
+    private $lastLogin;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="backend", type="string", length=64, nullable=false)
+     */
+    private $backend;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="home", type="string", length=1024, nullable=false)
+     */
+    private $home;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="state", type="smallint", nullable=false)
+     */
+    private $state;
+
+
+}

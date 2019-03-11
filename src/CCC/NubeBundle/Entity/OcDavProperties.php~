@@ -1,0 +1,46 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcDavProperties
+ *
+ * @ORM\Table(name="oc_dav_properties")
+ * @ORM\Entity
+ */
+class OcDavProperties
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="propertypath", type="string", length=255, nullable=false)
+     */
+    private $propertypath;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="propertyname", type="string", length=255, nullable=false)
+     */
+    private $propertyname;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="propertyvalue", type="string", length=255, nullable=false)
+     */
+    private $propertyvalue;
+
+
+}

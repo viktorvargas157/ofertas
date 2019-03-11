@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcCalendarsubscriptions" table="oc_calendarsubscriptions">
+    <id name="id" type="integer" column="id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="uri" type="string" column="uri" length="255" nullable="true"/>
+    <field name="principaluri" type="string" column="principaluri" length="255" nullable="true"/>
+    <field name="source" type="string" column="source" length="255" nullable="true"/>
+    <field name="displayname" type="string" column="displayname" length="100" nullable="true"/>
+    <field name="refreshrate" type="string" column="refreshrate" length="10" nullable="true"/>
+    <field name="calendarorder" type="integer" column="calendarorder" nullable="false"/>
+    <field name="calendarcolor" type="string" column="calendarcolor" length="255" nullable="true"/>
+    <field name="striptodos" type="smallint" column="striptodos" nullable="true"/>
+    <field name="stripalarms" type="smallint" column="stripalarms" nullable="true"/>
+    <field name="stripattachments" type="smallint" column="stripattachments" nullable="true"/>
+    <field name="lastmodified" type="integer" column="lastmodified" nullable="false"/>
+  </entity>
+</doctrine-mapping>

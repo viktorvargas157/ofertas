@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="OcExternalMounts" table="oc_external_mounts">
+    <id name="mountId" type="bigint" column="mount_id">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="mountPoint" type="string" column="mount_point" length="128" nullable="false"/>
+    <field name="storageBackend" type="string" column="storage_backend" length="64" nullable="false"/>
+    <field name="authBackend" type="string" column="auth_backend" length="64" nullable="false"/>
+    <field name="priority" type="integer" column="priority" nullable="false"/>
+    <field name="type" type="integer" column="type" nullable="false"/>
+  </entity>
+</doctrine-mapping>

@@ -1,0 +1,46 @@
+<?php
+
+namespace CCC\NubeBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * OcDavJobStatus
+ *
+ * @ORM\Table(name="oc_dav_job_status")
+ * @ORM\Entity
+ */
+class OcDavJobStatus
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="bigint", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var guid
+     *
+     * @ORM\Column(name="uuid", type="guid", length=36, nullable=false)
+     */
+    private $uuid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="user_id", type="string", length=64, nullable=false)
+     */
+    private $userId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status_info", type="string", length=4000, nullable=false)
+     */
+    private $statusInfo;
+
+
+}

@@ -61,11 +61,15 @@ class appDevDebugProjectContainer extends Container
             'doctrine.dbal.logger' => 'getDoctrine_Dbal_LoggerService',
             'doctrine.dbal.logger.profiling.almacen' => 'getDoctrine_Dbal_Logger_Profiling_AlmacenService',
             'doctrine.dbal.logger.profiling.default' => 'getDoctrine_Dbal_Logger_Profiling_DefaultService',
+            'doctrine.dbal.logger.profiling.nube' => 'getDoctrine_Dbal_Logger_Profiling_NubeService',
+            'doctrine.dbal.nube_connection' => 'getDoctrine_Dbal_NubeConnectionService',
             'doctrine.orm.almacen_entity_manager' => 'getDoctrine_Orm_AlmacenEntityManagerService',
             'doctrine.orm.almacen_manager_configurator' => 'getDoctrine_Orm_AlmacenManagerConfiguratorService',
             'doctrine.orm.default_entity_manager' => 'getDoctrine_Orm_DefaultEntityManagerService',
             'doctrine.orm.default_manager_configurator' => 'getDoctrine_Orm_DefaultManagerConfiguratorService',
             'doctrine.orm.naming_strategy.default' => 'getDoctrine_Orm_NamingStrategy_DefaultService',
+            'doctrine.orm.nube_entity_manager' => 'getDoctrine_Orm_NubeEntityManagerService',
+            'doctrine.orm.nube_manager_configurator' => 'getDoctrine_Orm_NubeManagerConfiguratorService',
             'doctrine.orm.validator.unique' => 'getDoctrine_Orm_Validator_UniqueService',
             'doctrine.orm.validator_initializer' => 'getDoctrine_Orm_ValidatorInitializerService',
             'event_dispatcher' => 'getEventDispatcherService',
@@ -487,7 +491,7 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getDoctrineService()
     {
-        return $this->services['doctrine'] = new \Doctrine\Bundle\DoctrineBundle\Registry($this, array('default' => 'doctrine.dbal.default_connection', 'almacen' => 'doctrine.dbal.almacen_connection'), array('default' => 'doctrine.orm.default_entity_manager', 'almacen' => 'doctrine.orm.almacen_entity_manager'), 'default', 'default');
+        return $this->services['doctrine'] = new \Doctrine\Bundle\DoctrineBundle\Registry($this, array('default' => 'doctrine.dbal.default_connection', 'almacen' => 'doctrine.dbal.almacen_connection', 'nube' => 'doctrine.dbal.nube_connection'), array('default' => 'doctrine.orm.default_entity_manager', 'almacen' => 'doctrine.orm.almacen_entity_manager', 'nube' => 'doctrine.orm.nube_entity_manager'), 'default', 'default');
     }
 
     /**
@@ -507,7 +511,7 @@ class appDevDebugProjectContainer extends Container
         $b = new \Doctrine\DBAL\Configuration();
         $b->setSQLLogger($a);
 
-        return $this->services['doctrine.dbal.almacen_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('dbname' => 'ofertas', 'host' => '192.168.1.105', 'port' => '3306', 'user' => 'sistema', 'password' => 'ccc2015***', 'charset' => 'UTF8', 'driver' => 'pdo_mysql', 'driverOptions' => array()), $b, new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this), array());
+        return $this->services['doctrine.dbal.almacen_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('dbname' => 'ofertas', 'host' => '192.168.1.107', 'port' => '3306', 'user' => 'sistema', 'password' => 'ccc2015***', 'charset' => 'UTF8', 'driver' => 'pdo_mysql', 'driverOptions' => array()), $b, new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this), array());
     }
 
     /**
@@ -540,7 +544,27 @@ class appDevDebugProjectContainer extends Container
         $b = new \Doctrine\DBAL\Configuration();
         $b->setSQLLogger($a);
 
-        return $this->services['doctrine.dbal.default_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('dbname' => 'ofertas', 'host' => '192.168.1.105', 'port' => '3306', 'user' => 'sistema', 'password' => 'ccc2015***', 'charset' => 'UTF8', 'driver' => 'pdo_mysql', 'driverOptions' => array()), $b, new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this), array());
+        return $this->services['doctrine.dbal.default_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('dbname' => 'ofertas', 'host' => '192.168.1.107', 'port' => '3306', 'user' => 'sistema', 'password' => 'ccc2015***', 'charset' => 'UTF8', 'driver' => 'pdo_mysql', 'driverOptions' => array()), $b, new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this), array());
+    }
+
+    /**
+     * Gets the 'doctrine.dbal.nube_connection' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return stdClass A stdClass instance.
+     */
+    protected function getDoctrine_Dbal_NubeConnectionService()
+    {
+        $a = new \Doctrine\DBAL\Logging\LoggerChain();
+        $a->addLogger($this->get('doctrine.dbal.logger'));
+        $a->addLogger($this->get('doctrine.dbal.logger.profiling.nube'));
+
+        $b = new \Doctrine\DBAL\Configuration();
+        $b->setSQLLogger($a);
+
+        return $this->services['doctrine.dbal.nube_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('dbname' => 'owncloud', 'host' => '127.0.0.1', 'port' => '3306', 'user' => 'root', 'password' => '', 'charset' => 'UTF8', 'driver' => 'pdo_mysql', 'driverOptions' => array()), $b, new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this), array());
     }
 
     /**
@@ -651,6 +675,61 @@ class appDevDebugProjectContainer extends Container
     protected function getDoctrine_Orm_DefaultManagerConfiguratorService()
     {
         return $this->services['doctrine.orm.default_manager_configurator'] = new \Doctrine\Bundle\DoctrineBundle\ManagerConfigurator(array(), array());
+    }
+
+    /**
+     * Gets the 'doctrine.orm.nube_entity_manager' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Doctrine\ORM\EntityManager A Doctrine\ORM\EntityManager instance.
+     */
+    protected function getDoctrine_Orm_NubeEntityManagerService()
+    {
+        $a = new \Doctrine\Common\Cache\ArrayCache();
+        $a->setNamespace('sf2orm_nube_46699f68be3b9b5c86974d0e6da8e16a');
+
+        $b = new \Doctrine\Common\Cache\ArrayCache();
+        $b->setNamespace('sf2orm_nube_46699f68be3b9b5c86974d0e6da8e16a');
+
+        $c = new \Doctrine\Common\Cache\ArrayCache();
+        $c->setNamespace('sf2orm_nube_46699f68be3b9b5c86974d0e6da8e16a');
+
+        $d = new \Doctrine\ORM\Mapping\Driver\DriverChain();
+        $d->addDriver(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($this->get('annotation_reader'), array(0 => 'F:\\xampp\\htdocs\\ofertas\\src\\CCC\\NubeBundle\\Entity')), 'CCC\\NubeBundle\\Entity');
+
+        $e = new \Doctrine\ORM\Configuration();
+        $e->setEntityNamespaces(array('NubeBundle' => 'CCC\\NubeBundle\\Entity'));
+        $e->setMetadataCacheImpl($a);
+        $e->setQueryCacheImpl($b);
+        $e->setResultCacheImpl($c);
+        $e->setMetadataDriverImpl($d);
+        $e->setProxyDir('F:/xampp/htdocs/ofertas/app/cache/dev/doctrine/orm/Proxies');
+        $e->setProxyNamespace('Proxies');
+        $e->setAutoGenerateProxyClasses(false);
+        $e->setClassMetadataFactoryName('Doctrine\\ORM\\Mapping\\ClassMetadataFactory');
+        $e->setDefaultRepositoryClassName('Doctrine\\ORM\\EntityRepository');
+        $e->setNamingStrategy($this->get('doctrine.orm.naming_strategy.default'));
+
+        $this->services['doctrine.orm.nube_entity_manager'] = $instance = call_user_func(array('Doctrine\\ORM\\EntityManager', 'create'), $this->get('doctrine.dbal.nube_connection'), $e);
+
+        $this->get('doctrine.orm.nube_manager_configurator')->configure($instance);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'doctrine.orm.nube_manager_configurator' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Doctrine\Bundle\DoctrineBundle\ManagerConfigurator A Doctrine\Bundle\DoctrineBundle\ManagerConfigurator instance.
+     */
+    protected function getDoctrine_Orm_NubeManagerConfiguratorService()
+    {
+        return $this->services['doctrine.orm.nube_manager_configurator'] = new \Doctrine\Bundle\DoctrineBundle\ManagerConfigurator(array(), array());
     }
 
     /**
@@ -1672,6 +1751,7 @@ class appDevDebugProjectContainer extends Container
         $d = new \Doctrine\Bundle\DoctrineBundle\DataCollector\DoctrineDataCollector($this->get('doctrine'));
         $d->addLogger('default', $this->get('doctrine.dbal.logger.profiling.default'));
         $d->addLogger('almacen', $this->get('doctrine.dbal.logger.profiling.almacen'));
+        $d->addLogger('nube', $this->get('doctrine.dbal.logger.profiling.nube'));
 
         $this->services['profiler'] = $instance = new \Symfony\Component\HttpKernel\Profiler\Profiler(new \Symfony\Component\HttpKernel\Profiler\FileProfilerStorage('file:F:/xampp/htdocs/ofertas/app/cache/dev/profiler', '', '', 86400), $a);
 
@@ -1917,7 +1997,7 @@ class appDevDebugProjectContainer extends Container
         $q = new \Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler($p, array('login_path' => '/login', 'always_use_default_target_path' => false, 'default_target_path' => '/', 'target_path_parameter' => '_target_path', 'use_referer' => false));
         $q->setProviderKey('secured_area');
 
-        return $this->services['security.firewall.map.context.secured_area'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => new \Symfony\Component\Security\Http\Firewall\ChannelListener($o, new \Symfony\Component\Security\Http\EntryPoint\RetryAuthenticationEntryPoint(80, 443), $a), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($b, array(0 => $this->get('security.user.provider.concrete.chain_provider'), 1 => $this->get('security.user.provider.concrete.in_memory'), 2 => $this->get('security.user.provider.concrete.user_db')), 'secured_area', $a, $c), 2 => new \Symfony\Component\Security\Http\Firewall\LogoutListener($b, $p, new \Symfony\Component\Security\Http\Logout\DefaultLogoutSuccessHandler($p, '/ofertas/login'), array('csrf_parameter' => '_csrf_token', 'intention' => 'logout', 'logout_path' => '/logout')), 3 => new \Symfony\Component\Security\Http\Firewall\UsernamePasswordFormAuthenticationListener($b, $f, new \Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy('migrate'), $p, 'secured_area', $q, new \Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler($e, $p, array('login_path' => '/login', 'failure_path' => NULL, 'failure_forward' => false, 'failure_path_parameter' => '_failure_path'), $a), array('check_path' => '/login_check', 'use_forward' => false, 'require_previous_session' => true, 'username_parameter' => '_username', 'password_parameter' => '_password', 'csrf_parameter' => '_csrf_token', 'intention' => 'authenticate', 'post_only' => true), $a, $c), 4 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($b, '5c8171f38b116', $a), 5 => new \Symfony\Component\Security\Http\Firewall\AccessListener($b, $this->get('security.access.decision_manager'), $o, $f)), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($b, $this->get('security.authentication.trust_resolver'), $p, 'secured_area', new \Symfony\Component\Security\Http\EntryPoint\FormAuthenticationEntryPoint($e, $p, '/login', false), NULL, NULL, $a));
+        return $this->services['security.firewall.map.context.secured_area'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => new \Symfony\Component\Security\Http\Firewall\ChannelListener($o, new \Symfony\Component\Security\Http\EntryPoint\RetryAuthenticationEntryPoint(80, 443), $a), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($b, array(0 => $this->get('security.user.provider.concrete.chain_provider'), 1 => $this->get('security.user.provider.concrete.in_memory'), 2 => $this->get('security.user.provider.concrete.user_db')), 'secured_area', $a, $c), 2 => new \Symfony\Component\Security\Http\Firewall\LogoutListener($b, $p, new \Symfony\Component\Security\Http\Logout\DefaultLogoutSuccessHandler($p, '/ofertas/login'), array('csrf_parameter' => '_csrf_token', 'intention' => 'logout', 'logout_path' => '/logout')), 3 => new \Symfony\Component\Security\Http\Firewall\UsernamePasswordFormAuthenticationListener($b, $f, new \Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy('migrate'), $p, 'secured_area', $q, new \Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler($e, $p, array('login_path' => '/login', 'failure_path' => NULL, 'failure_forward' => false, 'failure_path_parameter' => '_failure_path'), $a), array('check_path' => '/login_check', 'use_forward' => false, 'require_previous_session' => true, 'username_parameter' => '_username', 'password_parameter' => '_password', 'csrf_parameter' => '_csrf_token', 'intention' => 'authenticate', 'post_only' => true), $a, $c), 4 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($b, '5c8656b58130e', $a), 5 => new \Symfony\Component\Security\Http\Firewall\AccessListener($b, $this->get('security.access.decision_manager'), $o, $f)), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($b, $this->get('security.authentication.trust_resolver'), $p, 'secured_area', new \Symfony\Component\Security\Http\EntryPoint\FormAuthenticationEntryPoint($e, $p, '/login', false), NULL, NULL, $a));
     }
 
     /**
@@ -2916,6 +2996,7 @@ class appDevDebugProjectContainer extends Container
         $instance->addPath('F:\\xampp\\htdocs\\ofertas\\vendor\\symfony\\swiftmailer-bundle\\Symfony\\Bundle\\SwiftmailerBundle/Resources/views', 'Swiftmailer');
         $instance->addPath('F:\\xampp\\htdocs\\ofertas\\vendor\\doctrine\\doctrine-bundle\\Doctrine\\Bundle\\DoctrineBundle/Resources/views', 'Doctrine');
         $instance->addPath('F:\\xampp\\htdocs\\ofertas\\src\\CCC\\OfertasBundle/Resources/views', 'Ofertas');
+        $instance->addPath('F:\\xampp\\htdocs\\ofertas\\src\\CCC\\NubeBundle/Resources/views', 'Nube');
         $instance->addPath('F:\\xampp\\htdocs\\ofertas\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views', 'WebProfiler');
         $instance->addPath('F:\\xampp\\htdocs\\ofertas\\vendor\\sensio\\distribution-bundle\\Sensio\\Bundle\\DistributionBundle/Resources/views', 'SensioDistribution');
         $instance->addPath('F:/xampp/htdocs/ofertas/app/Resources/views');
@@ -3155,6 +3236,23 @@ class appDevDebugProjectContainer extends Container
     }
 
     /**
+     * Gets the 'doctrine.dbal.logger.profiling.nube' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * This service is private.
+     * If you want to be able to request this service from the container directly,
+     * make it public, otherwise you might end up with broken code.
+     *
+     * @return Doctrine\DBAL\Logging\DebugStack A Doctrine\DBAL\Logging\DebugStack instance.
+     */
+    protected function getDoctrine_Dbal_Logger_Profiling_NubeService()
+    {
+        return $this->services['doctrine.dbal.logger.profiling.nube'] = new \Doctrine\DBAL\Logging\DebugStack();
+    }
+
+    /**
      * Gets the 'doctrine.orm.naming_strategy.default' service.
      *
      * This service is shared.
@@ -3219,7 +3317,7 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getSecurity_Authentication_ManagerService()
     {
-        $this->services['security.authentication.manager'] = $instance = new \Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager(array(0 => new \Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider($this->get('security.user.provider.concrete.chain_provider'), new \Symfony\Component\Security\Core\User\UserChecker(), 'secured_area', $this->get('security.encoder_factory'), true), 1 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('5c8171f38b116')), true);
+        $this->services['security.authentication.manager'] = $instance = new \Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager(array(0 => new \Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider($this->get('security.user.provider.concrete.chain_provider'), new \Symfony\Component\Security\Core\User\UserChecker(), 'secured_area', $this->get('security.encoder_factory'), true), 1 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('5c8656b58130e')), true);
 
         $instance->setEventDispatcher($this->get('event_dispatcher'));
 
@@ -3416,6 +3514,7 @@ class appDevDebugProjectContainer extends Container
                 'DoctrineBundle' => 'Doctrine\\Bundle\\DoctrineBundle\\DoctrineBundle',
                 'SensioFrameworkExtraBundle' => 'Sensio\\Bundle\\FrameworkExtraBundle\\SensioFrameworkExtraBundle',
                 'OfertasBundle' => 'CCC\\OfertasBundle\\OfertasBundle',
+                'NubeBundle' => 'CCC\\NubeBundle\\NubeBundle',
                 'WebProfilerBundle' => 'Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle',
                 'SensioDistributionBundle' => 'Sensio\\Bundle\\DistributionBundle\\SensioDistributionBundle',
                 'SensioGeneratorBundle' => 'Sensio\\Bundle\\GeneratorBundle\\SensioGeneratorBundle',
@@ -3423,11 +3522,15 @@ class appDevDebugProjectContainer extends Container
             'kernel.charset' => 'UTF-8',
             'kernel.container_class' => 'appDevDebugProjectContainer',
             'database_driver' => 'pdo_mysql',
-            'database_host' => '192.168.1.105',
+            'database_host' => '192.168.1.107',
+            'database_host1' => '127.0.0.1',
             'database_port' => '3306',
             'database_name' => 'ofertas',
+            'database_name1' => 'owncloud',
             'database_user' => 'sistema',
+            'database_user1' => 'root',
             'database_password' => 'ccc2015***',
+            'database_password1' => '',
             'mailer_transport' => 'smtp',
             'mailer_auth_mode' => 'login',
             'mailer_host' => '192.168.1.1',
@@ -3859,6 +3962,7 @@ class appDevDebugProjectContainer extends Container
             'doctrine.entity_managers' => array(
                 'default' => 'doctrine.orm.default_entity_manager',
                 'almacen' => 'doctrine.orm.almacen_entity_manager',
+                'nube' => 'doctrine.orm.nube_entity_manager',
             ),
             'doctrine.default_entity_manager' => 'default',
             'doctrine.dbal.connection_factory.types' => array(
@@ -3867,6 +3971,7 @@ class appDevDebugProjectContainer extends Container
             'doctrine.connections' => array(
                 'default' => 'doctrine.dbal.default_connection',
                 'almacen' => 'doctrine.dbal.almacen_connection',
+                'nube' => 'doctrine.dbal.nube_connection',
             ),
             'doctrine.default_connection' => 'default',
             'doctrine.orm.configuration.class' => 'Doctrine\\ORM\\Configuration',
